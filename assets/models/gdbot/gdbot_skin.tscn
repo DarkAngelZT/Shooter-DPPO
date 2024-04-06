@@ -1,27 +1,10 @@
-[gd_scene load_steps=41 format=3 uid="uid://bdyptm7smjixm"]
+[gd_scene load_steps=38 format=3 uid="uid://bdyptm7smjixm"]
 
-[ext_resource type="Script" path="res://models/gdbot/gdbot_skin.gd" id="1_dt082"]
-[ext_resource type="PackedScene" uid="uid://c4fba1hyqkstw" path="res://models/gdbot/gdbot.glb" id="1_no8yw"]
-[ext_resource type="Material" uid="uid://cq6bdna8ieu87" path="res://models/gdbot/materials/heart_core_mat.tres" id="3_b5fb6"]
-[ext_resource type="Shader" path="res://models/shared/shaders/screen_shader.gdshader" id="3_johvk"]
-[ext_resource type="Material" uid="uid://4ugdxr58llu8" path="res://models/gdbot/materials/glass_mat.tres" id="4_jt2os"]
-[ext_resource type="AnimationLibrary" uid="uid://dlohfyy3w0jbd" path="res://models/gdbot/custom_animations/custom_lib.res" id="6_dcd8b"]
-[ext_resource type="PackedScene" uid="uid://dvy2nao23i4rl" path="res://models/gdbot/gdbot_face.tscn" id="7_6dl0h"]
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_0dla7"]
-viewport_path = NodePath("SubViewport")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_2nj81"]
-resource_local_to_scene = true
-render_priority = 0
-shader = ExtResource("3_johvk")
-shader_parameter/intensity = 2.0
-shader_parameter/screen_color = Color(0.101961, 0.662745, 1, 0.0196078)
-shader_parameter/screen_red_offset = Vector2(0, 0)
-shader_parameter/screen_green_offset = Vector2(0, 0)
-shader_parameter/screen_blue_offset = Vector2(0, 0)
-shader_parameter/pixel_size = 32.0
-shader_parameter/face_texture = SubResource("ViewportTexture_0dla7")
+[ext_resource type="Script" path="res://assets/models/gdbot/gdbot_skin.gd" id="1_dt082"]
+[ext_resource type="PackedScene" uid="uid://c4fba1hyqkstw" path="res://assets/models/gdbot/gdbot.glb" id="1_no8yw"]
+[ext_resource type="AnimationLibrary" uid="uid://dlohfyy3w0jbd" path="res://assets/models/gdbot/custom_animations/custom_lib.res" id="6_dcd8b"]
+[ext_resource type="PackedScene" uid="uid://cgxrm6d3qlo56" path="res://assets/models/gun.glb" id="6_e3h5y"]
+[ext_resource type="PackedScene" uid="uid://dvy2nao23i4rl" path="res://assets/models/gdbot/gdbot_face.tscn" id="7_6dl0h"]
 
 [sub_resource type="Animation" id="Animation_yp8jn"]
 resource_name = "Idle"
@@ -96,7 +79,7 @@ tracks/9/enabled = true
 tracks/9/path = NodePath("Armature/Skeleton3D:head")
 tracks/9/interp = 1
 tracks/9/loop_wrap = true
-tracks/9/keys = PackedFloat32Array(0, 1, -0.0819236, 0.00134455, 0.0163548, 0.996504, 0.0333333, 1, -0.0819207, 0.00151012, 0.0183688, 0.996468, 0.0666667, 1, -0.0819169, 0.0017035, 0.0207211, 0.996422, 0.1, 1, -0.0819141, 0.00183161, 0.0222794, 0.996389, 0.133333, 1, -0.0819161, 0.00173935, 0.0211571, 0.996413, 0.2, 1, -0.0819182, 0.00163824, 0.0199272, 0.996439, 0.333333, 1, -0.0819155, 0.00176968, 0.0215261, 0.996405, 0.366667, 1, -0.0819136, 0.00185655, 0.0225827, 0.996382, 0.6, 1, -0.0819162, 0.00173648, 0.0211222, 0.996414, 0.633333, 1, -0.0819182, 0.00163916, 0.0199384, 0.996438, 0.666667, 1, -0.0819206, 0.00151403, 0.0184164, 0.996468, 0.7, 1, -0.0819233, 0.00136109, 0.016556, 0.9965, 0.733333, 1, -0.0819261, 0.00118034, 0.0143574, 0.996534, 0.766667, 1, -0.0819288, 0.000971768, 0.0118204, 0.996568, 0.8, 1, -0.0819313, 0.000735384, 0.00894507, 0.996598, 0.833333, 1, -0.0819332, 0.000471185, 0.00573137, 0.996621, 0.866667, 1, -0.0819344, 0.00017917, 0.00217932, 0.996635, 0.9, 1, -0.0819345, -0.000140664, -0.00171106, 0.996636, 0.933333, 1, -0.0819331, -0.000488306, -0.0059397, 0.99662, 0.966667, 1, -0.08193, -0.000863747, -0.0105065, 0.996582, 1, 1, -0.0819248, -0.00126698, -0.0154113, 0.996519, 1.03333, 1, -0.081917, -0.00169799, -0.020654, 0.996424, 1.06667, 1, -0.0819165, -0.00172246, -0.0209517, 0.996417, 1.1, 1, -0.0819204, -0.00152655, -0.0185688, 0.996465, 1.13333, 1, -0.0819233, -0.00135845, -0.0165239, 0.996501, 1.16667, 1, -0.0819255, -0.00121814, -0.0148173, 0.996528, 1.2, 1, -0.0819271, -0.00110564, -0.0134489, 0.996547, 1.23333, 1, -0.0819282, -0.00102095, -0.0124187, 0.99656, 1.3, 1, -0.0819292, -0.000934995, -0.0113732, 0.996573, 1.4, 1, -0.0819283, -0.00101462, -0.0123418, 0.996561, 1.43333, 1, -0.0819272, -0.0010968, -0.0133412, 0.996548, 1.46667, 1, -0.0819257, -0.00120676, -0.0146789, 0.99653, 1.5, 1, -0.0819236, -0.00134455, -0.0163548, 0.996504, 1.53333, 1, -0.0819207, -0.00151013, -0.0183689, 0.996468, 1.56667, 1, -0.0819169, -0.0017035, -0.0207211, 0.996422, 1.6, 1, -0.0819141, -0.00183161, -0.0222794, 0.996389, 1.63333, 1, -0.0819161, -0.00173935, -0.0211572, 0.996413, 1.7, 1, -0.0819182, -0.00163824, -0.0199273, 0.996439, 1.83333, 1, -0.0819155, -0.00176968, -0.0215261, 0.996405, 1.86667, 1, -0.0819135, -0.00185655, -0.0225827, 0.996382, 2.1, 1, -0.0819162, -0.00173648, -0.0211222, 0.996414, 2.13333, 1, -0.0819182, -0.00163915, -0.0199384, 0.996438, 2.16667, 1, -0.0819206, -0.00151403, -0.0184164, 0.996468, 2.2, 1, -0.0819233, -0.00136109, -0.0165561, 0.9965, 2.23333, 1, -0.0819261, -0.00118034, -0.0143574, 0.996534, 2.26667, 1, -0.0819288, -0.000971769, -0.0118204, 0.996568, 2.3, 1, -0.0819313, -0.000735382, -0.00894511, 0.996598, 2.33333, 1, -0.0819332, -0.000471181, -0.00573141, 0.996621, 2.36667, 1, -0.0819344, -0.000179162, -0.00217936, 0.996635, 2.4, 1, -0.0819345, 0.000140671, 0.00171102, 0.996636, 2.43333, 1, -0.0819331, 0.000488305, 0.00593966, 0.99662, 2.46667, 1, -0.08193, 0.000863743, 0.0105065, 0.996582, 2.5, 1, -0.0819248, 0.00126699, 0.0154113, 0.996519, 2.53333, 1, -0.081917, 0.00169799, 0.020654, 0.996424, 2.56667, 1, -0.0819165, 0.00172246, 0.0209517, 0.996417, 2.6, 1, -0.0819204, 0.00152656, 0.0185687, 0.996465, 2.63333, 1, -0.0819233, 0.00135845, 0.0165239, 0.996501, 2.66667, 1, -0.0819255, 0.00121815, 0.0148173, 0.996528, 2.7, 1, -0.0819271, 0.00110565, 0.0134488, 0.996547, 2.73333, 1, -0.0819282, 0.00102096, 0.0124187, 0.99656, 2.8, 1, -0.0819293, 0.000934998, 0.0113731, 0.996573, 2.9, 1, -0.0819283, 0.00101463, 0.0123418, 0.996561, 2.93333, 1, -0.0819272, 0.0010968, 0.0133412, 0.996548, 2.96667, 1, -0.0819257, 0.00120677, 0.0146789, 0.99653, 3, 1, -0.0819236, 0.00134455, 0.0163548, 0.996504)
+tracks/9/keys = PackedFloat32Array(0, 1, -0.0819236, 0.00134455, 0.0163548, 0.996504, 0.0333333, 1, -0.0819207, 0.00151012, 0.0183688, 0.996468, 0.0666667, 1, -0.0819169, 0.0017035, 0.0207211, 0.996422, 0.1, 1, -0.0819141, 0.00183161, 0.0222794, 0.996389, 0.133333, 1, -0.0819161, 0.00173935, 0.0211571, 0.996413, 0.2, 1, -0.0819182, 0.00163824, 0.0199272, 0.996439, 0.333333, 1, -0.0819155, 0.00176968, 0.0215261, 0.996405, 0.366667, 1, -0.0819136, 0.00185655, 0.0225827, 0.996382, 0.6, 1, -0.0819162, 0.00173648, 0.0211222, 0.996414, 0.633333, 1, -0.0819182, 0.00163916, 0.0199384, 0.996438, 0.666667, 1, -0.0819206, 0.00151403, 0.0184164, 0.996468, 0.7, 1, -0.0819233, 0.00136109, 0.016556, 0.9965, 0.733333, 1, -0.0819261, 0.00118034, 0.0143574, 0.996534, 0.766667, 1, -0.0819288, 0.000971768, 0.0118204, 0.996568, 0.8, 1, -0.0819313, 0.000735384, 0.00894507, 0.996598, 0.833333, 1, -0.0819332, 0.000471185, 0.00573137, 0.996621, 0.866667, 1, -0.0819344, 0.00017917, 0.00217932, 0.996635, 0.9, 1, -0.0819345, -0.000140664, -0.00171106, 0.996636, 0.933333, 1, -0.0819331, -0.000488306, -0.0059397, 0.99662, 0.966667, 1, -0.08193, -0.000863747, -0.0105065, 0.996582, 1, 1, -0.0819248, -0.00126698, -0.0154113, 0.996519, 1.03333, 1, -0.081917, -0.00169799, -0.020654, 0.996424, 1.06667, 1, -0.0819165, -0.00172246, -0.0209517, 0.996417, 1.1, 1, -0.0819204, -0.00152655, -0.0185688, 0.996465, 1.13333, 1, -0.0819233, -0.00135845, -0.0165239, 0.996501, 1.16667, 1, -0.0819255, -0.00121814, -0.0148173, 0.996528, 1.2, 1, -0.0819271, -0.00110564, -0.0134489, 0.996547, 1.23333, 1, -0.0819282, -0.00102095, -0.0124187, 0.99656, 1.3, 1, -0.0819292, -0.000934995, -0.0113732, 0.996573, 1.4, 1, -0.0819283, -0.00101462, -0.0123418, 0.996561, 1.43333, 1, -0.0819272, -0.0010968, -0.0133412, 0.996548, 1.46667, 1, -0.0819257, -0.00120676, -0.0146789, 0.99653, 1.5, 1, -0.0819236, -0.00134455, -0.0163548, 0.996504, 1.53333, 1, -0.0819207, -0.00151013, -0.0183689, 0.996468, 1.56667, 1, -0.0819169, -0.0017035, -0.0207211, 0.996422, 1.6, 1, -0.0819141, -0.00183161, -0.0222794, 0.996389, 1.63333, 1, -0.0819161, -0.00173935, -0.0211572, 0.996413, 1.8, 1, -0.0819155, -0.00176968, -0.0215261, 0.996405, 1.86667, 1, -0.0819135, -0.00185655, -0.0225827, 0.996382, 2.1, 1, -0.0819162, -0.00173648, -0.0211222, 0.996414, 2.13333, 1, -0.0819182, -0.00163915, -0.0199384, 0.996438, 2.16667, 1, -0.0819206, -0.00151403, -0.0184164, 0.996468, 2.2, 1, -0.0819233, -0.00136109, -0.0165561, 0.9965, 2.23333, 1, -0.0819261, -0.00118034, -0.0143574, 0.996534, 2.26667, 1, -0.0819288, -0.000971769, -0.0118204, 0.996568, 2.3, 1, -0.0819313, -0.000735382, -0.00894511, 0.996598, 2.33333, 1, -0.0819332, -0.000471181, -0.00573141, 0.996621, 2.36667, 1, -0.0819344, -0.000179162, -0.00217936, 0.996635, 2.4, 1, -0.0819345, 0.000140671, 0.00171102, 0.996636, 2.43333, 1, -0.0819331, 0.000488305, 0.00593966, 0.99662, 2.46667, 1, -0.08193, 0.000863743, 0.0105065, 0.996582, 2.5, 1, -0.0819248, 0.00126699, 0.0154113, 0.996519, 2.53333, 1, -0.081917, 0.00169799, 0.020654, 0.996424, 2.56667, 1, -0.0819165, 0.00172246, 0.0209517, 0.996417, 2.6, 1, -0.0819204, 0.00152656, 0.0185687, 0.996465, 2.63333, 1, -0.0819233, 0.00135845, 0.0165239, 0.996501, 2.66667, 1, -0.0819255, 0.00121815, 0.0148173, 0.996528, 2.7, 1, -0.0819271, 0.00110565, 0.0134488, 0.996547, 2.73333, 1, -0.0819282, 0.00102096, 0.0124187, 0.99656, 2.8, 1, -0.0819293, 0.000934998, 0.0113731, 0.996573, 2.9, 1, -0.0819283, 0.00101463, 0.0123418, 0.996561, 2.93333, 1, -0.0819272, 0.0010968, 0.0133412, 0.996548, 2.96667, 1, -0.0819257, 0.00120677, 0.0146789, 0.99653, 3, 1, -0.0819236, 0.00134455, 0.0163548, 0.996504)
 tracks/10/type = "rotation_3d"
 tracks/10/imported = true
 tracks/10/enabled = true
@@ -2571,6 +2554,13 @@ _data = {
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_3ls4x"]
 animation = &"custom_lib/default_heartbeat"
 
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_klo30"]
+filter_enabled = true
+filters = ["Armature/Skeleton3D:lowerarm.L", "Armature/Skeleton3D:lowerarm.R", "Armature/Skeleton3D:upperarm.L", "Armature/Skeleton3D:upperarm.R"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_u25dy"]
+animation = &"custom_lib/shoot"
+
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_v0kkf"]
 animation = &"fall"
 
@@ -2647,17 +2637,19 @@ states/Walk/position = Vector2(716, 100)
 transitions = ["Jump", "Fall", SubResource("AnimationNodeStateMachineTransition_g1ve6"), "Fall", "GroundImpact", SubResource("AnimationNodeStateMachineTransition_uw3s0"), "Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_1c8yj"), "Walk", "Idle", SubResource("AnimationNodeStateMachineTransition_0gith"), "Idle", "Jump", SubResource("AnimationNodeStateMachineTransition_56gx2"), "Start", "Idle", SubResource("AnimationNodeStateMachineTransition_g2g34"), "Idle", "Fall", SubResource("AnimationNodeStateMachineTransition_r5wub"), "GroundImpact", "Walk", SubResource("AnimationNodeStateMachineTransition_ujnev"), "GroundImpact", "Idle", SubResource("AnimationNodeStateMachineTransition_ilpop"), "Walk", "Jump", SubResource("AnimationNodeStateMachineTransition_ate5f"), "Walk", "Fall", SubResource("AnimationNodeStateMachineTransition_pvlmb")]
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_q32ex"]
-graph_offset = Vector2(-611, 106)
+graph_offset = Vector2(-561.333, -50)
 nodes/Add2/node = SubResource("AnimationNodeAdd2_yodjs")
-nodes/Add2/position = Vector2(80, 160)
+nodes/Add2/position = Vector2(453.333, 186.667)
 "nodes/Animation 2/node" = SubResource("AnimationNodeAnimation_3ls4x")
 "nodes/Animation 2/position" = Vector2(-280, 280)
+nodes/Blend2/node = SubResource("AnimationNodeBlend2_klo30")
+nodes/Blend2/position = Vector2(200, 93.3333)
+nodes/ShootPose/node = SubResource("AnimationNodeAnimation_u25dy")
+nodes/ShootPose/position = Vector2(-240, 146.667)
 nodes/StateMachine/node = SubResource("AnimationNodeStateMachine_pu2xo")
-nodes/StateMachine/position = Vector2(-220, 40)
-nodes/output/position = Vector2(300, 160)
-node_connections = [&"Add2", 0, &"StateMachine", &"Add2", 1, &"Animation 2", &"output", 0, &"Add2"]
-
-[sub_resource type="AnimationNodeStateMachinePlayback" id="AnimationNodeStateMachinePlayback_wvioj"]
+nodes/StateMachine/position = Vector2(-226.667, 0)
+nodes/output/position = Vector2(640, 146.667)
+node_connections = [&"Add2", 0, &"Blend2", &"Add2", 1, &"Animation 2", &"Blend2", 0, &"StateMachine", &"Blend2", 1, &"ShootPose", &"output", 0, &"Add2"]
 
 [node name="GDbotSkin" type="Node3D"]
 script = ExtResource("1_dt082")
@@ -2665,19 +2657,19 @@ script = ExtResource("1_dt082")
 [node name="gdbot" parent="." instance=ExtResource("1_no8yw")]
 
 [node name="Skeleton3D" parent="gdbot/Armature" index="0"]
-bones/2/position = Vector3(-0.0159358, 1.39315e-09, 0.517105)
-bones/2/rotation = Quaternion(-0.0678216, 0.70502, 0.703847, -0.0542868)
-bones/3/rotation = Quaternion(1, 6.11673e-10, -7.43618e-08, -9.74707e-12)
-bones/4/rotation = Quaternion(-0.274998, -0.0631711, -0.0572004, 0.95766)
-bones/5/rotation = Quaternion(0.362339, 5.62829e-08, -9.63654e-08, 0.932046)
-bones/7/rotation = Quaternion(-0.0572371, 0.28021, 0.123469, 0.950243)
-bones/8/rotation = Quaternion(0.244884, -5.1495e-08, 7.28422e-08, 0.969553)
-bones/10/rotation = Quaternion(-0.494364, -0.538769, -0.470866, 0.493576)
-bones/11/rotation = Quaternion(-2.10512e-09, 1.93392e-08, -0.317625, 0.948216)
+bones/2/position = Vector3(0.00994601, -8.69511e-10, 0.517031)
+bones/2/rotation = Quaternion(0.0428664, 0.706275, 0.705806, 0.0343005)
+bones/3/rotation = Quaternion(1, 1.77785e-12, -7.63155e-08, -3.56568e-11)
+bones/4/rotation = Quaternion(-0.190824, -0.21797, -0.114237, 0.950276)
+bones/5/rotation = Quaternion(0.320953, 5.68095e-08, -8.12249e-08, 0.947095)
+bones/7/rotation = Quaternion(-0.183186, 0.113517, 0.0878736, 0.97254)
+bones/8/rotation = Quaternion(0.352761, -6.68695e-08, 1.19656e-07, 0.935714)
+bones/10/rotation = Quaternion(-0.541513, -0.475286, -0.43803, 0.537584)
+bones/11/rotation = Quaternion(6.33432e-11, 2.16914e-08, -0.00175844, 0.999998)
 bones/13/rotation = Quaternion(0.0819346, 1.62373e-07, 6.18589e-09, 0.996638)
-bones/14/rotation = Quaternion(-0.0819168, -0.00170637, -0.020756, 0.996422)
-bones/16/rotation = Quaternion(-0.720099, -0.206912, -0.616655, 0.241622)
-bones/17/rotation = Quaternion(-2.03005e-08, 1.7989e-08, -0.370782, 0.92872)
+bones/14/rotation = Quaternion(-0.0819202, 0.00153683, 0.0186937, 0.996462)
+bones/16/rotation = Quaternion(-0.362118, -0.311101, -0.735239, -0.481156)
+bones/17/rotation = Quaternion(-0.0469922, -0.00499917, -0.077987, 0.995834)
 bones/19/rotation = Quaternion(-0.391114, -0.0079801, -0.00129221, 0.920307)
 bones/20/rotation = Quaternion(-0.277507, -2.52358e-07, -9.94341e-08, 0.960724)
 bones/21/rotation = Quaternion(-0.38504, -0.130181, 0.00239691, 0.913669)
@@ -2688,16 +2680,16 @@ bones/25/rotation = Quaternion(-0.386896, 0.0855178, -0.0227219, 0.917868)
 bones/26/rotation = Quaternion(-0.277506, -2.58292e-09, -9.82245e-08, 0.960724)
 bones/27/rotation = Quaternion(-0.293954, 0.794438, -0.105766, 0.520838)
 bones/28/rotation = Quaternion(-0.277506, -3.63708e-07, -5.31396e-07, 0.960724)
-bones/29/rotation = Quaternion(-0.720099, -0.206912, -0.616655, 0.241622)
-bones/30/rotation = Quaternion(-2.03005e-08, 1.7989e-08, -0.370782, 0.92872)
-bones/32/rotation = Quaternion(-0.0343675, 0.0690773, -0.44411, 0.892644)
-bones/33/rotation = Quaternion(-0.56214, 0.444589, 0.418164, 0.558102)
-bones/34/rotation = Quaternion(1.93913e-11, 5.24162e-09, 0.00175531, 0.999999)
-bones/37/rotation = Quaternion(-0.632187, 0.23706, 0.706502, 0.212124)
-bones/38/rotation = Quaternion(-1.19925e-09, 2.2468e-08, 0.456904, 0.889516)
+bones/29/rotation = Quaternion(-0.648665, -0.233715, -0.69019, 0.219654)
+bones/30/rotation = Quaternion(-1.59238e-08, 1.07847e-08, -0.441319, 0.89735)
+bones/32/rotation = Quaternion(0.0137324, -0.0277935, -0.442743, 0.896112)
+bones/33/rotation = Quaternion(-0.509062, 0.522224, 0.459886, 0.5066)
+bones/34/rotation = Quaternion(-3.20804e-09, 4.38632e-09, 0.262469, 0.96494)
+bones/37/rotation = Quaternion(-0.646856, -0.0339925, 0.761831, 0.00599861)
+bones/38/rotation = Quaternion(0.126977, -0.010998, 0.77186, 0.622887)
 bones/40/rotation = Quaternion(-0.391114, 0.00798011, 0.00129221, 0.920307)
 bones/41/rotation = Quaternion(-0.277507, 2.41907e-07, 1.20579e-07, 0.960724)
-bones/42/rotation = Quaternion(-0.38504, 0.130181, -0.00239688, 0.913669)
+bones/42/rotation = Quaternion(-0.38504, 0.130181, -0.00239689, 0.913669)
 bones/43/rotation = Quaternion(-0.277506, -6.4933e-07, 2.01537e-08, 0.960724)
 bones/44/rotation = Quaternion(-0.391124, -0.00407954, -0.000660702, 0.920329)
 bones/45/rotation = Quaternion(-0.277506, -6.01846e-07, -9.99273e-08, 0.960724)
@@ -2705,21 +2697,25 @@ bones/46/rotation = Quaternion(-0.386896, -0.0855178, 0.0227219, 0.917868)
 bones/47/rotation = Quaternion(-0.277506, -2.36655e-08, 1.00422e-07, 0.960724)
 bones/48/rotation = Quaternion(-0.293954, -0.794438, 0.105766, 0.520838)
 bones/49/rotation = Quaternion(-0.277506, 3.69605e-07, 5.06519e-07, 0.960724)
-bones/50/rotation = Quaternion(-0.632187, 0.23706, 0.706502, 0.212124)
-bones/51/rotation = Quaternion(-1.19925e-09, 2.2468e-08, 0.456904, 0.889516)
-bones/53/rotation = Quaternion(0.0246896, 0.0496251, 0.444753, 0.893937)
+bones/50/rotation = Quaternion(-0.704151, 0.214513, 0.633483, 0.238442)
+bones/51/rotation = Quaternion(1.66219e-09, 1.5086e-08, 0.386925, 0.922111)
+bones/53/rotation = Quaternion(-0.0233691, -0.0472983, 0.44234, 0.895295)
 bones/54/position = Vector3(-0.174585, 0.00406308, 0.113821)
 bones/54/rotation = Quaternion(0, 0, 0.147009, 0.989135)
+bones/55/position = Vector3(0, -1.49012e-08, 0)
 bones/56/rotation = Quaternion(0, 0, 1, 0)
 bones/58/position = Vector3(0.171403, -0.051028, 0.113821)
 bones/58/rotation = Quaternion(0, 0, -0.15168, 0.98843)
-bones/59/position = Vector3(-8.00997e-08, 3.63233e-08, 3.18103e-07)
+bones/59/position = Vector3(-3.80919e-08, 1.09979e-08, 1.49704e-07)
 bones/60/rotation = Quaternion(0, 0, 1, 0)
 
-[node name="gdbot_mesh" parent="gdbot/Armature/Skeleton3D" index="0"]
-surface_material_override/1 = SubResource("ShaderMaterial_2nj81")
-surface_material_override/2 = ExtResource("3_b5fb6")
-surface_material_override/3 = ExtResource("4_jt2os")
+[node name="BoneAttachment3D" type="BoneAttachment3D" parent="gdbot/Armature/Skeleton3D" index="1"]
+transform = Transform3D(-0.14745, -0.0992768, -0.984075, -0.977767, 0.164615, 0.129898, 0.149097, 0.981349, -0.121342, -0.190219, 0.594623, -0.0286288)
+bone_name = "lowerarm.R"
+bone_idx = 38
+
+[node name="gun" parent="gdbot/Armature/Skeleton3D/BoneAttachment3D" instance=ExtResource("6_e3h5y")]
+transform = Transform3D(-0.00045837, -0.00193781, 0.000186541, 0.000109637, 0.000165643, 0.00199011, -0.00194368, 0.00046633, 6.82644e-05, 0, 0.51, -0.045)
 
 [node name="AnimationPlayer" parent="gdbot" index="1"]
 libraries = {
@@ -2728,12 +2724,16 @@ libraries = {
 }
 
 [node name="AnimationTree" type="AnimationTree" parent="."]
+root_node = NodePath("../gdbot")
+libraries = {
+"": SubResource("AnimationLibrary_n4s66"),
+"custom_lib": ExtResource("6_dcd8b")
+}
 tree_root = SubResource("AnimationNodeBlendTree_q32ex")
 anim_player = NodePath("../gdbot/AnimationPlayer")
-active = true
 parameters/Add2/add_amount = 1.0
-parameters/StateMachine/playback = SubResource("AnimationNodeStateMachinePlayback_wvioj")
-parameters/StateMachine/Walk/blend_position = 0
+parameters/Blend2/blend_amount = 1.0
+parameters/StateMachine/Walk/blend_position = 0.0
 
 [node name="SubViewport" type="SubViewport" parent="."]
 disable_3d = true

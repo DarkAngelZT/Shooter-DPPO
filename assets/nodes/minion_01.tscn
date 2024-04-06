@@ -7,6 +7,6 @@
 albedo_texture = ExtResource("1_d4mxj")
 
 [node name="Minion01" type="MeshInstance3D"]
-transform = Transform3D(0.015, 0, 0, 0, 0.015, 0, 0, 0, 0.015, 0.268464, 0, -0.254514)
+transform = Transform3D(0.02, 0, 0, 0, 0.02, 0, 0, 0, 0.02, 0.268464, 0, -0.254514)
 material_override = SubResource("StandardMaterial3D_l5ds4")
 mesh = ExtResource("2_krlop")
