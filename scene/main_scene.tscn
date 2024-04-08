@@ -1,3 +1,36 @@
-[gd_scene format=3 uid="uid://dpk7pwe2sp58r"]
+[gd_scene load_steps=5 format=3 uid="uid://dpk7pwe2sp58r"]
+
+[ext_resource type="Script" path="res://scripts/GameManager.gd" id="1_xmjsa"]
+[ext_resource type="PackedScene" uid="uid://jxsgncw3xmlp" path="res://assets/nodes/player.tscn" id="2_uuajh"]
+[ext_resource type="PackedScene" uid="uid://bk8qmcyoll7su" path="res://assets/nodes/minion_01.tscn" id="3_ah63e"]
+[ext_resource type="PackedScene" uid="uid://b57j43s2lo4ei" path="res://scene/training_field.tscn" id="4_oykhi"]
 
 [node name="SceneRoot" type="Node3D"]
+
+[node name="GameManager" type="Node" parent="." node_paths=PackedStringArray("TraningRoot", "ArenaRoot", "train_camera")]
+process_mode = 4
+editor_description = "场景管理器"
+script = ExtResource("1_xmjsa")
+TraningRoot = NodePath("../TrainingRoot")
+ArenaRoot = NodePath("../Arena")
+player_prefab = ExtResource("2_uuajh")
+enemy_prefab = ExtResource("3_ah63e")
+training_field_prefab = ExtResource("4_oykhi")
+train_camera = NodePath("../TrainingCamera")
+game_mode = 2
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.875118, 0.465046, -0.133789, 0, 0.276476, 0.961021, 0.483909, -0.841007, 0.241949, 0, 4.66107, 0)
+
+[node name="TrainingRoot" type="Node3D" parent="."]
+
+[node name="Arena" type="Node3D" parent="."]
+
+[node name="TrainingCamera" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 17.689, 0)
+
+[node name="Camera3D" type="Camera3D" parent="TrainingCamera"]
+transform = Transform3D(1, 0, 0, 0, 0.258819, 0.965926, 0, -0.965926, 0.258819, 0, 0, 0)
+
+[node name="TrainingField" parent="." instance=ExtResource("4_oykhi")]
+visible = false

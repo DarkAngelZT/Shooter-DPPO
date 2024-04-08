@@ -4,10 +4,11 @@ const Op_Stop:int = 0
 const Op_Move:int = 1
 
 class PlayerInputState:
+	var field_id:int = 0
 	var direction : Vector2 = Vector2.UP
 	var move_state: int = Op_Stop
 
-class AtorState:
+class ActorState:
 	var field_id:int = 0
 	var actor_id:int = 0
 	var hp:int = 100
@@ -17,7 +18,7 @@ class AtorState:
 	var move_dir:Vector2 = Vector2.UP
 	
 
-static var game_end
-static var player_input:PlayerInputState
-
+static var game_end = {} #{field_id:true/false}
+static var player_input = {} #{field_id:PlayerInputState}
+static var actor_info = {} #{field_id:{actor_id:ActorState}}
 

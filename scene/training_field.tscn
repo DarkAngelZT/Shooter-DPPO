@@ -1,8 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://b57j43s2lo4ei"]
+[gd_scene load_steps=8 format=3 uid="uid://b57j43s2lo4ei"]
 
+[ext_resource type="Script" path="res://scripts/TrainingField.gd" id="1_btx8r"]
 [ext_resource type="Texture2D" uid="uid://chw5jrxrjb5go" path="res://assets/textures/glowblock.png" id="1_lhxma"]
-[ext_resource type="PackedScene" uid="uid://bk8qmcyoll7su" path="res://assets/nodes/minion_01.tscn" id="2_masal"]
-[ext_resource type="PackedScene" uid="uid://jxsgncw3xmlp" path="res://assets/nodes/player.tscn" id="3_i88pc"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6fmic"]
 size = Vector3(30, 0.5, 30)
@@ -18,7 +17,9 @@ size = Vector3(32, 2, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_v537c"]
 
-[node name="TrainingField" type="Node3D"]
+[node name="TrainingField" type="Node3D" node_paths=PackedStringArray("player_spawn")]
+script = ExtResource("1_btx8r")
+player_spawn = NodePath("PlayerSpawn")
 
 [node name="Floor" type="StaticBody3D" parent="."]
 disable_mode = 1
@@ -30,15 +31,6 @@ shape = SubResource("BoxShape3D_6fmic")
 transform = Transform3D(30, 0, 0, 0, 0.5, 0, 0, 0, 30, 0, 0, 0)
 material_override = SubResource("StandardMaterial3D_ux68f")
 mesh = SubResource("BoxMesh_ad0uq")
-
-[node name="Minion01" parent="." instance=ExtResource("2_masal")]
-transform = Transform3D(0.02, 0, 0, 0, 0.02, 0, 0, 0, 0.02, -11.4594, 0.342421, -8.64074)
-
-[node name="Player" parent="." instance=ExtResource("3_i88pc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.782, 0.3, 0)
-
-[node name="PlayerSpawn" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
 
 [node name="Wall" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.798338, 15.5077)
@@ -79,3 +71,6 @@ shape = SubResource("BoxShape3D_usrdh")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Wall4"]
 transform = Transform3D(32, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_v537c")
+
+[node name="PlayerSpawn" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)

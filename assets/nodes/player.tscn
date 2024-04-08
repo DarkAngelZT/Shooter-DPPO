@@ -1,17 +1,18 @@
-[gd_scene load_steps=3 format=3 uid="uid://jxsgncw3xmlp"]
+[gd_scene load_steps=4 format=3 uid="uid://jxsgncw3xmlp"]
 
 [ext_resource type="PackedScene" uid="uid://bdyptm7smjixm" path="res://assets/models/gdbot/gdbot_skin.tscn" id="1_8x5t2"]
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_mysnp"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_l0agu"]
 radius = 0.35
 height = 1.656
 
-[node name="Player" type="Node3D"]
+[node name="CharacterBody3D" type="CharacterBody3D" node_paths=PackedStringArray("character_mesh")]
+script = ExtResource("1_mysnp")
+character_mesh = NodePath("GDbotSkin2")
 
-[node name="CharacterBody3D" type="CharacterBody3D" parent="."]
+[node name="GDbotSkin2" parent="." instance=ExtResource("1_8x5t2")]
 
-[node name="GDbotSkin" parent="CharacterBody3D" instance=ExtResource("1_8x5t2")]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.863245, 0)
 shape = SubResource("CapsuleShape3D_l0agu")
