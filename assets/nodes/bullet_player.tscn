@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://cjys1bvgi76no"]
+
+[ext_resource type="Texture2D" uid="uid://bj3hsnlk2rmhr" path="res://sprites/bullet09.png" id="1_dr42w"]
+
+[node name="bullet_player" type="Node3D"]
+
+[node name="bullet_sprite" type="Sprite3D" parent="."]
+transform = Transform3D(-4.37114e-08, -1, 4.37114e-08, 0, -4.37114e-08, -1, 1, -4.37114e-08, 1.91069e-15, 0, 0, 0)
+texture = ExtResource("1_dr42w")
+region_enabled = true
+region_rect = Rect2(28.8784, 33.7631, 62.7207, 48.1178)

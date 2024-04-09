@@ -13,17 +13,18 @@ var shoot_pos:Node3D
 var move_speed:float = 5
 
 var can_shoot:bool = false
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
-
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pass
 
 func shoot():
-	pass
+	if can_shoot:
+		can_shoot = false
 
 func _physics_process(delta):
 	if GameData.actor_info[player_id].hp<=0:
