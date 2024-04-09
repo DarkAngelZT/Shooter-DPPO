@@ -7,6 +7,11 @@ class PlayerInputState:
 	var field_id:int = 0
 	var direction : Vector2 = Vector2.UP
 	var move_state: int = Op_Stop
+	
+	func _init(id=0,dir=Vector2.UP,op_state=Op_Stop):
+		field_id = id
+		direction = dir
+		move_state = op_state
 
 class ActorState:
 	var field_id:int = 0
@@ -16,6 +21,10 @@ class ActorState:
 	var can_shoot:bool = true
 	var direction:Vector2 = Vector2.UP
 	var move_dir:Vector2 = Vector2.UP
+	
+	func _init(fid=0,aid=0):
+		field_id = fid
+		actor_id = aid
 	
 
 static var game_end = {} #{field_id:true/false}
