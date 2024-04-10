@@ -1,4 +1,5 @@
-extends CharacterBody3D
+class_name Player
+extends CharacterBase
 
 @export
 var player_id:int
@@ -7,24 +8,17 @@ var player_id:int
 var character_mesh:Node3D
 
 @export
-var shoot_pos:Node3D
-
-@export
-var move_speed:float = 5
-
-var can_shoot:bool = false
+var damage:int
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	move_speed = GameManager.instance.game_settings.player_move_speed
+	health = GameManager.instance.game_settings.player_health
+	damage = GameManager.instance.game_settings.bullet_damage
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	pass
-
-func shoot():
-	if can_shoot:
-		can_shoot = false
+	super._process(delta)
 
 func _physics_process(delta):
 	if GameData.actor_info[player_id].hp<=0:
@@ -44,3 +38,15 @@ func _physics_process(delta):
 		elif input.move_state == GameData.Op_Stop:
 			velocity = Vector3.ZERO
 			character_mesh.idle()
+	
+	if input.shooting:
+		shoot()
+		
+func die():
+	#effect
+	#destroy
+	queue_free()
+	
+func on_bullet_hit(other):
+	if other is Mob:
+		other.take_damage(damage)

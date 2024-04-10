@@ -1,3 +1,4 @@
+class_name MobSpanwer
 extends Marker3D
 
 @export
@@ -40,12 +41,15 @@ func spawn():
 func do_spawn():
 	var game_mgr = GameManager.instance
 	if game_mgr != null:
-		pass
+		var pos = Vector3(randf_range(-size.x+1,size.x-1),0.3,randf_range(-size.y+1,size.y-1))
+		pos += global_position
+		var mob = game_mgr.spawn_monster(self,pos)
 
-func on_mob_dead():
+func on_mob_dead(mob):
 	monster_amount -= 1
 	if monster_amount<0:
 		monster_amount = 0
+	mob.queue_free()
 		
 func reset():
 	can_spawn = true

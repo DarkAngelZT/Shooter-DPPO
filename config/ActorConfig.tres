@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="GameSettings" load_steps=2 format=3 uid="uid://6hj7ugufsvop"]
+
+[ext_resource type="Script" path="res://scripts/GameSettings.gd" id="1_03cka"]
+
+[resource]
+script = ExtResource("1_03cka")
+bullet_speed = 20.0
+bullet_damage = 1
+player_move_speed = 5.0
+player_health = 10
+monster_move_speed = 5.0
+monster_health = 3

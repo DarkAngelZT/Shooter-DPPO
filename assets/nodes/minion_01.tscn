@@ -1,12 +1,29 @@
-[gd_scene load_steps=4 format=3 uid="uid://bk8qmcyoll7su"]
+[gd_scene load_steps=6 format=3 uid="uid://bk8qmcyoll7su"]
 
+[ext_resource type="Script" path="res://scripts/Mob.gd" id="1_6pc4g"]
 [ext_resource type="Texture2D" uid="uid://ryq3wpd24ber" path="res://assets/models/minion.png" id="1_d4mxj"]
 [ext_resource type="ArrayMesh" uid="uid://bvgb0tarixb3r" path="res://assets/models/minion_01.obj" id="2_krlop"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l5ds4"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3getq"]
 albedo_texture = ExtResource("1_d4mxj")
 
-[node name="Minion01" type="MeshInstance3D"]
-transform = Transform3D(0.02, 0, 0, 0, 0.02, 0, 0, 0, 0.02, 0.268464, 0, -0.254514)
-material_override = SubResource("StandardMaterial3D_l5ds4")
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_xr2fo"]
+radius = 0.55
+height = 1.6
+
+[node name="CharacterBase" type="CharacterBody3D"]
+collision_layer = 4
+collision_mask = 3
+script = ExtResource("1_6pc4g")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.018, 0, 0, 0, 0.018, 0, 0, 0, 0.018, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_3getq")
 mesh = ExtResource("2_krlop")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+shape = SubResource("CapsuleShape3D_xr2fo")
+
+[node name="Marker3D" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.263543, 0.763776, 1.56018)

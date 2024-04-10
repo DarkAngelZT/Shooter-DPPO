@@ -7,12 +7,18 @@
 radius = 0.35
 height = 1.656
 
-[node name="CharacterBody3D" type="CharacterBody3D" node_paths=PackedStringArray("character_mesh")]
+[node name="CharacterBody3D" type="CharacterBody3D" node_paths=PackedStringArray("character_mesh", "shoot_position")]
+collision_layer = 2
+collision_mask = 7
 script = ExtResource("1_ivcu5")
-character_mesh = NodePath("GDbotSkin2")
+character_mesh = NodePath("GDbotSkin")
+shoot_position = NodePath("ShootPos")
 
-[node name="GDbotSkin2" parent="." instance=ExtResource("1_8x5t2")]
+[node name="GDbotSkin" parent="." instance=ExtResource("1_8x5t2")]
 
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.863245, 0)
 shape = SubResource("CapsuleShape3D_l0agu")
+
+[node name="ShootPos" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.02682, 1.35094)

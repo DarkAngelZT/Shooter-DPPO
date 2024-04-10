@@ -2,7 +2,13 @@ extends Node3D
 
 @export
 var player_spawn:Node3D
+@export
+var mob_spawner=[]
 
+var player:Node3D
+
+func reset():
+	pass
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
