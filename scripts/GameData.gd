@@ -18,7 +18,6 @@ class ActorState:
 	var field_id:int = 0
 	var actor_id:int = 0
 	var hp:int = 100
-	var alive:bool = true
 	var can_shoot:bool = true
 	var direction:Vector2 = Vector2.UP
 	var move_dir:Vector2 = Vector2.UP

@@ -11,7 +11,7 @@ var direction:Vector3
 var space_state
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	speed = GameManager.instance.game_setting.bullet_speed
+	speed = GameManager.instance.game_settings.bullet_speed
 	space_state = get_world_3d().direct_space_state
 
 func _physics_process(delta):

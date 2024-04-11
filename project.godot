@@ -10,7 +10,8 @@ config_version=5
 
 [application]
 
-config/name="Dppo"
+config/name="DPPO"
+run/main_scene="res://scene/main_scene.tscn"
 config/features=PackedStringArray("4.2", "GL Compatibility")
 config/icon="res://icon.svg"
 

@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://bk8qmcyoll7su"]
+[gd_scene load_steps=7 format=3 uid="uid://bk8qmcyoll7su"]
 
 [ext_resource type="Script" path="res://scripts/Mob.gd" id="1_6pc4g"]
 [ext_resource type="Texture2D" uid="uid://ryq3wpd24ber" path="res://assets/models/minion.png" id="1_d4mxj"]
 [ext_resource type="ArrayMesh" uid="uid://bvgb0tarixb3r" path="res://assets/models/minion_01.obj" id="2_krlop"]
+[ext_resource type="PackedScene" uid="uid://c0cxbuuij7fv6" path="res://assets/nodes/bullet_mob.tscn" id="2_kx61h"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3getq"]
 albedo_texture = ExtResource("1_d4mxj")
@@ -11,13 +12,15 @@ albedo_texture = ExtResource("1_d4mxj")
 radius = 0.55
 height = 1.6
 
-[node name="CharacterBase" type="CharacterBody3D"]
+[node name="CharacterBase" type="CharacterBody3D" node_paths=PackedStringArray("shoot_position")]
 collision_layer = 4
 collision_mask = 3
 script = ExtResource("1_6pc4g")
+bullet_prefab = ExtResource("2_kx61h")
+shoot_position = NodePath("ShootPos")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.018, 0, 0, 0, 0.018, 0, 0, 0, 0.018, 0, 0, 0)
+transform = Transform3D(-0.018, 0, -1.57361e-09, 0, 0.018, 0, 1.57361e-09, 0, -0.018, 0, 0, 0)
 material_override = SubResource("StandardMaterial3D_3getq")
 mesh = ExtResource("2_krlop")
 
@@ -25,5 +28,5 @@ mesh = ExtResource("2_krlop")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
 shape = SubResource("CapsuleShape3D_xr2fo")
 
-[node name="Marker3D" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.263543, 0.763776, 1.56018)
+[node name="ShootPos" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.208008, 0.763776, -1.63695)

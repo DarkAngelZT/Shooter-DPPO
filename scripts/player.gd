@@ -2,9 +2,6 @@ class_name Player
 extends CharacterBase
 
 @export
-var player_id:int
-
-@export
 var character_mesh:Node3D
 
 @export
@@ -21,22 +18,24 @@ func _process(delta):
 	super._process(delta)
 
 func _physics_process(delta):
-	if GameData.actor_info[player_id].hp<=0:
+	if GameData.actor_info[field_id][id].hp<=0:
 		return
-	var input = GameData.player_input[player_id]
+	var input = GameData.player_input[id]
 	if is_instance_valid(input):
 		var direction = Vector3.ZERO
 		direction.z = input.direction.y
 		direction.x = input.direction.x
-		character_mesh.basis = Basis.looking_at(direction)
+		basis = Basis.looking_at(direction)
 		
 		if input.move_state == GameData.Op_Move:
 			var speed = direction * move_speed
 			velocity = speed
 			character_mesh.walk()
 			move_and_slide()
+			GameData.actor_info[field_id][id].move_dir=Vector2(direction.x,direction.z)
 		elif input.move_state == GameData.Op_Stop:
 			velocity = Vector3.ZERO
+			GameData.actor_info[field_id][id].move_dir=Vector2.ZERO
 			character_mesh.idle()
 	
 	if input.shooting:

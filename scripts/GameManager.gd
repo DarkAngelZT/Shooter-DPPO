@@ -16,10 +16,16 @@ enum ControlMode{
 var field_amount:int = 1
 
 @export
+var training_field_size:float = 32
+
+@export
 var TraningRoot:Node3D
 
 @export
 var ArenaRoot:Node3D
+
+@export
+var root:Node3D
 
 @export
 var player_prefab: PackedScene
@@ -29,6 +35,9 @@ var enemy_prefab:PackedScene
 
 @export
 var training_field_prefab:PackedScene
+
+@export
+var arena_prefab:PackedScene
 
 @export
 var game_settings:GameSettings
@@ -56,9 +65,12 @@ func _ready():
 	
 	if control_mode == ControlMode.Manual or game_mode == GameMode.Play:
 		create_game_data(1)
+		load_arena()
+		
 	elif game_mode == GameMode.Train:
 		for x in range(field_amount):
 			create_game_data(x)
+		initialize_training_fields()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -72,7 +84,7 @@ func create_game_data(amount):
 
 func _physics_process(delta):
 	if control_mode == ControlMode.Manual:
-		var dir = Input.get_vector("move_right","move_left","move_forward","move_back")
+		var dir = Input.get_vector("move_left","move_right","move_forward","move_back")
 		
 		var moving = dir.length() > 0
 		if moving:
@@ -84,10 +96,33 @@ func _physics_process(delta):
 		var shooting = Input.is_action_pressed("shoot")
 		GameData.player_input[0].shooting = shooting
 
-func load_field(center):
+func load_trainning_field(center):
 	var field = training_field_prefab.instantiate()
 	field.position = center
 	return field
+	
+func load_arena():
+	var field = arena_prefab.instantiate()
+	field.position = ArenaRoot.position
+	field.id = 0
+	ArenaRoot.add_child(field)
+	field.init(0)
+	return field
+	
+func initialize_training_fields():
+	var col:int =1
+	var row:int =1
+	col = ceili(sqrt(field_amount))
+	row = field_amount/col
+	var start_x = col/2*training_field_size
+	var start_y = row/2*training_field_size
+	var id_counter = 1
+	for r in range(row):
+		for c in range(col):
+			var center = Vector3((start_x+training_field_size+2)*r,0,(start_y-training_field_size+2)*c)
+			var field = load_trainning_field(center)
+			field.init(id_counter)
+			id_counter += 1
 
 func reset_field(field_id):
 	if training_fields.has(field_id):

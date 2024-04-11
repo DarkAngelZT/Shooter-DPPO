@@ -74,3 +74,4 @@ mesh = SubResource("BoxMesh_v537c")
 
 [node name="PlayerSpawn" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+gizmo_extents = 1.22
