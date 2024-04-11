@@ -1,5 +1,5 @@
 class_name MobSpanwer
-extends Marker3D
+extends Node3D
 
 signal on_monster_dead
 signal  on_monster_spawn
@@ -21,7 +21,7 @@ var can_spawn:bool = true
 
 var id_counter:int = 100
 
-var last_spawn_time:int = 0
+var next_spawn_time:int = 0
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	size_cube.visible = false
@@ -33,9 +33,9 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if can_spawn:
-		if Time.get_ticks_msec() - last_spawn_time >= spawn_time_sec*1000:
+		if Time.get_ticks_msec() > next_spawn_time:
 			spawn()
-			last_spawn_time = Time.get_ticks_msec()
+			next_spawn_time = Time.get_ticks_msec() + randi_range(1.5, spawn_time_sec*1000)
 	
 func spawn():
 	if not can_spawn:
@@ -54,8 +54,8 @@ func assign_id(mob):
 func do_spawn():
 	var game_mgr = GameManager.instance
 	if game_mgr != null:
-		var pos = Vector3(randf_range(-size.x+1,size.x-1),0.3,randf_range(-size.y+1,size.y-1))
-		pos += global_position
+		var pos = Vector3(randf_range(-size.x*0.5+1,size.x*0.5-1),0,randf_range(-size.y*0.5+1,size.y*0.5-1))
+		pos += position
 		var mob = game_mgr.spawn_monster(self,pos)
 		mob.spawner = self
 		assign_id(mob)
@@ -68,7 +68,6 @@ func on_mob_dead(mob):
 	if monster_amount<spawn_limit:
 		can_spawn = true
 	on_monster_dead.emit(mob)
-	mob.queue_free()
 		
 func reset():
 	can_spawn = true

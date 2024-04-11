@@ -30,9 +30,12 @@ var is_dead:bool = false
 
 func set_can_shoot(v):
 	can_shoot = v
-	GameData.actor_info[field_id][id].can_shoot = v
+	if GameData.actor_info[field_id].has(id):
+		GameData.actor_info[field_id][id].can_shoot = v
 
 func _process(delta):
+	if is_dead:
+		return
 	var now = Time.get_ticks_msec()
 	if now - last_shoot_time > shoot_interval_sec*1000:
 		set_can_shoot(true)

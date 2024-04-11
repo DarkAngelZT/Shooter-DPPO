@@ -132,14 +132,14 @@ func reset_field(field_id):
 func spawn_player(scene_root, position, rotation=Quaternion.IDENTITY):
 	var player = player_prefab.instantiate()
 	scene_root.add_child(player)
-	player.position = position
+	player.global_position = position
 	player.basis = Basis(rotation)
 	return player
 	
 func spawn_monster(scene_root, position, rotation=Quaternion.IDENTITY):
 	var mob = enemy_prefab.instantiate()
 	scene_root.add_child(mob)
-	mob.position = position
+	mob.global_position = position
 	mob.basis = Basis(rotation)
 	return mob
 

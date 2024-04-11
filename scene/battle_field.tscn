@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://ffo7w3oxk7p1"]
+[gd_scene load_steps=12 format=3 uid="uid://ffo7w3oxk7p1"]
 
 [ext_resource type="Script" path="res://scripts/TrainingField.gd" id="1_j83sw"]
 [ext_resource type="Texture2D" uid="uid://chw5jrxrjb5go" path="res://assets/textures/glowblock.png" id="2_ovxd5"]
+[ext_resource type="PackedScene" uid="uid://xwlx0mo2yvbp" path="res://scene/Spawner.tscn" id="3_4uyi1"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6fmic"]
 size = Vector3(50, 0.5, 50)
@@ -11,15 +12,27 @@ albedo_texture = ExtResource("2_ovxd5")
 uv1_scale = Vector3(30, 30, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_ad0uq"]
+size = Vector3(50, 0.5, 50)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_usrdh"]
 size = Vector3(52, 2, 1)
 
-[sub_resource type="BoxMesh" id="BoxMesh_v537c"]
+[sub_resource type="BoxMesh" id="BoxMesh_ecaum"]
+size = Vector3(52, 2, 1)
 
-[node name="BattleField" type="Node3D" node_paths=PackedStringArray("player_spawn")]
+[sub_resource type="BoxMesh" id="BoxMesh_jeyrl"]
+size = Vector3(52, 2, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_djhd6"]
+size = Vector3(52, 2, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_2sr40"]
+size = Vector3(52, 2, 1)
+
+[node name="BattleField" type="Node3D" node_paths=PackedStringArray("player_spawn", "mob_spawner")]
 script = ExtResource("1_j83sw")
 player_spawn = NodePath("PlayerSpawn")
+mob_spawner = [NodePath("Spawner"), NodePath("Spawner2"), NodePath("Spawner3"), NodePath("Spawner4")]
 
 [node name="Floor" type="StaticBody3D" parent="."]
 disable_mode = 1
@@ -28,7 +41,6 @@ disable_mode = 1
 shape = SubResource("BoxShape3D_6fmic")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Floor"]
-transform = Transform3D(50, 0, 0, 0, 0.833, 0, 0, 0, 50, 0, 0, 0)
 material_override = SubResource("StandardMaterial3D_ux68f")
 mesh = SubResource("BoxMesh_ad0uq")
 
@@ -39,8 +51,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.798338, 25.0112)
 shape = SubResource("BoxShape3D_usrdh")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Wall"]
-transform = Transform3D(52, 0, 0, 0, 3.25, 0, 0, 0, 1.625, 0, 0, 0)
-mesh = SubResource("BoxMesh_v537c")
+mesh = SubResource("BoxMesh_ecaum")
 
 [node name="Wall2" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.798338, -25.4707)
@@ -49,8 +60,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.798338, -25.4707)
 shape = SubResource("BoxShape3D_usrdh")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Wall2"]
-transform = Transform3D(52, 0, 0, 0, 3.25, 0, 0, 0, 1.625, 0, 0, 0)
-mesh = SubResource("BoxMesh_v537c")
+mesh = SubResource("BoxMesh_jeyrl")
 
 [node name="Wall3" type="StaticBody3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 25.3766, 0.798338, 0.0835881)
@@ -59,8 +69,7 @@ transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 25.376
 shape = SubResource("BoxShape3D_usrdh")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Wall3"]
-transform = Transform3D(52, 0, 0, 0, 3.25, 0, 0, 0, 1.625, 0, 0, 0)
-mesh = SubResource("BoxMesh_v537c")
+mesh = SubResource("BoxMesh_djhd6")
 
 [node name="Wall4" type="StaticBody3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -25.0858, 0.798338, 0.0835881)
@@ -69,9 +78,41 @@ transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -25.08
 shape = SubResource("BoxShape3D_usrdh")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Wall4"]
-transform = Transform3D(52, 0, 0, 0, 3.25, 0, 0, 0, 1.625, 0, 0, 0)
-mesh = SubResource("BoxMesh_v537c")
+mesh = SubResource("BoxMesh_2sr40")
 
 [node name="PlayerSpawn" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
 gizmo_extents = 1.22
+
+[node name="Spawner" parent="." instance=ExtResource("3_4uyi1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 22.4478)
+spawn_time_sec = 3.0
+
+[node name="MeshInstance3D" parent="Spawner" index="0"]
+transform = Transform3D(40, 0, 0, 0, 1, 0, 0, 0, 3, 0, 0.496, 0)
+
+[node name="Spawner2" parent="." instance=ExtResource("3_4uyi1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.454, 0.3, -23.332)
+spawn_time_sec = 3.0
+
+[node name="MeshInstance3D" parent="Spawner2" index="0"]
+transform = Transform3D(40, 0, 0, 0, 1, 0, 0, 0, 3, 0, 0.4, 0)
+
+[node name="Spawner3" parent="." instance=ExtResource("3_4uyi1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.482, 0.3, 0)
+spawn_time_sec = 3.0
+
+[node name="MeshInstance3D" parent="Spawner3" index="0"]
+transform = Transform3D(3, 0, 0, 0, 1, 0, 0, 0, 40, 0, 0.496, 0)
+
+[node name="Spawner4" parent="." instance=ExtResource("3_4uyi1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.562, 0.3, 0)
+spawn_time_sec = 3.0
+
+[node name="MeshInstance3D" parent="Spawner4" index="0"]
+transform = Transform3D(3, 0, 0, 0, 1, 0, 0, 0, 40, 0, 0.6843, 0)
+
+[editable path="Spawner"]
+[editable path="Spawner2"]
+[editable path="Spawner3"]
+[editable path="Spawner4"]

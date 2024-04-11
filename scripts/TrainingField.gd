@@ -6,7 +6,7 @@ var id:int
 @export
 var player_spawn:Node3D
 @export
-var mob_spawner=[]
+var mob_spawner:Array[Node3D]
 
 var monsters = {}
 
