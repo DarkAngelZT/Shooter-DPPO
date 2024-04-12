@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/TrainingField.gd" id="1_j83sw"]
 [ext_resource type="Texture2D" uid="uid://chw5jrxrjb5go" path="res://assets/textures/glowblock.png" id="2_ovxd5"]
-[ext_resource type="PackedScene" uid="uid://xwlx0mo2yvbp" path="res://scene/Spawner.tscn" id="3_4uyi1"]
+[ext_resource type="PackedScene" uid="uid://xwlx0mo2yvbp" path="res://assets/nodes/Spawner.tscn" id="3_dkxkb"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6fmic"]
 size = Vector3(50, 0.5, 50)
@@ -84,30 +84,30 @@ mesh = SubResource("BoxMesh_2sr40")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
 gizmo_extents = 1.22
 
-[node name="Spawner" parent="." instance=ExtResource("3_4uyi1")]
+[node name="Spawner" parent="." instance=ExtResource("3_dkxkb")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 22.4478)
-spawn_time_sec = 3.0
+spawn_time_sec = 4.0
 
 [node name="MeshInstance3D" parent="Spawner" index="0"]
 transform = Transform3D(40, 0, 0, 0, 1, 0, 0, 0, 3, 0, 0.496, 0)
 
-[node name="Spawner2" parent="." instance=ExtResource("3_4uyi1")]
+[node name="Spawner2" parent="." instance=ExtResource("3_dkxkb")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.454, 0.3, -23.332)
-spawn_time_sec = 3.0
+spawn_time_sec = 3.5
 
 [node name="MeshInstance3D" parent="Spawner2" index="0"]
 transform = Transform3D(40, 0, 0, 0, 1, 0, 0, 0, 3, 0, 0.4, 0)
 
-[node name="Spawner3" parent="." instance=ExtResource("3_4uyi1")]
+[node name="Spawner3" parent="." instance=ExtResource("3_dkxkb")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22.482, 0.3, 0)
-spawn_time_sec = 3.0
+spawn_time_sec = 4.0
 
 [node name="MeshInstance3D" parent="Spawner3" index="0"]
 transform = Transform3D(3, 0, 0, 0, 1, 0, 0, 0, 40, 0, 0.496, 0)
 
-[node name="Spawner4" parent="." instance=ExtResource("3_4uyi1")]
+[node name="Spawner4" parent="." instance=ExtResource("3_dkxkb")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.562, 0.3, 0)
-spawn_time_sec = 3.0
+spawn_time_sec = 3.5
 
 [node name="MeshInstance3D" parent="Spawner4" index="0"]
 transform = Transform3D(3, 0, 0, 0, 1, 0, 0, 0, 40, 0, 0.6843, 0)

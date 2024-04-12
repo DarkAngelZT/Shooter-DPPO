@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://b57j43s2lo4ei"]
+[gd_scene load_steps=9 format=3 uid="uid://b57j43s2lo4ei"]
 
 [ext_resource type="Script" path="res://scripts/TrainingField.gd" id="1_btx8r"]
 [ext_resource type="Texture2D" uid="uid://chw5jrxrjb5go" path="res://assets/textures/glowblock.png" id="1_lhxma"]
+[ext_resource type="PackedScene" uid="uid://xwlx0mo2yvbp" path="res://assets/nodes/Spawner.tscn" id="3_2l37y"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6fmic"]
 size = Vector3(30, 0.5, 30)
@@ -17,9 +18,10 @@ size = Vector3(32, 2, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_v537c"]
 
-[node name="TrainingField" type="Node3D" node_paths=PackedStringArray("player_spawn")]
+[node name="TrainingField" type="Node3D" node_paths=PackedStringArray("player_spawn", "mob_spawner")]
 script = ExtResource("1_btx8r")
 player_spawn = NodePath("PlayerSpawn")
+mob_spawner = [NodePath("Spawner"), NodePath("Spawner2"), NodePath("Spawner3"), NodePath("Spawner4")]
 
 [node name="Floor" type="StaticBody3D" parent="."]
 disable_mode = 1
@@ -74,3 +76,36 @@ mesh = SubResource("BoxMesh_v537c")
 
 [node name="PlayerSpawn" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+
+[node name="Spawner" parent="." instance=ExtResource("3_2l37y")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0428228, 0.3, 13.1137)
+spawn_time_sec = 4.0
+
+[node name="MeshInstance3D" parent="Spawner" index="0"]
+transform = Transform3D(27, 0, 0, 0, 1, 0, 0, 0, 3.5, 0, 0.495547, 0)
+
+[node name="Spawner2" parent="." instance=ExtResource("3_2l37y")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -12.9987)
+spawn_time_sec = 3.0
+
+[node name="MeshInstance3D" parent="Spawner2" index="0"]
+transform = Transform3D(27, 0, 0, 0, 1, 0, 0, 0, 3.5, 0, 0.495547, 0)
+
+[node name="Spawner3" parent="." instance=ExtResource("3_2l37y")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.5593, 0.3, 0.323344)
+spawn_time_sec = 4.0
+
+[node name="MeshInstance3D" parent="Spawner3" index="0"]
+transform = Transform3D(3.5, 0, 0, 0, 1, 0, 0, 0, 22, 0, 0.495547, 0)
+
+[node name="Spawner4" parent="." instance=ExtResource("3_2l37y")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.0068, 0.3, 0)
+spawn_time_sec = 3.5
+
+[node name="MeshInstance3D" parent="Spawner4" index="0"]
+transform = Transform3D(3.5, 0, 0, 0, 1, 0, 0, 0, 22, 0, 0.495547, 0)
+
+[editable path="Spawner"]
+[editable path="Spawner2"]
+[editable path="Spawner3"]
+[editable path="Spawner4"]

@@ -63,13 +63,12 @@ func _enter_tree():
 	
 func _ready():
 	
-	if control_mode == ControlMode.Manual or game_mode == GameMode.Play:
+	if game_mode == GameMode.Play:
 		create_game_data(1)
 		load_arena()
 		
 	elif game_mode == GameMode.Train:
-		for x in range(field_amount):
-			create_game_data(x)
+		create_game_data(field_amount)
 		initialize_training_fields()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -103,7 +102,7 @@ func load_trainning_field(center):
 	
 func load_arena():
 	var field = arena_prefab.instantiate()
-	field.position = ArenaRoot.position
+	field.global_position = ArenaRoot.position
 	field.id = 0
 	ArenaRoot.add_child(field)
 	field.init(0)
@@ -113,16 +112,21 @@ func initialize_training_fields():
 	var col:int =1
 	var row:int =1
 	col = ceili(sqrt(field_amount))
-	row = field_amount/col
-	var start_x = col/2*training_field_size
-	var start_y = row/2*training_field_size
-	var id_counter = 1
+	row = ceili(float(field_amount)/col)
+	var start_x = -col/2*training_field_size
+	var start_y = -row/2*training_field_size
+	var id_counter = 0
+	var amount = 0
 	for r in range(row):
 		for c in range(col):
-			var center = Vector3((start_x+training_field_size+2)*r,0,(start_y-training_field_size+2)*c)
+			var center = Vector3(start_x+(training_field_size+2)*c,0,start_y+(training_field_size+2)*r)
 			var field = load_trainning_field(center)
 			field.init(id_counter)
+			TraningRoot.add_child(field)
 			id_counter += 1
+			amount += 1
+			if amount == field_amount:
+				break
 
 func reset_field(field_id):
 	if training_fields.has(field_id):
@@ -139,7 +143,7 @@ func spawn_player(scene_root, position, rotation=Quaternion.IDENTITY):
 func spawn_monster(scene_root, position, rotation=Quaternion.IDENTITY):
 	var mob = enemy_prefab.instantiate()
 	scene_root.add_child(mob)
-	mob.global_position = position
+	mob.position = position
 	mob.basis = Basis(rotation)
 	return mob
 

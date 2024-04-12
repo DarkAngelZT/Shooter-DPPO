@@ -24,6 +24,7 @@ func reset():
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	for spawner in mob_spawner:
+		spawner.owner_field = self
 		spawner.on_monster_dead.connect(on_mob_dead)
 		spawner.on_monster_spawn.connect(on_monster_spawned)
 
@@ -32,6 +33,7 @@ func init(field_id):
 	player = GameManager.instance.spawn_player(self, player_spawn.global_position)
 	player.field_id = field_id
 	player.id = field_id
+	player.name = "Player_"+str(player.id)
 	var state = GameData.ActorState.new(field_id,player.id)
 	state.hp = GameManager.instance.game_settings.player_health
 	GameData.actor_info[field_id][player.id]=state
