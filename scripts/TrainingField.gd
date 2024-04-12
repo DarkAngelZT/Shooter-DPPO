@@ -1,6 +1,8 @@
 class_name TrainingField
 extends Node3D
 
+signal on_reset
+
 @export
 var id:int
 @export
@@ -21,6 +23,7 @@ func reset():
 	player.queue_free()
 	GameData.actor_info[id].clear()
 	init(id)
+	on_reset.emit(self)
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	for spawner in mob_spawner:
@@ -31,6 +34,7 @@ func _ready():
 func init(field_id):
 	id = field_id
 	player = GameManager.instance.spawn_player(self, player_spawn.global_position)
+	
 	player.field_id = field_id
 	player.id = field_id
 	player.name = "Player_"+str(player.id)

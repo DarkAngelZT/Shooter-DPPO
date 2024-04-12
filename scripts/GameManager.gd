@@ -66,10 +66,15 @@ func _ready():
 	if game_mode == GameMode.Play:
 		create_game_data(1)
 		load_arena()
+		train_camera.set_active(false)
+		game_camera.set_active(true)
 		
 	elif game_mode == GameMode.Train:
 		create_game_data(field_amount)
 		initialize_training_fields()
+		
+		train_camera.set_active(true)
+		game_camera.set_active(false)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -106,6 +111,7 @@ func load_arena():
 	field.id = 0
 	ArenaRoot.add_child(field)
 	field.init(0)
+	game_camera.target = field.player
 	return field
 	
 func initialize_training_fields():

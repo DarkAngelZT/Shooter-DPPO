@@ -1,6 +1,8 @@
 class_name NPlayer
 extends CharacterBase
 
+signal on_player_dead
+
 @export
 var character_mesh:Node3D
 
@@ -43,6 +45,7 @@ func _physics_process(delta):
 		
 func die():
 	#effect
+	on_player_dead.emit(self)
 	#destroy
 	queue_free()
 	
