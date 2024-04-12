@@ -19,8 +19,6 @@ var monster_amount:int = 0
 
 var can_spawn:bool = true
 
-var id_counter:int = 100
-
 var next_spawn_time:int = 0
 
 var owner_field:Node3D
@@ -49,9 +47,6 @@ func spawn():
 	if monster_amount >= spawn_limit:
 		can_spawn = false
 
-func assign_id(mob):
-	mob.id = id_counter
-	id_counter += 1
 
 func do_spawn():
 	var game_mgr = GameManager.instance
@@ -59,9 +54,7 @@ func do_spawn():
 		var pos = Vector3(randf_range(-size.x*0.5+0.5,size.x*0.5-0.5),0,randf_range(-size.y*0.5+0.5,size.y*0.5-0.5))
 		pos += position
 		var mob = game_mgr.spawn_monster(owner_field,pos)
-		mob.spawner = self
-		assign_id(mob)
-		mob.name = "Monster_"+str(mob.id)
+		mob.spawner = self		
 		on_monster_spawn.emit(mob)
 
 func on_mob_dead(mob):

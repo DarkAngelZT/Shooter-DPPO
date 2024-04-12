@@ -19,5 +19,5 @@ func die():
 	queue_free()
 
 func on_bullet_hit(other):
-	if other is NPlayer:
+	if other is Player:
 		other.take_damage(damage)

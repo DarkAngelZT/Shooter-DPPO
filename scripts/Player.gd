@@ -1,4 +1,4 @@
-class_name NPlayer
+class_name Player
 extends CharacterBase
 
 signal on_player_dead

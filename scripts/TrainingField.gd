@@ -14,6 +14,8 @@ var monsters = {}
 
 var player:Node3D
 
+var mob_id_counter:int = 100
+
 func reset():
 	for m in monsters.values():
 		m.queue_free()
@@ -49,6 +51,9 @@ func _process(delta):
 func on_monster_spawned(mob):
 	if is_instance_valid(mob):
 		mob.field_id = id
+		mob.id = mob_id_counter
+		mob_id_counter += 1
+		mob.name = "Monster_"+str(mob.id)
 		var state = GameData.ActorState.new(id,mob.id)
 		GameData.actor_info[id][mob.id]=state
 		monsters[mob.id] = mob
@@ -57,3 +62,4 @@ func on_mob_dead(mob):
 	if is_instance_valid(mob):
 		GameData.actor_info[id].erase(mob.id)
 		monsters.erase(mob.id)
+		mob.queue_free()
