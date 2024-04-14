@@ -65,7 +65,7 @@ func _ready():
 	
 	if game_mode == GameMode.Play:
 		create_game_data(1)
-		load_arena()
+		var field = load_arena()
 		train_camera.set_active(false)
 		game_camera.set_active(true)
 		
@@ -99,6 +99,15 @@ func _physics_process(delta):
 			
 		var shooting = Input.is_action_pressed("shoot")
 		GameData.player_input[0].shooting = shooting
+		#鼠标位置
+		var camera = get_viewport().get_camera_3d()
+		var cursor_pos = get_viewport().get_mouse_position()
+		var cursor_dist = camera.project_position(cursor_pos,50)
+		
+		var result_dir = cursor_dist - players[0].global_position
+		var aim_dir = Vector2(result_dir.x,result_dir.z)
+		aim_dir = aim_dir.normalized()
+		GameData.player_input[0].aim_direction = aim_dir
 
 func load_trainning_field(center):
 	var field = training_field_prefab.instantiate()
