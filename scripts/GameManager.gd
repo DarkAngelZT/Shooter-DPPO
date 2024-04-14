@@ -87,7 +87,7 @@ func create_game_data(amount):
 		GameData.actor_info[i]={}
 
 func _physics_process(delta):
-	if control_mode == ControlMode.Manual:
+	if control_mode == ControlMode.Manual and players.has(0):
 		var dir = Input.get_vector("move_left","move_right","move_forward","move_back")
 		
 		var moving = dir.length() > 0
@@ -119,8 +119,10 @@ func load_arena():
 	field.global_position = ArenaRoot.position
 	field.id = 0
 	ArenaRoot.add_child(field)
+	field.on_player_spawn.connect(on_player_spawn)
+	field.on_player_dead.connect(on_player_dead)
 	field.init(0)
-	game_camera.target = field.player
+	game_camera.target = field.player	
 	return field
 	
 func initialize_training_fields():
@@ -136,10 +138,14 @@ func initialize_training_fields():
 		for c in range(col):
 			var center = Vector3(start_x+(training_field_size+2)*c,0,start_y+(training_field_size+2)*r)
 			var field = load_trainning_field(center)
+			field.on_player_spawn.connect(on_player_spawn)
+			field.on_player_dead.connect(on_player_dead)
 			field.init(id_counter)
 			TraningRoot.add_child(field)
 			id_counter += 1
 			amount += 1
+			var p = field.player
+			players[p.id] = p			
 			if amount == field_amount:
 				break
 
@@ -161,4 +167,10 @@ func spawn_monster(scene_root, position, rotation=Quaternion.IDENTITY):
 	mob.position = position
 	mob.basis = Basis(rotation)
 	return mob
+	
+func on_player_spawn(player):
+	players[player.id] = player
+	
+func on_player_dead(player):
+	players.erase[player.id]
 

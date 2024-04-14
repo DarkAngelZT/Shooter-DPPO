@@ -27,7 +27,7 @@ func _physics_process(delta):
 		var direction = Vector3.ZERO
 		direction.z = input.direction.y
 		direction.x = input.direction.x
-		basis = Basis.looking_at(direction)
+		basis = Basis.looking_at(Vector3(input.aim_direction.x,0,input.aim_direction.y))
 		
 		if input.move_state == GameData.Op_Move:
 			var speed = direction * move_speed

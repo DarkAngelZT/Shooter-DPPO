@@ -2,6 +2,8 @@ class_name TrainingField
 extends Node3D
 
 signal on_reset
+signal on_player_spawn
+signal on_player_dead
 
 @export
 var id:int
@@ -33,6 +35,7 @@ func _ready():
 		spawner.on_monster_dead.connect(on_mob_dead)
 		spawner.on_monster_spawn.connect(on_monster_spawned)
 
+
 func init(field_id):
 	id = field_id
 	player = GameManager.instance.spawn_player(self, player_spawn.global_position)
@@ -43,6 +46,8 @@ func init(field_id):
 	var state = GameData.ActorState.new(field_id,player.id)
 	state.hp = GameManager.instance.game_settings.player_health
 	GameData.actor_info[field_id][player.id]=state
+	player.on_player_dead.connect(on_player_die)
+	on_player_spawn.emit(player)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -63,3 +68,8 @@ func on_mob_dead(mob):
 		GameData.actor_info[id].erase(mob.id)
 		monsters.erase(mob.id)
 		mob.queue_free()
+
+func on_player_die(player):
+	on_player_dead.emit(player)
+	player = null
+ 
