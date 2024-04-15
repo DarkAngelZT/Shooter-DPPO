@@ -22,7 +22,7 @@ BeehaveGlobalDebugger="*res://addons/beehave/debug/global_debugger.gd"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/beehave/plugin.cfg")
+enabled=PackedStringArray("res://addons/beehave/plugin.cfg", "res://addons/protobuf/plugin.cfg")
 
 [input]
 
