@@ -35,7 +35,6 @@ func _ready():
 		spawner.on_monster_dead.connect(on_mob_dead)
 		spawner.on_monster_spawn.connect(on_monster_spawned)
 
-
 func init(field_id):
 	id = field_id
 	player = GameManager.instance.spawn_player(self, player_spawn.global_position)
@@ -73,3 +72,5 @@ func on_player_die(player):
 	on_player_dead.emit(player)
 	player = null
  
+func get_attack_position(mob):
+	pass
