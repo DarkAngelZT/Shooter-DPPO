@@ -10,3 +10,7 @@ player_move_speed = 5.0
 player_health = 10
 monster_move_speed = 5.0
 monster_health = 3
+monster_attack_range = 4.0
+eqs_inner_radius = 2.5
+eqs_outer_radius = 5.0
+eqs_update_interval = 1.0

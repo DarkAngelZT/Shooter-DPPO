@@ -18,6 +18,9 @@ var player:Node3D
 
 var mob_id_counter:int = 100
 
+var EQS:SimpleEQS
+var eqs_update_time:float = 0
+
 func reset():
 	for m in monsters.values():
 		m.queue_free()
@@ -47,10 +50,25 @@ func init(field_id):
 	GameData.actor_info[field_id][player.id]=state
 	player.on_player_dead.connect(on_player_die)
 	on_player_spawn.emit(player)
+	
+	EQS = SimpleEQS.new()
+	
+	call_deferred("eqs_setup")
+
+func eqs_setup():
+	# Wait for the first physics frame so the NavigationServer can sync.
+	await get_tree().physics_frame
+	
+	EQS.init(
+		GameManager.instance.game_settings.eqs_inner_radius,
+		GameManager.instance.game_settings.eqs_outer_radius,
+		get_world_3d().navigation_map)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
+func _physics_process(_delta):
+	if player and Time.get_ticks_msec() > eqs_update_time:
+		EQS.set_center(player.global_position)
+		eqs_update_time = Time.get_ticks_msec()+GameManager.instance.game_settings.eqs_update_interval
 
 func on_monster_spawned(mob):
 	if is_instance_valid(mob):
@@ -61,6 +79,7 @@ func on_monster_spawned(mob):
 		var state = GameData.ActorState.new(id,mob.id)
 		GameData.actor_info[id][mob.id]=state
 		monsters[mob.id] = mob
+		mob.set_target(player)
 
 func on_mob_dead(mob):
 	if is_instance_valid(mob):
@@ -68,9 +87,12 @@ func on_mob_dead(mob):
 		monsters.erase(mob.id)
 		mob.queue_free()
 
-func on_player_die(player):
-	on_player_dead.emit(player)
+func on_player_die(target_player):
+	on_player_dead.emit(target_player)
 	player = null
  
 func get_attack_position(mob):
-	pass
+	if  EQS.initilized:
+		return EQS.get_point()
+	else:
+		return player.global_position
