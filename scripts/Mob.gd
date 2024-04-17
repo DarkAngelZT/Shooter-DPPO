@@ -54,7 +54,8 @@ func nav_move():
 	
 func on_move_velocity(v:Vector3):
 	velocity = v
-	GameData.actor_info[field_id][id].move_dir = v.normalized()
+	var dir = v.normalized()
+	GameData.actor_info[field_id][id].move_dir = Vector2(dir.x,dir.z)
 	move_and_slide()
 	adjust_rotation(v)
 		
@@ -63,9 +64,9 @@ func adjust_rotation(move_dir:Vector3):
 		var target_player = get_target()
 		if target_player:
 			var dir = target_player.global_position - global_position
-			basis.looking_at(dir)
+			basis = Basis.looking_at(Vector3(dir.x,0,dir.z))
 	else:
-		basis.looking_at(move_dir)
+		basis = Basis.looking_at(Vector3(move_dir.x,0,move_dir.z))
 	
 func get_attack_position() -> Vector3:
 	return spawner.owner_field.get_attack_position()

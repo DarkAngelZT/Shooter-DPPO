@@ -1,9 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://bk8qmcyoll7su"]
+[gd_scene load_steps=9 format=3 uid="uid://bk8qmcyoll7su"]
 
 [ext_resource type="Script" path="res://scripts/Mob.gd" id="1_6pc4g"]
 [ext_resource type="Texture2D" uid="uid://ryq3wpd24ber" path="res://assets/models/minion.png" id="1_d4mxj"]
 [ext_resource type="ArrayMesh" uid="uid://bvgb0tarixb3r" path="res://assets/models/minion_01.obj" id="2_krlop"]
 [ext_resource type="PackedScene" uid="uid://c0cxbuuij7fv6" path="res://assets/nodes/bullet_mob.tscn" id="2_kx61h"]
+[ext_resource type="PackedScene" uid="uid://dv4xjk6onv2vv" path="res://assets/behaviour_trees/bt_minon.tscn" id="5_bh4oe"]
+[ext_resource type="Script" path="res://addons/beehave/blackboard.gd" id="5_jgn37"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3getq"]
 albedo_texture = ExtResource("1_d4mxj")
@@ -38,3 +40,13 @@ target_desired_distance = 0.4
 navigation_layers = 2
 avoidance_enabled = true
 neighbor_distance = 20.0
+
+[node name="BehaviourTree" parent="." node_paths=PackedStringArray("blackboard", "actor") instance=ExtResource("5_bh4oe")]
+blackboard = NodePath("../Blackboard")
+actor = NodePath("..")
+
+[node name="Blackboard" type="Node" parent="."]
+script = ExtResource("5_jgn37")
+blackboard = {
+"attack_position": Vector3(0, 0, 0)
+}

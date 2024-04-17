@@ -1,4 +1,4 @@
-extends ConditionLeaf
+class_name BTC_IsInRange extends ConditionLeaf
 
 @export
 var range:float = 4

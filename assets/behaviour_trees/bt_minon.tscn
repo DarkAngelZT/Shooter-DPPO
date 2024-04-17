@@ -1,0 +1,37 @@
+[gd_scene load_steps=7 format=3 uid="uid://dv4xjk6onv2vv"]
+
+[ext_resource type="Script" path="res://addons/beehave/nodes/beehave_tree.gd" id="1_wvu5y"]
+[ext_resource type="Script" path="res://addons/beehave/nodes/composites/sequence.gd" id="2_al4mq"]
+[ext_resource type="Script" path="res://scripts/behaviour_tree/condition/BTC_HasTarget.gd" id="3_wbjm0"]
+[ext_resource type="Script" path="res://addons/beehave/nodes/composites/selector.gd" id="4_xftur"]
+[ext_resource type="Script" path="res://scripts/behaviour_tree/condition/BTC_IsInRange.gd" id="5_rycv8"]
+[ext_resource type="Script" path="res://scripts/behaviour_tree/task/BTA_FaceToTarget.gd" id="6_1atev"]
+
+[node name="Minon" type="Node" node_paths=PackedStringArray("blackboard", "actor")]
+script = ExtResource("1_wvu5y")
+tick_rate = 3
+blackboard = NodePath("@Node@35685")
+actor = NodePath("")
+
+[node name="SequenceComposite" type="Node" parent="."]
+script = ExtResource("2_al4mq")
+
+[node name="BTC_HasTarget" type="Node" parent="SequenceComposite"]
+script = ExtResource("3_wbjm0")
+
+[node name="SelectorComposite" type="Node" parent="SequenceComposite"]
+script = ExtResource("4_xftur")
+
+[node name="SequenceComposite" type="Node" parent="SequenceComposite/SelectorComposite"]
+script = ExtResource("2_al4mq")
+
+[node name="BTC_IsInRange" type="Node" parent="SequenceComposite/SelectorComposite/SequenceComposite"]
+script = ExtResource("5_rycv8")
+range = 5.0
+
+[node name="BTA_FaceToTarget" type="Node" parent="SequenceComposite/SelectorComposite/SequenceComposite"]
+script = ExtResource("6_1atev")
+
+[node name="BTA_FaceToTarget" type="Node" parent="SequenceComposite/SelectorComposite"]
+script = ExtResource("6_1atev")
+enable = false
