@@ -47,10 +47,11 @@ func nav_move():
 		return
 	var next_pos:Vector3 = nav_agent.get_next_path_position()
 	var new_velocity:Vector3 = global_position.direction_to(next_pos)*move_speed
-	if nav_agent.avoidance_enabled:
-		nav_agent.set_velocity(new_velocity)
-	else:
-		on_move_velocity(new_velocity)
+	var gp = global_position
+	#if nav_agent.avoidance_enabled:
+		#nav_agent.set_velocity_forced(new_velocity)
+	#else:
+	on_move_velocity(new_velocity)
 	
 func on_move_velocity(v:Vector3):
 	velocity = v
@@ -60,13 +61,14 @@ func on_move_velocity(v:Vector3):
 	adjust_rotation(v)
 		
 func adjust_rotation(move_dir:Vector3):
-	if face_target or move_dir.is_zero_approx():
+	if face_target:
 		var target_player = get_target()
 		if target_player:
 			var dir = target_player.global_position - global_position
 			basis = Basis.looking_at(Vector3(dir.x,0,dir.z))
 	else:
-		basis = Basis.looking_at(Vector3(move_dir.x,0,move_dir.z))
+		if not move_dir.is_zero_approx():
+			basis = Basis.looking_at(Vector3(move_dir.x,0,move_dir.z))
 	
 func get_attack_position() -> Vector3:
 	return spawner.owner_field.get_attack_position()

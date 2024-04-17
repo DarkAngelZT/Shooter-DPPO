@@ -172,5 +172,5 @@ func on_player_spawn(player):
 	players[player.id] = player
 	
 func on_player_dead(player):
-	players.erase[player.id]
+	players.erase(player.id)
 

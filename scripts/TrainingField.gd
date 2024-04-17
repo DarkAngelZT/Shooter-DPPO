@@ -66,9 +66,9 @@ func eqs_setup():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(_delta):
-	if player and Time.get_ticks_msec() > eqs_update_time:
+	if EQS.initilized and player and Time.get_ticks_msec() > eqs_update_time:
 		EQS.set_center(player.global_position)
-		eqs_update_time = Time.get_ticks_msec()+GameManager.instance.game_settings.eqs_update_interval
+		eqs_update_time = Time.get_ticks_msec()+GameManager.instance.game_settings.eqs_update_interval*1000
 
 func on_monster_spawned(mob):
 	if is_instance_valid(mob):
@@ -91,7 +91,7 @@ func on_player_die(target_player):
 	on_player_dead.emit(target_player)
 	player = null
  
-func get_attack_position(mob):
+func get_attack_position():
 	if  EQS.initilized:
 		return EQS.get_point()
 	else:

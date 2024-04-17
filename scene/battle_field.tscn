@@ -77,6 +77,7 @@ transform = Transform3D(3, 0, 0, 0, 1, 0, 0, 0, 40, 0, 0.6843, 0)
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
 navigation_mesh = SubResource("NavigationMesh_jp0xg")
+navigation_layers = 3
 
 [node name="LevelMap" type="Node3D" parent="." groups=["LevelMesh"]]
 

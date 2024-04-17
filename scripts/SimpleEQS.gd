@@ -22,13 +22,14 @@ func init(inner_radius, outer_radius, map):
 	angle_delta = 2 * PI / num_points_circle
 	nav_map = map
 	generate(inner_radius)
+	randomize()
 	initilized = true
 
 func set_center(center_pos):
 	#calculate points on nav
-	var delta:Vector3 = center_pos - center_position
-	if delta.is_zero_approx():
-		return
+	#var delta:Vector3 = center_pos - center_position
+	#if delta.is_zero_approx():
+		#return
 	center_position = center_pos
 	test_points()
 
@@ -48,15 +49,17 @@ func generate(inner_radius):
 func test_points():
 	available_points.clear()
 	for point in points:
-		var closest_point = NavigationServer3D.map_get_closest_point(nav_map,point)
-		var delta = closest_point - point
+		var real_pos = point + center_position
+		var closest_point = NavigationServer3D.map_get_closest_point(nav_map,real_pos)
+		var delta = closest_point - real_pos
+		delta.y = 0
 		var is_on_nav = delta.is_zero_approx()
 		if is_on_nav:
-			available_points.append(point)
+			available_points.append(closest_point)
 	
 func get_point() -> Vector3:
 	var point := center_position
 	if available_points.size() > 0:
 		var index = randi_range(0,available_points.size()-1)
-		point += available_points[index]
+		point = available_points[index]
 	return point

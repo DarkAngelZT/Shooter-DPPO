@@ -10,7 +10,7 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if target:
+	if is_instance_valid(target):
 		position = offset + target.global_position
 
 func set_active(v):
