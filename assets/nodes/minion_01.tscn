@@ -35,17 +35,20 @@ shape = SubResource("CapsuleShape3D_xr2fo")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.208008, 0.763776, -1.63695)
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+path_desired_distance = 0.5
 target_desired_distance = 0.4
 navigation_layers = 2
 avoidance_enabled = true
 neighbor_distance = 20.0
+time_horizon_agents = 0.5
+time_horizon_obstacles = 0.1
+max_speed = 5.0
+debug_enabled = true
 
-[node name="BehaviourTree" parent="." node_paths=PackedStringArray("blackboard", "actor") instance=ExtResource("5_bh4oe")]
+[node name="BehaviourTree" parent="." node_paths=PackedStringArray("blackboard") instance=ExtResource("5_bh4oe")]
 blackboard = NodePath("../Blackboard")
-actor = NodePath("..")
 
 [node name="Blackboard" type="Node" parent="."]
 script = ExtResource("5_jgn37")
-blackboard = {
-"attack_position": Vector3(0, 0, 0)
-}
+
+[connection signal="velocity_computed" from="NavigationAgent3D" to="." method="on_move_velocity"]

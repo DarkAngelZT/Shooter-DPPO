@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://dv4xjk6onv2vv"]
+[gd_scene load_steps=12 format=3 uid="uid://dv4xjk6onv2vv"]
 
 [ext_resource type="Script" path="res://addons/beehave/nodes/beehave_tree.gd" id="1_wvu5y"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/composites/sequence.gd" id="2_al4mq"]
@@ -6,7 +6,6 @@
 [ext_resource type="Script" path="res://addons/beehave/nodes/composites/selector.gd" id="4_xftur"]
 [ext_resource type="Script" path="res://scripts/behaviour_tree/condition/BTC_IsInRange.gd" id="5_rycv8"]
 [ext_resource type="Script" path="res://scripts/behaviour_tree/task/BTA_FaceToTarget.gd" id="6_1atev"]
-[ext_resource type="Script" path="res://addons/beehave/nodes/decorators/cooldown.gd" id="7_6c4ee"]
 [ext_resource type="Script" path="res://scripts/behaviour_tree/task/BTA_SelectAttackLocation.gd" id="8_mh8oi"]
 [ext_resource type="Script" path="res://scripts/behaviour_tree/composites/SimpleParallel.gd" id="9_bfpn1"]
 [ext_resource type="Script" path="res://scripts/behaviour_tree/task/BTA_MoveTo.gd" id="10_xqu64"]
@@ -16,8 +15,8 @@
 [node name="Minon" type="Node" node_paths=PackedStringArray("blackboard", "actor")]
 script = ExtResource("1_wvu5y")
 tick_rate = 3
-blackboard = NodePath("@Node@20391")
-actor = NodePath("")
+blackboard = NodePath("@Node@17796")
+actor = NodePath("..")
 
 [node name="SequenceComposite" type="Node" parent="."]
 script = ExtResource("2_al4mq")
@@ -27,48 +26,6 @@ script = ExtResource("3_wbjm0")
 
 [node name="MoveSelector" type="Node" parent="SequenceComposite"]
 script = ExtResource("4_xftur")
-
-[node name="CooldownDecorator" type="Node" parent="SequenceComposite/MoveSelector"]
-script = ExtResource("7_6c4ee")
-wait_time = 2.0
-
-[node name="AttackMoveSequence" type="Node" parent="SequenceComposite/MoveSelector/CooldownDecorator"]
-script = ExtResource("2_al4mq")
-
-[node name="BTA_SelectAttackLocation" type="Node" parent="SequenceComposite/MoveSelector/CooldownDecorator/AttackMoveSequence"]
-script = ExtResource("8_mh8oi")
-
-[node name="SimpleParallelComposite" type="Node" parent="SequenceComposite/MoveSelector/CooldownDecorator/AttackMoveSequence"]
-script = ExtResource("9_bfpn1")
-
-[node name="BTA_MoveTo" type="Node" parent="SequenceComposite/MoveSelector/CooldownDecorator/AttackMoveSequence/SimpleParallelComposite"]
-script = ExtResource("10_xqu64")
-
-[node name="AttackSequence" type="Node" parent="SequenceComposite/MoveSelector/CooldownDecorator/AttackMoveSequence/SimpleParallelComposite"]
-script = ExtResource("2_al4mq")
-
-[node name="RotateSelector" type="Node" parent="SequenceComposite/MoveSelector/CooldownDecorator/AttackMoveSequence/SimpleParallelComposite/AttackSequence"]
-script = ExtResource("4_xftur")
-
-[node name="SequenceComposite" type="Node" parent="SequenceComposite/MoveSelector/CooldownDecorator/AttackMoveSequence/SimpleParallelComposite/AttackSequence/RotateSelector"]
-script = ExtResource("2_al4mq")
-
-[node name="BTC_IsInRange" type="Node" parent="SequenceComposite/MoveSelector/CooldownDecorator/AttackMoveSequence/SimpleParallelComposite/AttackSequence/RotateSelector/SequenceComposite"]
-script = ExtResource("5_rycv8")
-range = 15.0
-
-[node name="BTA_FaceToTarget" type="Node" parent="SequenceComposite/MoveSelector/CooldownDecorator/AttackMoveSequence/SimpleParallelComposite/AttackSequence/RotateSelector/SequenceComposite"]
-script = ExtResource("6_1atev")
-
-[node name="BTA_FaceToTarget" type="Node" parent="SequenceComposite/MoveSelector/CooldownDecorator/AttackMoveSequence/SimpleParallelComposite/AttackSequence/RotateSelector"]
-script = ExtResource("6_1atev")
-enable = false
-
-[node name="BTC_CanAttack" type="Node" parent="SequenceComposite/MoveSelector/CooldownDecorator/AttackMoveSequence/SimpleParallelComposite/AttackSequence"]
-script = ExtResource("11_vmu6d")
-
-[node name="BTA_Attack" type="Node" parent="SequenceComposite/MoveSelector/CooldownDecorator/AttackMoveSequence/SimpleParallelComposite/AttackSequence"]
-script = ExtResource("12_m1um3")
 
 [node name="AttackStandSequence" type="Node" parent="SequenceComposite/MoveSelector"]
 script = ExtResource("2_al4mq")
@@ -94,4 +51,43 @@ enable = false
 script = ExtResource("11_vmu6d")
 
 [node name="BTA_Attack" type="Node" parent="SequenceComposite/MoveSelector/AttackStandSequence"]
+script = ExtResource("12_m1um3")
+
+[node name="AttackMoveSequence" type="Node" parent="SequenceComposite/MoveSelector"]
+script = ExtResource("2_al4mq")
+
+[node name="BTA_SelectAttackLocation" type="Node" parent="SequenceComposite/MoveSelector/AttackMoveSequence"]
+script = ExtResource("8_mh8oi")
+
+[node name="SimpleParallelComposite" type="Node" parent="SequenceComposite/MoveSelector/AttackMoveSequence"]
+script = ExtResource("9_bfpn1")
+
+[node name="BTA_MoveTo" type="Node" parent="SequenceComposite/MoveSelector/AttackMoveSequence/SimpleParallelComposite"]
+script = ExtResource("10_xqu64")
+position_diff_threshold = 3.0
+
+[node name="AttackSequence" type="Node" parent="SequenceComposite/MoveSelector/AttackMoveSequence/SimpleParallelComposite"]
+script = ExtResource("2_al4mq")
+
+[node name="RotateSelector" type="Node" parent="SequenceComposite/MoveSelector/AttackMoveSequence/SimpleParallelComposite/AttackSequence"]
+script = ExtResource("4_xftur")
+
+[node name="SequenceComposite" type="Node" parent="SequenceComposite/MoveSelector/AttackMoveSequence/SimpleParallelComposite/AttackSequence/RotateSelector"]
+script = ExtResource("2_al4mq")
+
+[node name="BTC_IsInRange" type="Node" parent="SequenceComposite/MoveSelector/AttackMoveSequence/SimpleParallelComposite/AttackSequence/RotateSelector/SequenceComposite"]
+script = ExtResource("5_rycv8")
+range = 15.0
+
+[node name="BTA_FaceToTarget" type="Node" parent="SequenceComposite/MoveSelector/AttackMoveSequence/SimpleParallelComposite/AttackSequence/RotateSelector/SequenceComposite"]
+script = ExtResource("6_1atev")
+
+[node name="BTA_FaceToTarget" type="Node" parent="SequenceComposite/MoveSelector/AttackMoveSequence/SimpleParallelComposite/AttackSequence/RotateSelector"]
+script = ExtResource("6_1atev")
+enable = false
+
+[node name="BTC_CanAttack" type="Node" parent="SequenceComposite/MoveSelector/AttackMoveSequence/SimpleParallelComposite/AttackSequence"]
+script = ExtResource("11_vmu6d")
+
+[node name="BTA_Attack" type="Node" parent="SequenceComposite/MoveSelector/AttackMoveSequence/SimpleParallelComposite/AttackSequence"]
 script = ExtResource("12_m1um3")

@@ -4,7 +4,7 @@ class_name BTC_IsInRange extends ConditionLeaf
 var range:float = 4
 
 func tick(actor, blackboard: Blackboard):
-	var target = blackboard.get_value("target")
+	var target = blackboard.get_value("target",null,str(actor.get_instance_id()))
 	if target:
 		var in_range = target.global_position.distance_to(actor.global_position) <= range
 		if in_range:

@@ -23,7 +23,7 @@ func _ready():
 	damage = GameManager.instance.game_settings.bullet_damage
 	attack_range = GameManager.instance.game_settings.monster_attack_range
 	
-	nav_agent.velocity_computed.connect(on_move_velocity)
+	#nav_agent.velocity_computed.connect(on_move_velocity)
 
 func _physics_process(delta):
 	nav_move()
@@ -45,13 +45,14 @@ func nav_move():
 	if nav_agent.is_navigation_finished():
 		adjust_rotation(Vector3.ZERO)
 		return
-	var next_pos:Vector3 = nav_agent.get_next_path_position()
-	var new_velocity:Vector3 = global_position.direction_to(next_pos)*move_speed
+	var next_pos:Vector3 = nav_agent.get_next_path_position()	
 	var gp = global_position
-	#if nav_agent.avoidance_enabled:
-		#nav_agent.set_velocity_forced(new_velocity)
-	#else:
-	on_move_velocity(new_velocity)
+	gp.y = next_pos.y
+	var new_velocity:Vector3 = gp.direction_to(next_pos)*move_speed
+	if nav_agent.avoidance_enabled:
+		nav_agent.set_velocity(new_velocity)
+	else:
+		on_move_velocity(new_velocity)
 	
 func on_move_velocity(v:Vector3):
 	velocity = v
@@ -77,10 +78,12 @@ func is_reach_destination() -> bool:
 	return nav_agent.is_navigation_finished()
 	
 func set_target(target):
-	behaviour_tree.blackboard.set_value("target",target)
+	behaviour_tree.blackboard.set_value("target",target,str(get_instance_id()))
+	if id == 101:
+		behaviour_tree.blackboard.set_value("target",target)
 	
 func get_target() -> Node3D:
-	return behaviour_tree.blackboard.get_value("target")
+	return behaviour_tree.blackboard.get_value("target",null,str(get_instance_id()))
 	
 func is_target_in_range()->bool:
 	var target = get_target()
