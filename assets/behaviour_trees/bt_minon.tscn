@@ -16,7 +16,7 @@
 script = ExtResource("1_wvu5y")
 tick_rate = 3
 blackboard = NodePath("@Node@17796")
-actor = NodePath("..")
+actor = NodePath("")
 
 [node name="SequenceComposite" type="Node" parent="."]
 script = ExtResource("2_al4mq")
