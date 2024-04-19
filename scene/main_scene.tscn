@@ -11,6 +11,8 @@
 
 [node name="SceneRoot" type="Node3D"]
 
+[node name="NetWorkManager" type="Node" parent="."]
+
 [node name="GameManager" type="Node" parent="." node_paths=PackedStringArray("TraningRoot", "ArenaRoot", "root", "train_camera", "game_camera")]
 process_mode = 3
 editor_description = "场景管理器"
@@ -51,3 +53,16 @@ offset = Vector3(0, 15, 0)
 
 [node name="Camera3D" type="Camera3D" parent="FollowCamera"]
 transform = Transform3D(1, 0, 0, 0, 0.173648, 0.984808, 0, -0.984808, 0.173648, 0, 0, 1.475)
+
+[node name="NetTestButton" type="Button" parent="."]
+anchors_preset = -1
+anchor_left = 0.021
+anchor_top = 0.028
+anchor_right = 0.135
+anchor_bottom = 0.083
+offset_left = -0.192001
+offset_top = -0.144001
+offset_right = 0.479996
+offset_bottom = 0.215996
+text = "ProtobufTest
+"
