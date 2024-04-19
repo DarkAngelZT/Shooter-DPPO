@@ -44,8 +44,9 @@ time_horizon_agents = 0.5
 time_horizon_obstacles = 0.1
 max_speed = 5.0
 
-[node name="BehaviourTree" parent="." node_paths=PackedStringArray("blackboard") instance=ExtResource("5_bh4oe")]
+[node name="BehaviourTree" parent="." node_paths=PackedStringArray("blackboard", "actor") instance=ExtResource("5_bh4oe")]
 blackboard = NodePath("../Blackboard")
+actor = NodePath("..")
 
 [node name="Blackboard" type="Node" parent="."]
 script = ExtResource("5_jgn37")

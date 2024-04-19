@@ -92,3 +92,7 @@ func is_target_in_range()->bool:
 		return d <= attack_range
 	else:
 		return false
+
+func get_bullet_speed()->float:
+	return GameManager.instance.game_settings.bullet_speed_monster
+	

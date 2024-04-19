@@ -52,3 +52,6 @@ func die():
 func on_bullet_hit(other):
 	if other is Mob:
 		other.take_damage(damage)
+		
+func get_bullet_speed()->float:
+	return GameManager.instance.game_settings.bullet_speed_player

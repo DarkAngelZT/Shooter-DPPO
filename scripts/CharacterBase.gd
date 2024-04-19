@@ -48,6 +48,8 @@ func shoot():
 		bullet.basis = basis
 		bullet.direction = -global_basis.z
 		
+		bullet.speed = get_bullet_speed()
+		
 		bullet.hit.connect(on_bullet_hit)
 		GameManager.instance.root.add_child(bullet)
 		set_can_shoot(false)
@@ -66,3 +68,6 @@ func take_damage(damage):
 	if health<=0:
 		is_dead = true
 		die()
+		
+func get_bullet_speed()->float:
+	return 0
