@@ -1,5 +1,6 @@
-[gd_scene load_steps=9 format=3 uid="uid://dpk7pwe2sp58r"]
+[gd_scene load_steps=10 format=3 uid="uid://dpk7pwe2sp58r"]
 
+[ext_resource type="Script" path="res://scripts/NetworkManager.gd" id="1_r0unh"]
 [ext_resource type="Script" path="res://scripts/GameManager.gd" id="1_xmjsa"]
 [ext_resource type="PackedScene" uid="uid://jxsgncw3xmlp" path="res://assets/nodes/player.tscn" id="2_uuajh"]
 [ext_resource type="PackedScene" uid="uid://bk8qmcyoll7su" path="res://assets/nodes/minion_01.tscn" id="3_ah63e"]
@@ -11,7 +12,8 @@
 
 [node name="SceneRoot" type="Node3D"]
 
-[node name="NetWorkManager" type="Node" parent="."]
+[node name="NetworkManager" type="Node" parent="."]
+script = ExtResource("1_r0unh")
 
 [node name="GameManager" type="Node" parent="." node_paths=PackedStringArray("TraningRoot", "ArenaRoot", "root", "train_camera", "game_camera")]
 process_mode = 3
