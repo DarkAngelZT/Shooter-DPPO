@@ -5,7 +5,7 @@ signal hit
 @export
 var speed:float = 0
 
-@export_flags_3d_physics var collision_mask
+@export_flags_3d_physics var ray_collision_mask
 
 var direction:Vector3
 var space_state
@@ -16,7 +16,7 @@ func _ready():
 func _physics_process(delta):
 	var old_position = position
 	var new_position = position + direction*(speed*delta)
-	var query = PhysicsRayQueryParameters3D.create(old_position,new_position,collision_mask)
+	var query = PhysicsRayQueryParameters3D.create(old_position,new_position,ray_collision_mask)
 	var result = space_state.intersect_ray(query)
 	if result:
 		var target_pos = Vector3(position)

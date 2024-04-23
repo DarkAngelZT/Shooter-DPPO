@@ -1,12 +1,16 @@
-[gd_scene load_steps=5 format=3 uid="uid://jxsgncw3xmlp"]
+[gd_scene load_steps=7 format=3 uid="uid://jxsgncw3xmlp"]
 
 [ext_resource type="PackedScene" uid="uid://bdyptm7smjixm" path="res://assets/models/gdbot/gdbot_skin.tscn" id="1_8x5t2"]
 [ext_resource type="Script" path="res://scripts/Player.gd" id="1_ivcu5"]
 [ext_resource type="PackedScene" uid="uid://cjys1bvgi76no" path="res://assets/nodes/bullet_player.tscn" id="2_hubho"]
+[ext_resource type="Script" path="res://scripts/PlayerSensor.gd" id="4_ds6in"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_l0agu"]
 radius = 0.35
 height = 1.656
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_hu1p6"]
+radius = 12.0
 
 [node name="CharacterBody3D" type="CharacterBody3D" node_paths=PackedStringArray("character_mesh", "shoot_position")]
 disable_mode = 2
@@ -22,17 +26,17 @@ shoot_interval_sec = 0.3
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
 
 [node name="Skeleton3D" parent="GDbotSkin/gdbot/Armature" index="0"]
-bones/2/position = Vector3(-0.00766957, 6.70495e-10, 0.521392)
-bones/2/rotation = Quaternion(-0.052915, 0.705839, 0.705123, -0.042346)
-bones/3/rotation = Quaternion(1, 1.84486e-10, -7.4061e-08, 4.72032e-12)
-bones/4/rotation = Quaternion(-0.244398, -0.0857997, -0.0695864, 0.963362)
-bones/5/rotation = Quaternion(0.323778, 7.7773e-08, -8.01611e-08, 0.946133)
-bones/7/rotation = Quaternion(-0.0538657, 0.257686, 0.106533, 0.958826)
-bones/8/rotation = Quaternion(0.226835, -7.09255e-08, 7.33286e-08, 0.973933)
-bones/10/rotation = Quaternion(-0.493853, -0.532255, -0.479047, 0.493282)
-bones/11/rotation = Quaternion(-7.69285e-09, 2.19195e-08, -0.238554, 0.971129)
+bones/2/position = Vector3(0.0191786, -1.67665e-09, 0.531589)
+bones/2/rotation = Quaternion(0.0619157, 0.705368, 0.704391, 0.0495549)
+bones/3/rotation = Quaternion(1, -1.99254e-10, -7.75864e-08, 9.29994e-13)
+bones/4/rotation = Quaternion(-0.0590742, -0.259453, -0.0952971, 0.959225)
+bones/5/rotation = Quaternion(0.117581, 5.38955e-08, -2.96248e-08, 0.993063)
+bones/7/rotation = Quaternion(-0.121744, 0.0888278, 0.0634015, 0.986544)
+bones/8/rotation = Quaternion(0.241594, -5.45388e-08, 7.4807e-08, 0.970377)
+bones/10/rotation = Quaternion(-0.554009, -0.42481, -0.449237, 0.557492)
+bones/11/rotation = Quaternion(4.23925e-10, 2.21939e-08, -0.00176317, 0.999999)
 bones/13/rotation = Quaternion(0.0819346, 1.62373e-07, 6.18589e-09, 0.996638)
-bones/14/rotation = Quaternion(-0.0819313, -0.000732557, -0.00891073, 0.996598)
+bones/14/rotation = Quaternion(-0.0819224, 0.0014173, 0.0172397, 0.996489)
 bones/16/rotation = Quaternion(-0.362118, -0.311101, -0.735239, -0.481156)
 bones/17/rotation = Quaternion(-0.0469922, -0.00499917, -0.077987, 0.995834)
 bones/19/rotation = Quaternion(-0.391114, -0.0079801, -0.00129221, 0.920307)
@@ -45,11 +49,11 @@ bones/25/rotation = Quaternion(-0.386896, 0.0855178, -0.0227219, 0.917868)
 bones/26/rotation = Quaternion(-0.277506, -2.58292e-09, -9.82245e-08, 0.960724)
 bones/27/rotation = Quaternion(-0.293954, 0.794438, -0.105766, 0.520838)
 bones/28/rotation = Quaternion(-0.277506, -3.63708e-07, -5.31396e-07, 0.960724)
-bones/29/rotation = Quaternion(-0.708143, -0.217816, -0.624581, 0.246959)
-bones/30/rotation = Quaternion(-1.84178e-08, 2.05485e-08, -0.380444, 0.924804)
-bones/32/rotation = Quaternion(-0.0272089, 0.0563525, -0.433974, 0.898749)
-bones/33/rotation = Quaternion(-0.549695, 0.455144, 0.437014, 0.547447)
-bones/34/rotation = Quaternion(-8.74221e-11, 5.52053e-09, 0.00175574, 0.999999)
+bones/29/rotation = Quaternion(-0.634248, -0.24238, -0.700595, 0.219427)
+bones/30/rotation = Quaternion(2.85346e-09, 2.40226e-08, -0.457913, 0.888997)
+bones/32/rotation = Quaternion(0.0216968, -0.0446503, -0.436518, 0.898325)
+bones/33/rotation = Quaternion(-0.507364, 0.508246, 0.477479, 0.506243)
+bones/34/rotation = Quaternion(1.54356e-08, 5.53423e-09, 0.351602, 0.93615)
 bones/37/rotation = Quaternion(-0.646856, -0.0339925, 0.761831, 0.00599861)
 bones/38/rotation = Quaternion(0.126977, -0.010998, 0.77186, 0.622887)
 bones/40/rotation = Quaternion(-0.391114, 0.00798011, 0.00129221, 0.920307)
@@ -62,15 +66,15 @@ bones/46/rotation = Quaternion(-0.386896, -0.0855178, 0.0227219, 0.917868)
 bones/47/rotation = Quaternion(-0.277506, -2.36655e-08, 1.00422e-07, 0.960724)
 bones/48/rotation = Quaternion(-0.293954, -0.794438, 0.105766, 0.520838)
 bones/49/rotation = Quaternion(-0.277506, 3.69605e-07, 5.06519e-07, 0.960724)
-bones/50/rotation = Quaternion(-0.639852, 0.242158, 0.694375, 0.223141)
-bones/51/rotation = Quaternion(-7.07911e-09, 2.08744e-08, 0.447606, 0.894231)
-bones/53/rotation = Quaternion(0.0177535, 0.0367704, 0.434464, 0.899763)
+bones/50/rotation = Quaternion(-0.714238, 0.214098, 0.618843, 0.2471)
+bones/51/rotation = Quaternion(-1.06481e-08, 7.75329e-09, 0.374469, 0.927239)
+bones/53/rotation = Quaternion(-0.0311961, -0.0641993, 0.435942, 0.89714)
 bones/54/rotation = Quaternion(0, 0, 0.147009, 0.989135)
 bones/58/rotation = Quaternion(0, 0, -0.15168, 0.98843)
-bones/59/position = Vector3(-8.82497e-06, 5.47633e-06, 4.19533e-05)
+bones/59/position = Vector3(-1.46483e-07, 7.89198e-08, 6.85114e-07)
 
 [node name="BoneAttachment3D" parent="GDbotSkin/gdbot/Armature/Skeleton3D" index="1"]
-transform = Transform3D(-0.133167, 0.145169, -0.980404, -0.974021, 0.163648, 0.156531, 0.183165, 0.975779, 0.119605, -0.172038, 0.603867, 0.0155424)
+transform = Transform3D(-0.149223, -0.147743, -0.977704, -0.978673, 0.163243, 0.124703, 0.141179, 0.975461, -0.168952, -0.198265, 0.608234, -0.0373112)
 
 [node name="gun" parent="GDbotSkin/gdbot/Armature/Skeleton3D/BoneAttachment3D" index="0"]
 transform = Transform3D(-0.000458419, -0.00193781, 0.000186421, 0.000108882, 0.000165699, 0.00199015, -0.00194371, 0.00046631, 6.7516e-05, -0.00420558, 0.51087, -0.0439621)
@@ -81,6 +85,13 @@ transform = Transform3D(500, 0, 0, 0, 499.999, 0, 0, 0, 500, 0, 70.966, 434.825)
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.863245, 0)
 shape = SubResource("CapsuleShape3D_l0agu")
+
+[node name="PlayerSensor" type="Node" parent="."]
+script = ExtResource("4_ds6in")
+radius_far = 6.0
+radius_near = 3.0
+detect_shape = SubResource("SphereShape3D_hu1p6")
+collision_mask = 12
 
 [editable path="GDbotSkin"]
 [editable path="GDbotSkin/gdbot"]

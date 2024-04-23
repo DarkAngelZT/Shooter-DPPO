@@ -18,7 +18,7 @@
 [node name="Minon" type="Node" node_paths=PackedStringArray("blackboard", "actor")]
 script = ExtResource("1_wvu5y")
 tick_rate = 3
-blackboard = NodePath("@Node@17802")
+blackboard = NodePath("@Node@23490")
 actor = NodePath("..")
 
 [node name="SequenceComposite" type="Node" parent="."]
@@ -64,6 +64,7 @@ script = ExtResource("13_hfyhe")
 
 [node name="BTC_IsInMoveCd" type="Node" parent="SequenceComposite/MoveSelector/AttackMoveSequence/InverterDecorator"]
 script = ExtResource("14_x6y17")
+cool_down = 2.5
 
 [node name="BTA_SelectAttackLocation" type="Node" parent="SequenceComposite/MoveSelector/AttackMoveSequence"]
 script = ExtResource("8_mh8oi")
