@@ -1,4 +1,4 @@
-extends Node3D
+class_name Bullet extends Node3D
 
 signal hit
 
@@ -9,6 +9,7 @@ var speed:float = 0
 
 var direction:Vector3
 var space_state
+var instigator
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	space_state = get_world_3d().direct_space_state

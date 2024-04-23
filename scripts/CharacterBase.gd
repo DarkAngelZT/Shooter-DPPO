@@ -49,6 +49,7 @@ func shoot():
 		bullet.direction = -global_basis.z
 		
 		bullet.speed = get_bullet_speed()
+		bullet.instigator = self
 		
 		bullet.hit.connect(on_bullet_hit)
 		GameManager.instance.root.add_child(bullet)

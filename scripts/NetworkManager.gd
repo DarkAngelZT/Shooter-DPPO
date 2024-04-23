@@ -11,10 +11,13 @@ var test_recved = false
 const test_pb = preload("res://protobuf/test_pb.gd")
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	client.connect_to_host("127.0.0.1",6666)
+	if GameManager.instance.control_mode != GameManager.ControlMode.Manual:
+		client.connect_to_host("127.0.0.1",6666)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	if GameManager.instance.control_mode == GameManager.ControlMode.Manual:
+		return
 	client.poll()
 	if !connected:
 		if client.get_status() == StreamPeerTCP.STATUS_CONNECTED:

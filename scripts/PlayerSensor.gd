@@ -28,4 +28,19 @@ func _process(delta):
 func gether_sensor_data():
 	query_param.transform.origin = owner.global_position
 	var result = space.intersect_shape(query_param)
+	var monsters = []
+	var bullet_monster = []
+	var bullet_player = []
 	#分类整理
+	for hit_result in result:
+		var obj = hit_result.collider
+		if obj is Mob:
+			monsters.append(obj)
+		else:
+			var obj_owner = obj.owner
+			if obj_owner is Bullet:
+				if obj_owner.instigator is Player:
+					bullet_player.append(obj_owner)
+				elif obj_owner is Mob:
+					bullet_monster.append(obj_owner)
+	#计算分区信息
