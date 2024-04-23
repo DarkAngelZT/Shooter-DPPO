@@ -1,5 +1,5 @@
 @tool
-@icon("../../icons/sequence.svg")
+@icon("res://addons/beehave/icons/simple_parallel.svg")
 class_name SimpleParallelComposite extends Composite
 
 ## Simple Parallel 节点会像虚幻里面那样同时运行两个子节点:主节点(第一子节点)和副节点(第二子节点)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://dv4xjk6onv2vv"]
+[gd_scene load_steps=15 format=3 uid="uid://dv4xjk6onv2vv"]
 
 [ext_resource type="Script" path="res://addons/beehave/nodes/beehave_tree.gd" id="1_wvu5y"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/composites/sequence.gd" id="2_al4mq"]
@@ -10,13 +10,16 @@
 [ext_resource type="Script" path="res://scripts/behaviour_tree/composites/SimpleParallel.gd" id="9_bfpn1"]
 [ext_resource type="Script" path="res://scripts/behaviour_tree/task/BTA_MoveTo.gd" id="10_xqu64"]
 [ext_resource type="Script" path="res://scripts/behaviour_tree/condition/BTC_CanAttack.gd" id="11_vmu6d"]
+[ext_resource type="Script" path="res://scripts/behaviour_tree/task/BTA_SetMoveCd.gd" id="12_ia8dg"]
 [ext_resource type="Script" path="res://scripts/behaviour_tree/task/BTA_Attack.gd" id="12_m1um3"]
+[ext_resource type="Script" path="res://addons/beehave/nodes/decorators/inverter.gd" id="13_hfyhe"]
+[ext_resource type="Script" path="res://scripts/behaviour_tree/condition/BTC_IsInMoveCd.gd" id="14_x6y17"]
 
 [node name="Minon" type="Node" node_paths=PackedStringArray("blackboard", "actor")]
 script = ExtResource("1_wvu5y")
 tick_rate = 3
-blackboard = NodePath("@Node@17796")
-actor = NodePath("")
+blackboard = NodePath("@Node@17802")
+actor = NodePath("..")
 
 [node name="SequenceComposite" type="Node" parent="."]
 script = ExtResource("2_al4mq")
@@ -56,6 +59,12 @@ script = ExtResource("12_m1um3")
 [node name="AttackMoveSequence" type="Node" parent="SequenceComposite/MoveSelector"]
 script = ExtResource("2_al4mq")
 
+[node name="InverterDecorator" type="Node" parent="SequenceComposite/MoveSelector/AttackMoveSequence"]
+script = ExtResource("13_hfyhe")
+
+[node name="BTC_IsInMoveCd" type="Node" parent="SequenceComposite/MoveSelector/AttackMoveSequence/InverterDecorator"]
+script = ExtResource("14_x6y17")
+
 [node name="BTA_SelectAttackLocation" type="Node" parent="SequenceComposite/MoveSelector/AttackMoveSequence"]
 script = ExtResource("8_mh8oi")
 
@@ -91,3 +100,6 @@ script = ExtResource("11_vmu6d")
 
 [node name="BTA_Attack" type="Node" parent="SequenceComposite/MoveSelector/AttackMoveSequence/SimpleParallelComposite/AttackSequence"]
 script = ExtResource("12_m1um3")
+
+[node name="BTA_SetMoveCd" type="Node" parent="SequenceComposite/MoveSelector/AttackMoveSequence"]
+script = ExtResource("12_ia8dg")
