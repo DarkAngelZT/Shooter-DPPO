@@ -173,4 +173,4 @@ func on_player_spawn(player):
 	
 func on_player_dead(player):
 	players.erase(player.id)
-
+	GameData.game_end[player.field_id] = true

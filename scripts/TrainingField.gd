@@ -89,7 +89,7 @@ func on_mob_dead(mob):
 
 func on_player_die(target_player):
 	on_player_dead.emit(target_player)
-	player = null
+	player = null	
  
 func get_attack_position():
 	if  EQS.initilized:

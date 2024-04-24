@@ -43,6 +43,7 @@ func move_to(target):
 
 func nav_move():
 	if nav_agent.is_navigation_finished():
+		GameData.actor_info[field_id][id].move_dir = Vector2.ZERO
 		adjust_rotation(Vector3.ZERO)
 		return
 	var next_pos:Vector3 = nav_agent.get_next_path_position()	
@@ -59,7 +60,7 @@ func on_move_velocity(v:Vector3):
 	var dir = v.normalized()
 	GameData.actor_info[field_id][id].move_dir = Vector2(dir.x,dir.z)
 	move_and_slide()
-	adjust_rotation(v)
+	adjust_rotation(v)	
 		
 func adjust_rotation(move_dir:Vector3):
 	if face_target:
@@ -70,6 +71,9 @@ func adjust_rotation(move_dir:Vector3):
 	else:
 		if not move_dir.is_zero_approx():
 			basis = Basis.looking_at(Vector3(move_dir.x,0,move_dir.z))
+	
+	var forward = -basis.z
+	GameData.actor_info[field_id][id].direction = Vector2(forward.x,forward.z)
 	
 func get_attack_position() -> Vector3:
 	return spawner.owner_field.get_attack_position()
