@@ -174,3 +174,17 @@ func on_player_spawn(player):
 func on_player_dead(player):
 	players.erase(player.id)
 	GameData.game_end[player.field_id] = true
+	
+func test_func():
+	var a = Vector2.UP
+	var b = Vector2(-0.5,0.5)
+	var c = Vector2(0.5,0.5)
+	var u_b = Vector2(-0.5,-0.5)
+	var u_c = Vector2(0.5,-0.5)
+	print(
+		rad_to_deg(a.angle_to(b)),
+		rad_to_deg(a.angle_to(c)),
+		rad_to_deg(a.angle_to(u_b)),
+		rad_to_deg(a.angle_to(u_c))
+		)
+	print(a.angle_to(Vector2.ZERO))

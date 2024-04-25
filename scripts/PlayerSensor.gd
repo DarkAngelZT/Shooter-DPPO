@@ -10,14 +10,17 @@ var owner_field_id:int
 var query_param: PhysicsShapeQueryParameters3D
 var space:PhysicsDirectSpaceState3D
 
+#region
 const NEAR = 1
 const MED = 2
 const FAR = 3
+#dir
+const Center = 0x1
+const Right = 0x2
+const Left = 0x4
+const Behind = 0x8
 
-const Center = 1
-const Right = 2
-const Left = 3
-const Behind = 4
+const RegionNums = [8,12,12]
 
 class SensorData:
 	class PlayerData:
@@ -29,23 +32,20 @@ class SensorData:
 		var terrain_info:Array[float]
 		
 	class MobData:
-		var amount:int
-		var hp_total:int
-		var move_dir:Array[int]
-	
+		var amount:int = 0
+		var region_dir_info:int = 0
+		
 	class BulletData:
-		var amount:int
-		var dir_info:Array[int]
+		var amount:int = 0
+		var dir_info:int = 0
 	
 	var player_data:PlayerData=PlayerData.new()
 	
-	var mob_data_near:Array[MobData]=[]
-	var mob_data_med:Array[MobData]=[]
-	var mob_data_far:Array[MobData]=[]
+	var mob_data = {}#[region_id]->MobData
 	
-	var mob_bullet_data={}
+	var mob_bullet_data={} #[region_id]->[region1,region2,region3,region4]
 	
-	var player_bullet_data={}
+	var player_bullet_data={} #[region_id]->[region1,region2,region3,region4]
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -62,31 +62,102 @@ func _ready():
 func _process(delta):
 	pass
 
-func get_angle(target, target_dir,origin):
+func get_angles(target, target_dir,origin):
 	var dir = target.global_position - origin
 	var dir_vec2 = Vector2(dir.x,dir.z)
-	var aim_dir_vec2 = Vector2(target_dir.x,target_dir.z)
-	return rad_to_deg(dir_vec2.angle_to(aim_dir_vec2))
-	
-func get_region(target, target_dir,origin):
-	var angle = get_angle(target,target_dir,origin)
-	if absf(angle) < 5:
-		return Center
-	elif angle<90:
-		return Left
+	var aim_dir_vec2
+	if target_dir is Vector3:
+		aim_dir_vec2 = Vector2(target_dir.x,target_dir.z)
 	else:
-		return Behind
+		aim_dir_vec2 = target_dir
+	var aim_angle = rad_to_deg(dir_vec2.angle_to(aim_dir_vec2))
+	var region_angle = rad_to_deg(dir_vec2.angle_to(Vector2.UP))
+	return [region_angle,aim_angle]
+	
+func get_region_and_dir(target, target_dir,origin,region_num):
+	var result = get_angles(target,target_dir,origin)
+	var aim_angle = result[1]
+	var region_angle = result[0]
+	var region
+	var dir
+	var region_gap = 360.0/region_num
+	if absf(aim_angle) < 5:
+		dir = Center
+	elif aim_angle<0 and aim_angle > -90:
+		dir = Left
+	elif aim_angle>0 and aim_angle < 90:
+		dir = Right
+	else:
+		dir = Behind
+	
+	if region_angle>=0:
+		region = floori(region_angle/region_gap)
+	else:
+		region = floori((360 + region_angle)/region_gap)
+	
+	return [region, dir]
 
-func analyse_bullets(source, dist):
+func analyse_bullets(source, dist:Dictionary):
+	dist.clear()
 	var origin :Vector3 = owner.global_position
-	dist[NEAR] = [0,0,0,0]
-	dist[MED] = [0,0,0,0]
-	dist[FAR] = [0,0,0,0]
+	dist[NEAR] = []
+	dist[MED] = []
+	dist[FAR] = []
+	for i in range(NEAR,FAR+1):
+		for r in range(RegionNums[i]):
+			dist[i].append(SensorData.BulletData.new())
+			
 	for bullet in source:
 		var d = origin.distance_to(bullet.global_position)
-		if d<radius_near:
-			#dist[NEAR][self.get_region(bullet,)]
-			pass
+		var result
+		#var region = result[0]
+		#var dir = result[1]
+		if d < radius_near:
+			result = get_region_and_dir(bullet,bullet.direction,origin,RegionNums[0])
+			dist[NEAR][result[0]].amount += 1
+			dist[NEAR][result[0]].dir_info |= result[1]
+		elif d < radius_far:
+			result = get_region_and_dir(bullet,bullet.direction,origin,RegionNums[1])
+			dist[MED][result[0]].amount  += 1
+			dist[MED][result[0]].dir_info |= result[1]
+		else:
+			result = get_region_and_dir(bullet,bullet.direction,origin,RegionNums[2])
+			dist[FAR][result[0]].amount  += 1
+			dist[FAR][result[0]].dir_info |= result[1]
+
+func analyse_mob(source:Array,dist:Dictionary):
+	dist.clear()
+	var origin :Vector3 = owner.global_position
+	for i in range(NEAR,FAR+1):
+		dist[i] = []
+		for r in range(RegionNums[i]):
+			dist[i].append(SensorData.MobData.new())
+	
+	for mob in source:
+		var d = origin.distance_to(mob.global_position)
+		var area
+		if d < radius_near:
+			area = NEAR
+		elif d< radius_far:
+			area = MED
+		else:
+			area = FAR
+		var dir = GameData.actor_info[mob.field_id][mob.id].move_dir
+		var result = get_region_and_dir(mob,dir,origin,RegionNums[area])
+		var region = result[0]
+		var dir_part = result[1]
+		dist[area][region].amount  += 1
+		dist[area][region].region_dir_info |= dir_part	
+
+func gether_player_info(player_data:SensorData.PlayerData):
+	var player_state := GameData.actor_info[owner.field_id][owner.id] as GameData.ActorState
+	var forward = Vector2.UP
+	player_data.hp = player_state.hp
+	player_data.move_dir = forward.angle_to(player_state.move_dir)
+	player_data.aim_dir = forward.angle_to(player_state.direction)
+	player_data.shoot_cd_left = owner.get_shoot_cd_left()
+	player_data.is_moving = not player_state.move_dir.is_zero_approx()
+	# collect terrain info
 
 func gether_sensor_data():
 	query_param.transform.origin = owner.global_position
@@ -109,5 +180,10 @@ func gether_sensor_data():
 				elif obj_owner is Mob:
 					bullet_monster.append(obj_owner)
 	#计算分区信息
+	analyse_bullets(bullet_monster,sensor_data.mob_bullet_data)
+	analyse_bullets(bullet_player, sensor_data.player_bullet_data)
 	
+	analyse_mob(monsters,sensor_data.mob_data)
+	
+	gether_player_info(sensor_data.player_data)
 	return sensor_data

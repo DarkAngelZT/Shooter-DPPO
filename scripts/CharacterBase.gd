@@ -72,3 +72,6 @@ func take_damage(damage):
 		
 func get_bullet_speed()->float:
 	return 0
+
+func get_shoot_cd_left():
+	return maxi(0, shoot_interval_sec*1000 - (Time.get_ticks_msec() - last_shoot_time))
