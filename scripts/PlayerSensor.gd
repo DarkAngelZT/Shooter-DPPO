@@ -36,13 +36,25 @@ class SensorData:
 		var shoot_cd_left:float
 		var terrain_info:Array[float]
 		
+		var param_num:
+			get:
+				return 13
+		
 	class MobData:
 		var amount:int = 0
 		var region_dir_info:int = 0
 		
+		var param_num:
+			get:
+				return 2
+		
 	class BulletData:
 		var amount:int = 0
 		var dir_info:int = 0
+		
+		var param_num:
+			get:
+				return 2
 	
 	var player_data:PlayerData=PlayerData.new()
 	
@@ -51,6 +63,18 @@ class SensorData:
 	var mob_bullet_data={} #[region_id]->[BulletData * section_num]
 	
 	var player_bullet_data={} #[region_id]->[BulletData * section_num]
+	
+	func get_nn_param_total()->int:
+		var total = player_data.param_num
+		for r in mob_data:
+			total += mob_data[r][0].param_num * mob_data[r].size()
+				
+		for r in mob_bullet_data:
+			total += mob_bullet_data[r][0].param_num * mob_bullet_data[r].size()
+		
+		for r in player_bullet_data:
+			total += player_bullet_data[r][0].param_num * player_bullet_data[r].size()	
+		return total
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

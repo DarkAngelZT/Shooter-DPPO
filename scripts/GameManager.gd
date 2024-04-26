@@ -202,3 +202,5 @@ func test_func():
 		for s in range(bp[r].size()):
 			if bp[r][s].amount>0:
 				prints("region",r,"section",s,"amount",bp[r][s].amount,"dir",bp[r][s].dir_info)
+				
+	prints("Param total", sensor_data.get_nn_param_total())
