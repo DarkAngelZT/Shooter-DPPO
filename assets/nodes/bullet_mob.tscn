@@ -18,6 +18,8 @@ region_enabled = true
 region_rect = Rect2(31.782, 33.5478, 63.1468, 53.2982)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
+collision_layer = 8
+collision_mask = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
 shape = SubResource("SphereShape3D_wj1fb")

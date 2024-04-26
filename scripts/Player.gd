@@ -28,6 +28,7 @@ func _physics_process(delta):
 		direction.z = input.direction.y
 		direction.x = input.direction.x
 		basis = Basis.looking_at(Vector3(input.aim_direction.x,0,input.aim_direction.y))
+		GameData.actor_info[field_id][id].direction = input.aim_direction
 		
 		if input.move_state == GameData.Op_Move:
 			var speed = direction * move_speed
@@ -55,3 +56,6 @@ func on_bullet_hit(other):
 		
 func get_bullet_speed()->float:
 	return GameManager.instance.game_settings.bullet_speed_player
+	
+func get_sensor_data():
+	return $PlayerSensor.gether_sensor_data()

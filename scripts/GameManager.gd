@@ -153,6 +153,7 @@ func reset_field(field_id):
 	if training_fields.has(field_id):
 		var field = training_fields[field_id]
 		field.reset()
+		GameData.game_end[field_id] = false
 
 func spawn_player(scene_root, position, rotation=Quaternion.IDENTITY):
 	var player = player_prefab.instantiate()
@@ -176,15 +177,28 @@ func on_player_dead(player):
 	GameData.game_end[player.field_id] = true
 	
 func test_func():
-	var a = Vector2.UP
-	var b = Vector2(-0.5,0.5)
-	var c = Vector2(0.5,0.5)
-	var u_b = Vector2(-0.5,-0.5)
-	var u_c = Vector2(0.5,-0.5)
-	print(
-		rad_to_deg(a.angle_to(b)),
-		rad_to_deg(a.angle_to(c)),
-		rad_to_deg(a.angle_to(u_b)),
-		rad_to_deg(a.angle_to(u_c))
-		)
-	print(a.angle_to(Vector2.ZERO))
+	var sensor_data = players[0].get_sensor_data()
+	var p_data = sensor_data.player_data
+	print("===player data===")
+	prints("hp",p_data.hp,"move_dir",p_data.move_dir,
+	"aim",p_data.aim_dir,"moving",p_data.is_moving,
+	"shoot_cd",p_data.shoot_cd_left)
+	prints("terrain info", p_data.terrain_info)
+	print("===mob data===")
+	var m = sensor_data.mob_data
+	for r in m:
+		for s in range(m[r].size()):
+			if m[r][s].amount>0:
+				prints("region",r,"section",s,"amount",m[r][s].amount,"dir",m[r][s].region_dir_info)
+	print("===mob bullet info===")
+	var bm = sensor_data.mob_bullet_data
+	for r in bm:
+		for s in range(bm[r].size()):
+			if bm[r][s].amount>0:
+				prints("region",r,"section",s,"amount",bm[r][s].amount,"dir",bm[r][s].dir_info)
+	print("===player bullet info===")
+	var bp = sensor_data.player_bullet_data
+	for r in bp:
+		for s in range(bp[r].size()):
+			if bp[r][s].amount>0:
+				prints("region",r,"section",s,"amount",bp[r][s].amount,"dir",bp[r][s].dir_info)
