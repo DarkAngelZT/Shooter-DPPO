@@ -4,14 +4,12 @@ import test_pb2
 buffer_size = 1024
 sent_data_size = 128
 
-server = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-server.bind(('localhost',6666))
-server.listen(1)
+client = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
 
 print('waiting for game...')
-connect, addr = server.accept()
-print('game client conneted from:', addr)
+client.connect(("127.0.0.1",6666))
+print('game client conneted')
 
 test_msg = test_pb2.TestMsg()
 test_msg.field_id = 0
@@ -23,14 +21,14 @@ test_msg.can_shoot = True
 
 msg = test_msg.SerializeToString()
 
-connect.send(msg)
+client.send(msg)
 
-data = connect.recv(buffer_size)
+data = client.recv(buffer_size)
 test_data = test_pb2.TestMsg()
 test_data.ParseFromString(data)
 
 print("data received")
 print(test_data)
+print(test_data.can_shoot)
 
-connect.close()
-server.close()
+client.close()
