@@ -12,11 +12,17 @@ class Actor(nn.Module):
 		super(Actor, self).__init__()
 		self.model = nn.Sequential(
 			nn.Linear(n_states, hidden_dim),
-			nn.ReLu(inplace=True),
+			nn.ReLU(inplace=True),
 			nn.Linear(hidden_dim,hidden_dim),
-			nn.ReLu(inplace=True)
-			nn.Linear(hidden_dim,n_actions)
+			nn.ReLU(inplace=True)
+			nn.Linear(hidden_dim,n_actions),
+			nn.Tanh()
 		)
 	
 	def forward(self, inputs):
-		pass
+		return self.model(inputs)
+
+class Critic(nn.Module):
+	"""Critic Net"""
+	def __init__(self):
+		super(Critic, self).__init__()
