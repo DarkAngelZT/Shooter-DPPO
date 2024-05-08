@@ -24,5 +24,13 @@ class Actor(nn.Module):
 
 class Critic(nn.Module):
 	"""Critic Net"""
-	def __init__(self):
+	def __init__(self, n_states):
 		super(Critic, self).__init__()
+		self.model = nn.Sequential(
+			nn.Linear(n_states, hidden_dim*3),
+			nn.ReLU(inplace=True),
+			nn.Linear(hidden_dim*3,1)
+		)
+	
+	def forward(self, inputs):
+		return self.model(inputs)
