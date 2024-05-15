@@ -2,9 +2,6 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
-STATE_DIM = 201
-ACTION_DIM = 4
-HIDDEN_LAYER = 600
 
 class Actor(nn.Module):
 	"""Actor Net"""
