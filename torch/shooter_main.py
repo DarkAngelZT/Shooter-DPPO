@@ -20,6 +20,10 @@ S_CLOSE = 3
 C_RESET = 10
 C_OP = 11
 
+actor_lr = 3e-4
+critic_lr = 1e-3
+gamam = 0.93
+
 def process_action(action):
 	move_d = action[0]*180
 	aim_d = action[1]*180
@@ -91,6 +95,18 @@ class TrainMode(object):
 		self.a=[]
 		self.r=[]
 		self.s_prime=[]
-	def train_tmp(self):
+		self.done = []
+
+		self.actor = Actor(STATE_DIM,ACTION_DIM,HIDDEN_LAYER)
+		self.critic = Critic(STATE_DIM)
+		self.actor_opt = torch.optim.Adam(self.actor.parameters(), lr=actor_lr)
+		self.critic_opt = torcj.optim.Adam(self.critic.parameters(),lr=critic_lr)
+
+	def make_sample(self):
 		pass
+
+	def train_tmp(self):
+		states,actions,rewards,next_states = self.make_sample()
+
+
 		
