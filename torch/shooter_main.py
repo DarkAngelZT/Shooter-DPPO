@@ -25,7 +25,7 @@ C_OP = 11
 actor_lr = 3e-4
 critic_lr = 1e-3
 gamma = 0.93
-lbmda = 0.9
+lmbda = 0.9
 eps = 0.2
 
 def process_action(action):
@@ -126,6 +126,10 @@ class TrainMode(object):
 		q = self.critic(state)
 		td_delta = td_target - q
 		advantage = self.compute_advantage(gamma,lmbda)
+
+		action_ = process_action(self.actor(states))
+
+		
 
 		critic_loss = torch.mean(F.mse_loss(q,td_target.detach()))
 		self.actor_opt.zero_grad()
