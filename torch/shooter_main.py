@@ -4,6 +4,8 @@ import torch
 import model
 import ai_pb2
 
+from torch.nn import functional as F
+
 import model.Actor as Actor
 import model.Critic as Critic
 
@@ -22,7 +24,9 @@ C_OP = 11
 
 actor_lr = 3e-4
 critic_lr = 1e-3
-gamam = 0.93
+gamma = 0.93
+lbmda = 0.9
+eps = 0.2
 
 def process_action(action):
 	move_d = action[0]*180
@@ -105,8 +109,29 @@ class TrainMode(object):
 	def make_sample(self):
 		pass
 
+	def compute_advantage(gamma, lmbda, td_delta):
+		td_delta = td_delta.detach().numpy()
+		adv_list = []
+		adv = 0
+		for delta in td_delta[::-1]:
+			adv = gamma*lmbda*adv + delta
+			adv_list.append(adv)
+		adv_list.reverse()
+		return torch.FloatTensor(adv_list)
+
 	def train_tmp(self):
 		states,actions,rewards,next_states = self.make_sample()
 
+		td_target = rewards+gamma*self.critic(next_states)*(1-done)
+		q = self.critic(state)
+		td_delta = td_target - q
+		advantage = self.compute_advantage(gamma,lmbda)
 
+		critic_loss = torch.mean(F.mse_loss(q,td_target.detach()))
+		self.actor_opt.zero_grad()
+		self.critic_opt.zero_grad()
+		actor_loss.backward()
+		critic_loss.backward()
+		self.actor_opt.step()
+		self.critic_opt.step()
 		
