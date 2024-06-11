@@ -3,6 +3,7 @@ import socket
 import torch
 import model
 import ai_pb2
+import numpy as np
 
 from torch.nn import functional as F
 
@@ -28,11 +29,16 @@ gamma = 0.93
 lmbda = 0.9
 eps = 0.2
 
-def process_action(action):
-	move_d = action[0]*180
-	aim_d = action[1]*180
-	move_state = (action[2] >= 0)
-	shoot_state = (action[3] >= 0)
+def random_normal(mu,std):
+	a = torch.normal(mu,std)
+	return [a.item()]
+
+def process_action(a_mean):
+	a = random_normal(a_mean,1)
+	move_d = np.clip(a[0], -1,1)*180
+	aim_d = np.clip(a[1],-1,1)*180
+	move_state = a[2] >= 0
+	shoot_state = a[3] >= 0
 	return [move_d,aim_d,move_state,shoot_state]
 
 def process_state(sensor_data):
@@ -48,8 +54,8 @@ class PlayMode(object):
 		self.id = 0
 
 	def take_action(self,state):
-		action = self.net(state)
-		return process_action(action)
+		mean = self.net.get_action(state)
+		return process_action(mean)
 
 	def process_server_msg(self, in_msg):
 		msg_type = in_msg.msg_type
@@ -127,10 +133,21 @@ class TrainMode(object):
 		td_delta = td_target - q
 		advantage = self.compute_advantage(gamma,lmbda)
 
-		action_ = process_action(self.actor(states))
+		action_, log_prob = self.actor(states)
 
-		
+		mean = self.actor(states)
+		#todo 多维下的std都是1
+		action_distribute = torch.distributions.Normal(mean)
+		#todo 重新保存old_prob,参考atari ppo
+		old_log_probs = action_distribute.log_prob(action_).sum(1)
 
+		log_prob = self.actor(states)
+
+		ratio = torch.exp(log_prob-old_log_probs)
+		surr1 = ratio *advantage
+		surr2 = torch.clamp(ratio, 1 - eps, 1 + eps) * advantage
+
+		actor_loss = torch.mean(-torch.min(surr1,surr2)).float()
 		critic_loss = torch.mean(F.mse_loss(q,td_target.detach()))
 		self.actor_opt.zero_grad()
 		self.critic_opt.zero_grad()
