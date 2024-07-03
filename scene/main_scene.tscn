@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://dpk7pwe2sp58r"]
+[gd_scene load_steps=11 format=3 uid="uid://dpk7pwe2sp58r"]
 
 [ext_resource type="Script" path="res://scripts/NetworkManager.gd" id="1_r0unh"]
 [ext_resource type="Script" path="res://scripts/GameManager.gd" id="1_xmjsa"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://b57j43s2lo4ei" path="res://scene/training_field.tscn" id="4_oykhi"]
 [ext_resource type="PackedScene" uid="uid://ffo7w3oxk7p1" path="res://scene/battle_field.tscn" id="5_bx0pd"]
 [ext_resource type="Resource" uid="uid://6hj7ugufsvop" path="res://config/ActorConfig.tres" id="6_og74n"]
+[ext_resource type="PackedScene" uid="uid://bmea3n3lciyjs" path="res://assets/nodes/blast.tscn" id="7_81spr"]
 [ext_resource type="Script" path="res://scripts/camera/TrainingCamera.gd" id="7_a7bef"]
 [ext_resource type="Script" path="res://scripts/camera/FollowCamera.gd" id="8_dl3fe"]
 
@@ -27,6 +28,7 @@ player_prefab = ExtResource("2_uuajh")
 enemy_prefab = ExtResource("3_ah63e")
 training_field_prefab = ExtResource("4_oykhi")
 arena_prefab = ExtResource("5_bx0pd")
+blast_prefab = ExtResource("7_81spr")
 game_settings = ExtResource("6_og74n")
 train_camera = NodePath("../TrainingCamera")
 game_camera = NodePath("../FollowCamera")

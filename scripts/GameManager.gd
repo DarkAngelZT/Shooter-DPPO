@@ -40,6 +40,9 @@ var training_field_prefab:PackedScene
 var arena_prefab:PackedScene
 
 @export
+var blast_prefab:PackedScene
+
+@export
 var game_settings:GameSettings
 
 @export
@@ -175,6 +178,12 @@ func on_player_spawn(player):
 func on_player_dead(player):
 	players.erase(player.id)
 	GameData.game_end[player.field_id] = true
+	
+func spawn_blast(pos):
+	var blast = blast_prefab.instantiate()
+	pos.y+=1
+	blast.position = pos
+	root.add_child(blast)
 	
 func test_func():
 	var sensor_data = players[0].get_sensor_data()

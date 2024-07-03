@@ -23,6 +23,7 @@ func _physics_process(delta):
 		var target_pos = Vector3(position)
 		target_pos.x = result.position.x
 		target_pos.z = result.position.z
+		GameManager.instance.spawn_blast(result.position)
 		on_hit(result.collider)
 	else:
 		position = new_position
