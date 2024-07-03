@@ -14,6 +14,8 @@ STATE_DIM = 201
 ACTION_DIM = 4
 HIDDEN_LAYER = 600
 
+A_UPDATE_STEP = 6
+
 buffer_size = 1024
 
 S_START = 1
@@ -126,33 +128,29 @@ class TrainMode(object):
 		return torch.FloatTensor(adv_list)
 
 	def train_tmp(self):
-		states,actions,rewards,next_states = self.make_sample()
+		states,actions,rewards,next_states, done = self.make_sample()
 
 		td_target = rewards+gamma*self.critic(next_states)*(1-done)
 		q = self.critic(state)
 		td_delta = td_target - q
 		advantage = self.compute_advantage(gamma,lmbda)
 
-		action_, log_prob = self.actor(states)
+		action_, old_log_probs = self.actor(states)
 
-		mean = self.actor(states)
-		#todo 多维下的std都是1
-		action_distribute = torch.distributions.Normal(mean)
-		#todo 重新保存old_prob,参考atari ppo
-		old_log_probs = action_distribute.log_prob(action_).sum(1)
+		for _ in range(A_UPDATE_STEP):			
+			_, log_prob = self.actor(states)
 
-		log_prob = self.actor(states)
+			ratio = torch.exp(log_prob-old_log_probs)
+			surr1 = ratio *advantage
+			surr2 = torch.clamp(ratio, 1 - eps, 1 + eps) * advantage
 
-		ratio = torch.exp(log_prob-old_log_probs)
-		surr1 = ratio *advantage
-		surr2 = torch.clamp(ratio, 1 - eps, 1 + eps) * advantage
-
-		actor_loss = torch.mean(-torch.min(surr1,surr2)).float()
-		critic_loss = torch.mean(F.mse_loss(q,td_target.detach()))
-		self.actor_opt.zero_grad()
-		self.critic_opt.zero_grad()
-		actor_loss.backward()
-		critic_loss.backward()
-		self.actor_opt.step()
-		self.critic_opt.step()
+			new_q = self.critic(state)
+			actor_loss = torch.mean(-torch.min(surr1,surr2)).float()
+			critic_loss = torch.mean(F.mse_loss(new_q,td_target.detach()))
+			self.actor_opt.zero_grad()
+			self.critic_opt.zero_grad()
+			actor_loss.backward()
+			critic_loss.backward()
+			self.actor_opt.step()
+			self.critic_opt.step()
 		
