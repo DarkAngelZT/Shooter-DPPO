@@ -6,6 +6,7 @@ import ai_pb2
 import numpy as np
 
 from torch.nn import functional as F
+import torch.multiprocessing as mp
 
 import model.Actor as Actor
 import model.Critic as Critic
@@ -30,6 +31,10 @@ critic_lr = 1e-3
 gamma = 0.93
 lmbda = 0.9
 eps = 0.2
+batch_size = 32
+
+def conv_bool(b):
+	return 1 if b else 0
 
 def random_normal(mu,std):
 	a = torch.normal(mu,std)
@@ -44,7 +49,15 @@ def process_action(a_mean):
 	return [move_d,aim_d,move_state,shoot_state]
 
 def process_state(sensor_data):
-	pass
+	player_data = [
+	sensor_data.hp, sensor_data.move_dir,sensor_data.aim_dir,
+	conv_bool(sensor_data.is_moving), sensor_data.shoot_cd_left ]
+	player_terrian_data = [i for i int sensor_data.terrain_info]
+	mob_data = [d for m in sensor_data.mob_data for d in (m.amount,m.dir_info)]
+	mob_bullet = [d for m in sensor_data.mob_bullet_data for d in (m.amount,m.dir_info)]
+	player_bullet = [d for m in sensor_data.player_bullet_data for d in (m.amount,m.dir_info)]
+	data = np.hstack([player_data,player_terrian_data,mob_data,mob_bullet,player_bullet])
+	return torch.FloatTensor(data)
 
 class PlayMode(object):
 	"""游戏模式"""
@@ -108,6 +121,8 @@ class TrainMode(object):
 		self.r=[]
 		self.s_prime=[]
 		self.done = []
+		self.memory_amount = 0
+		self.memory_index = 0
 
 		self.actor = Actor(STATE_DIM,ACTION_DIM,HIDDEN_LAYER)
 		self.critic = Critic(STATE_DIM)
@@ -115,7 +130,8 @@ class TrainMode(object):
 		self.critic_opt = torcj.optim.Adam(self.critic.parameters(),lr=critic_lr)
 
 	def make_sample(self):
-		pass
+		indices = np.random.choice(self.memory_amount, size=batch_size)
+		return self.s[indices,:],self.a[indices,:],self.r[indices,:],self.s_prime[indices,:],self.done[indices,:]
 
 	def compute_advantage(gamma, lmbda, td_delta):
 		td_delta = td_delta.detach().numpy()
@@ -133,7 +149,7 @@ class TrainMode(object):
 		td_target = rewards+gamma*self.critic(next_states)*(1-done)
 		q = self.critic(state)
 		td_delta = td_target - q
-		advantage = self.compute_advantage(gamma,lmbda)
+		advantage = self.compute_advantage(gamma, lmbda, td_delta)
 
 		action_, old_log_probs = self.actor(states)
 
@@ -153,4 +169,6 @@ class TrainMode(object):
 			critic_loss.backward()
 			self.actor_opt.step()
 			self.critic_opt.step()
-		
+	
+	def main_loop(self):
+		pass
