@@ -3,6 +3,7 @@ import socket
 import torch
 import model
 import ai_pb2
+import util
 import numpy as np
 
 from torch.nn import functional as F
@@ -108,7 +109,7 @@ class PlayMode(object):
 		while True:
 			data = self.client.recv(buffer_size)
 			server_msg.ParseFromString(data)
-			if not self.process_server_msg(server_msg, client_msg):
+			if not self.process_server_msg(server_msg):
 				break
 		self.client.close()
 
@@ -172,3 +173,39 @@ class TrainMode(object):
 	
 	def main_loop(self):
 		pass
+
+
+
+def worker(traffic_signal, record_counter,shared_record, shared_actor):
+	client.connect(("127.0.0.1",6666))
+	server_msg = ai_pb2.ServerMsg()
+	while True:
+		data = client.recv(buffer_size)
+		server_msg.ParseFromString(data)
+		msg_type = in_msg.msg_type
+		if msg_type == S_START:
+			self.field_id = in_msg.field_id
+			self.id = in_msg.id
+			return True
+		elif msg_type == S_CLOSE:
+			return False
+		elif msg_type == S_GAME_STATE:
+			if in_msg.game_end:
+				out_msg = ai_pb2.ClientMsg()
+				out_msg.field_id = self.field_id
+				out_msg.id = self.id
+				out_msg.msg_type = C_RESET
+				msg = out_msg.SerializeToString()
+				self.client.send(msg)
+
+			raw_sensor_data = in_msg.sensor_data
+			sensor_data = process_state(raw_sensor_data)
+			action = self.take_action(sensor_data)
+			out_msg.field_id = self.field_id
+			out_msg.id = self.id
+			out_msg.msg_type = C_OP
+			a = out_msg.action
+			a.move_dir,a.aim_dir,a.move_state,a.shoot_state = action
+			msg = out_msg.SerializeToString()
+			self.client.send(msg)
+	client.close()
