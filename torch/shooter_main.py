@@ -1,10 +1,12 @@
 import os
+import sys
 import socket
 import torch
 import model
 import ai_pb2
 import util
 import numpy as np
+import time
 
 from torch.nn import functional as F
 import torch.multiprocessing as mp
@@ -23,16 +25,22 @@ buffer_size = 1024
 S_START = 1
 S_GAME_STATE = 2
 S_CLOSE = 3
+S_SAVE = 4
 
 C_RESET = 10
 C_OP = 11
+C_PAUSE = 12
+C_RESUME = 13
 
 actor_lr = 3e-4
 critic_lr = 1e-3
 gamma = 0.93
 lmbda = 0.9
 eps = 0.2
-batch_size = 32
+batch_size = 64
+auto_save_ep = 10
+
+worker_amount = 9
 
 def conv_bool(b):
 	return 1 if b else 0
@@ -117,22 +125,20 @@ class TrainMode(object):
 	"""docstring for TrainMode"""
 	def __init__(self):
 		super(TrainMode, self).__init__()
-		self.s=[]
-		self.a=[]
-		self.r=[]
-		self.s_prime=[]
-		self.done = []
-		self.memory_amount = 0
-		self.memory_index = 0
-
 		self.actor = Actor(STATE_DIM,ACTION_DIM,HIDDEN_LAYER)
 		self.critic = Critic(STATE_DIM)
 		self.actor_opt = torch.optim.Adam(self.actor.parameters(), lr=actor_lr)
 		self.critic_opt = torcj.optim.Adam(self.critic.parameters(),lr=critic_lr)
 
+		self.record = util.GameRecord()
+		self.traffic_signal = util.TrafficLight()
+		self.record_counter = util.Counter()
+
+		self.process = []
+		self.power = util.TrafficLight()
+
 	def make_sample(self):
-		indices = np.random.choice(self.memory_amount, size=batch_size)
-		return self.s[indices,:],self.a[indices,:],self.r[indices,:],self.s_prime[indices,:],self.done[indices,:]
+		return self.record.get_records()
 
 	def compute_advantage(gamma, lmbda, td_delta):
 		td_delta = td_delta.detach().numpy()
@@ -144,7 +150,7 @@ class TrainMode(object):
 		adv_list.reverse()
 		return torch.FloatTensor(adv_list)
 
-	def train_tmp(self):
+	def train(self):
 		states,actions,rewards,next_states, done = self.make_sample()
 
 		td_target = rewards+gamma*self.critic(next_states)*(1-done)
@@ -171,41 +177,165 @@ class TrainMode(object):
 			self.actor_opt.step()
 			self.critic_opt.step()
 	
-	def main_loop(self):
+	def save(self):
+		pass
+	
+	def load(self, folder):
 		pass
 
+	def chief_logic(traffic_signal, record_counter,shared_record, shared_actor, power):
+		client.connect(("127.0.0.1",6699)) # 控制用连接
+		ep_num = 0
+		next_update_time = 0
+		server_msg = ai_pb2.ServerCtrlMsg()
+		while True:
+			data = client.recv(buffer_size)
+			server_msg.ParseFromString(data)
+			cmd = in_msg.cmd
+			if cmd == S_CLOSE:
+				power.switch()
+				break
+			if cmd == S_SAVE:
+				# save nerual network
+				self.save()
+			
+			if not traffic_signal.get():
+				self.train()
+				record_counter.reset()
+				shared_record.reset()
+				ep_num += 1
+				if ep_num % auto_save_ep == 0:
+					self.save()
+				traffic_signal.switch()
+
+		client.close()
+
+	def main_loop(self):
+		main_p = mp.Process(target=self.chief_logic,args=(self.traffic_signal,self.record_counter,self.record,self.actor,self.power))
+		self.process.append(main_p)
+
+		for i in range(worker_amount):
+			p = mp.Process(target=worker,args=(self.traffic_signal,self.record_counter,self.record,self.actor,self.power))
+			self.process.append(p)
+
+		for p in self.process:
+			p.start()
+
+		for p in self.process:
+			p.join()
 
 
-def worker(traffic_signal, record_counter,shared_record, shared_actor):
+def worker(traffic_signal, record_counter,shared_record, shared_actor, power):
 	client.connect(("127.0.0.1",6666))
+	paused = False
+	restart = True
+	game_end = False
 	server_msg = ai_pb2.ServerMsg()
+	state = None
+	action = None
+	s=[]
+	a=[]
+	r=[]
+	s_=[]
+	done = []
+
+	field_id = 0
+	cid = 0
+
 	while True:
+		if not power.get():
+			break
 		data = client.recv(buffer_size)
 		server_msg.ParseFromString(data)
 		msg_type = in_msg.msg_type
 		if msg_type == S_START:
-			self.field_id = in_msg.field_id
-			self.id = in_msg.id
-			return True
+			field_id = in_msg.field_id
+			cid = in_msg.id
+			continue
 		elif msg_type == S_CLOSE:
-			return False
+			break
 		elif msg_type == S_GAME_STATE:
-			if in_msg.game_end:
-				out_msg = ai_pb2.ClientMsg()
-				out_msg.field_id = self.field_id
-				out_msg.id = self.id
-				out_msg.msg_type = C_RESET
-				msg = out_msg.SerializeToString()
-				self.client.send(msg)
+			game_end = in_msg.game_end
 
 			raw_sensor_data = in_msg.sensor_data
 			sensor_data = process_state(raw_sensor_data)
-			action = self.take_action(sensor_data)
-			out_msg.field_id = self.field_id
-			out_msg.id = self.id
-			out_msg.msg_type = C_OP
-			a = out_msg.action
-			a.move_dir,a.aim_dir,a.move_state,a.shoot_state = action
-			msg = out_msg.SerializeToString()
-			self.client.send(msg)
+			if restart or state == None:
+				state = sensor_data
+				action = None
+				restart = False
+
+			elif paused:
+				state = sensor_data
+				action = None
+				paused = False
+
+			elif action != None:
+				if not traffic_signal.get():
+					if not game_end:
+						out_msg = ai_pb2.ClientMsg()
+						out_msg.field_id = field_id
+						out_msg.id = cid
+						out_msg.msg_type = C_PAUSE
+						msg = out_msg.SerializeToString()
+						client.send(msg)
+						paused = True
+
+					while not traffic_signal.get():
+						pass
+					s,a,r,s_,done = [], [], [], []
+
+					if paused:
+						out_msg = ai_pb2.ClientMsg()
+						out_msg.field_id = field_id
+						out_msg.id = cid
+						out_msg.msg_type = C_RESUME
+						msg = out_msg.SerializeToString()
+						client.send(msg)
+						paused = False
+
+				s.append(state)
+				a.append(action)
+				r.append(in_msg.reward)
+				s_.append(sensor_data)
+				done.append(0 if game_end else 1)
+				state = sensor_data
+				shared_counter.increase()
+				count = shared_counter.get()
+				if ep == EP_LEN-1 or count >= batch_size or game_end:
+					shared_record.add_records(s,a,r,s_,done)
+
+					if count>=batch_size:
+						traffic_signal.turn_off()
+
+			if game_end:
+				out_msg = ai_pb2.ClientMsg()
+				out_msg.field_id = field_id
+				out_msg.id = cid
+				out_msg.msg_type = C_RESET
+				msg = out_msg.SerializeToString()
+				client.send(msg)
+				restart = True
+			else:
+				mean = shared_actor.get_action(state)
+				action = process_action(mean)
+				out_msg.field_id = field_id
+				out_msg.id = cid
+				out_msg.msg_type = C_OP
+				a = out_msg.action
+				a.move_dir,a.aim_dir,a.move_state,a.shoot_state = action
+				msg = out_msg.SerializeToString()
+				client.send(msg)
+
 	client.close()
+
+
+	#=============main=================
+	if __name__ == '__main__':
+		cmd_mode = sys.argv[1] if len(argv)>1 else 'play'
+		mode = None
+		if cmd_mode == 'play':
+			mode = PlayMode()
+		elif cmd_mode == 'train':
+			mode = TrainMode()
+		if mode != None:
+			mode.main_loop()

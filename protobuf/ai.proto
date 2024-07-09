@@ -43,3 +43,7 @@ message ClientMsg{
 	int32 msg_type = 3;
 	Action action = 4;
 }
+
+message ServerCtrlMsg {
+	int32 cmd = 1;
+}
