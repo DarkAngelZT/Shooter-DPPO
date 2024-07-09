@@ -9,32 +9,32 @@ class GameRecord(object):
 	def __init__(self):
 		super(GameRecord, self).__init__()
 		self.lock = mp.Lock()
-		self.s=mp.Value('s',[])
-		self.a=mp.Value('a',[])
-		self.r=mp.Value('r',[])
-		self.s_prime=mp.Value('s_',[])
-		self.done = mp.Value('done',[])
-		self.memory_amount = mp.Value('amount',0)
-		self.memory_index = mp.Value('idx',0)
+		self.s=mp.Array('f',[])
+		self.a=mp.Array('f',[])
+		self.r=mp.Array('f',[])
+		self.s_prime=mp.Array('f',[])
+		self.done = mp.Array('f',[])
+		self.memory_amount = mp.Value('i',0)
+		self.memory_index = mp.Value('i',0)
 
 	def add_records(self, states, actions, rewards, next_states, done):
 		with self.lock:
-			self.s.extend(state)
-			self.a.extend(action)
-			self.r.extend(reward)
-			self.s_prime.extend(next_state)
-			self.done.extend(done)
+			self.s.value.extend(state)
+			self.a.value.extend(action)
+			self.r.value.extend(reward)
+			self.s_prime.value.extend(next_state)
+			self.done.value.extend(done)
 
 			self.memory_index += len(states)
 			self.memory_amount+= len(states)
 
 	def reset(self):
 		with self.lock:
-			self.s=[]
-			self.a=[]
-			self.r=[]
-			self.s_prime=[]
-			self.done = []
+			self.s.value=[]
+			self.a.value=[]
+			self.r.value=[]
+			self.s_prime.value=[]
+			self.done.value = []
 
 			self.memory_amount = 0
 			self.memory_index = 0
@@ -62,7 +62,7 @@ class TrafficLight:
 
 class Counter(object):
 	def __init__(self):
-		self.val = mp.Value("c",0)
+		self.val = mp.Value("i",0)
 		self.lock = mo.Lock()
 
 	def get(self):

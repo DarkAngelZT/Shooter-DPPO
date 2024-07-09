@@ -77,6 +77,10 @@ class PlayMode(object):
 		self.field_id = 0
 		self.id = 0
 
+	def load(self,fname):
+		self.net.load_state_dict(torch.load(fname))
+		print("load net finish")
+
 	def take_action(self,state):
 		mean = self.net.get_action(state)
 		return process_action(mean)
@@ -137,6 +141,8 @@ class TrainMode(object):
 		self.process = []
 		self.power = util.TrafficLight()
 
+		self.actor.share_memory()
+
 	def make_sample(self):
 		return self.record.get_records()
 
@@ -177,11 +183,25 @@ class TrainMode(object):
 			self.actor_opt.step()
 			self.critic_opt.step()
 	
-	def save(self):
-		pass
+	def save(self,folder, ep_num):
+		root = ''
+		if folder:
+			root = "%s\\"%folder
+		folder_name = '%sep_%i'%(root,ep_num)
+		if not os.path.exists(folder_name):
+			os.mkdir(folder_name)
+
+		torch.save(self.actor.state_dict(),'%s\\actor_%i.pth'%(folder_name,ep_num))
+		torch.save(self.critic.state_dict(),'%s\\critic_%i.pth'%(folder_name,ep_num))
+		print('saved net to %s'%folder_name)
 	
-	def load(self, folder):
-		pass
+	def load(self, folder, a_fname,c_fname):
+		actor_path = '%s\\%s.pth'%(folder,a_fname)
+		critic_path = '%s\\%s.pth'%(folder,c_fname)
+		if os.path.exists(actor_path) and os.path.exists(critic_path):
+			self.actor.load_state_dict(torch.load(actor_path))
+			self.critic.load_state_dict(torch.load(critic_path))
+			print('load net success')
 
 	def chief_logic(traffic_signal, record_counter,shared_record, shared_actor, power):
 		client.connect(("127.0.0.1",6699)) # 控制用连接
@@ -197,7 +217,7 @@ class TrainMode(object):
 				break
 			if cmd == S_SAVE:
 				# save nerual network
-				self.save()
+				self.save('',ep_num)
 			
 			if not traffic_signal.get():
 				self.train()
@@ -331,11 +351,21 @@ def worker(traffic_signal, record_counter,shared_record, shared_actor, power):
 
 	#=============main=================
 	if __name__ == '__main__':
-		cmd_mode = sys.argv[1] if len(argv)>1 else 'play'
+		argc = len(argv)
+		cmd_mode = sys.argv[1] if argc>1 else 'play'
 		mode = None
 		if cmd_mode == 'play':
 			mode = PlayMode()
+			if argc > 2:
+				fname = argv[2]
+				mode.load(fname)
 		elif cmd_mode == 'train':
 			mode = TrainMode()
+			if argc > 4:
+				folder = argv[2]
+				a_name = argv[3]
+				c_name = argv[4]
+				mode.load(folder,a_name,c_name)
+
 		if mode != None:
 			mode.main_loop()
