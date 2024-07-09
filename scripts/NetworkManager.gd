@@ -3,19 +3,26 @@ class_name NetworkManager extends Node
 const S_START = 1
 const S_GAME_STATE = 2
 const S_CLOSE = 3
+const S_SAVE = 4
 
 const C_RESET = 10
 const C_OP = 11
+const C_PAUSE = 12
+const C_RESUME = 13
 
 var server = TCPServer.new()
+var server_ctrl = TCPServer.new()
 
 var pending_clients:Array[StreamPeerTCP] = []
 var clients = {}
 var client_id_counter = 0
+var ctrl_client
 
 @export
 var reconnect_interval:float = 1
 var connected = false
+
+var training = false
 
 var next_retry_time = 0
 var test_recved = false
@@ -24,11 +31,18 @@ const ai_pb = preload("res://protobuf/ai_pb.gd")
 func _ready():
 	if GameManager.instance.control_mode != GameManager.ControlMode.Manual:
 		server.listen(6666)
+		
+	if GameManager.instance.game_mode == GameManager.GameMode.Train:
+		training = true
+		server_ctrl.listen(6699)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if GameManager.instance.control_mode == GameManager.ControlMode.Manual:
 		return
+	
+	if training and server_ctrl.is_connection_available():
+		ctrl_client = server_ctrl.take_connection()
 	
 	if server.is_connection_available():
 		var connection = server.take_connection()
@@ -37,7 +51,7 @@ func _process(delta):
 	for c in pending_clients:
 		clients[client_id_counter] = c
 		send_client_assignment_msg(c, client_id_counter, client_id_counter)
-		client_id_counter += 1		
+		client_id_counter += 1	
 
 	pending_clients.clear()
 	
@@ -57,7 +71,11 @@ func _process(delta):
 				elif msg_type == C_OP:
 					var id = msg_recv.get_id()
 					var action = msg_recv.get_action()
-					process_agent_action(id,action)					
+					process_agent_action(id,action)	
+				elif msg_type == C_PAUSE:
+					pass
+				elif msg_type == C_RESUME:
+					pass
 
 func get_client(id):
 	if clients.has(id):
