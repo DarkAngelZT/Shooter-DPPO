@@ -237,7 +237,7 @@ class TrainMode(object):
 				shared_record.reset()
 				ep_num += 1
 				if ep_num % auto_save_ep == 0:
-					self.save()
+					self.save('',ep_num)
 				traffic_signal.switch()
 
 		client.close()
