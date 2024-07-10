@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://dpk7pwe2sp58r"]
+[gd_scene load_steps=15 format=3 uid="uid://dpk7pwe2sp58r"]
 
 [ext_resource type="Script" path="res://scripts/NetworkManager.gd" id="1_r0unh"]
 [ext_resource type="Script" path="res://scripts/GameManager.gd" id="1_xmjsa"]
@@ -10,6 +10,24 @@
 [ext_resource type="PackedScene" uid="uid://bmea3n3lciyjs" path="res://assets/nodes/blast.tscn" id="7_81spr"]
 [ext_resource type="Script" path="res://scripts/camera/TrainingCamera.gd" id="7_a7bef"]
 [ext_resource type="Script" path="res://scripts/camera/FollowCamera.gd" id="8_dl3fe"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_hs12s"]
+font_size = 22
+outline_size = 2
+outline_color = Color(0, 0, 0, 0.662745)
+
+[sub_resource type="LabelSettings" id="LabelSettings_8uf8v"]
+font_size = 21
+outline_size = 2
+outline_color = Color(0, 0, 0, 0.682353)
+
+[sub_resource type="LabelSettings" id="LabelSettings_pvf85"]
+font_size = 21
+
+[sub_resource type="LabelSettings" id="LabelSettings_b7inv"]
+font_size = 21
+outline_size = 2
+outline_color = Color(0, 0, 0, 0.780392)
 
 [node name="SceneRoot" type="Node3D"]
 
@@ -58,6 +76,14 @@ offset = Vector3(0, 15, 0)
 [node name="Camera3D" type="Camera3D" parent="FollowCamera"]
 transform = Transform3D(1, 0, 0, 0, 0.173648, 0.984808, 0, -0.984808, 0.173648, 0, 0, 1.475)
 
+[node name="EpNum" type="Label" parent="."]
+offset_left = 380.0
+offset_top = 18.0
+offset_right = 460.0
+offset_bottom = 49.0
+text = "123"
+label_settings = SubResource("LabelSettings_hs12s")
+
 [node name="TestButton" type="Button" parent="."]
 anchors_preset = -1
 anchor_left = 0.021
@@ -70,5 +96,31 @@ offset_right = 0.479996
 offset_bottom = 0.215996
 text = "Test
 "
+
+[node name="EPLabel" type="Label" parent="."]
+offset_left = 329.0
+offset_top = 18.0
+offset_right = 381.0
+offset_bottom = 51.0
+text = "回合："
+label_settings = SubResource("LabelSettings_8uf8v")
+
+[node name="HPNum" type="Label" parent="."]
+visible = false
+offset_left = 806.0
+offset_top = 13.0
+offset_right = 846.0
+offset_bottom = 43.0
+text = "10"
+label_settings = SubResource("LabelSettings_pvf85")
+
+[node name="HPLabel" type="Label" parent="."]
+visible = false
+offset_left = 769.0
+offset_top = 13.0
+offset_right = 809.0
+offset_bottom = 43.0
+text = "HP:"
+label_settings = SubResource("LabelSettings_b7inv")
 
 [connection signal="button_down" from="TestButton" to="GameManager" method="test_func"]
