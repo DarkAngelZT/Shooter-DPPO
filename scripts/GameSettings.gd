@@ -15,3 +15,5 @@ extends Resource
 @export var eqs_inner_radius:float
 @export var eqs_outer_radius:float
 @export var eqs_update_interval:float
+
+@export var ai_update_interval:float

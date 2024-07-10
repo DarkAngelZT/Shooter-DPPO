@@ -31,4 +31,6 @@ class ActorState:
 static var game_end = {} #{field_id:true/false}
 static var player_input = {} #{field_id:PlayerInputState}
 static var actor_info = {} #{field_id:{actor_id:ActorState}}
+static var game_pause = {} #{field_id:true/false}
 
+static var ai_need_update = {} #{field_id:frame_to_run}

@@ -15,3 +15,4 @@ monster_attack_range = 10.0
 eqs_inner_radius = 5.0
 eqs_outer_radius = 9.0
 eqs_update_interval = 0.5
+ai_update_interval = 0.05

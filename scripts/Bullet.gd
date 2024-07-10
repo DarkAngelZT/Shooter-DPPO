@@ -15,6 +15,9 @@ func _ready():
 	space_state = get_world_3d().direct_space_state
 
 func _physics_process(delta):
+	if GameData.game_pause[instigator.field_id]:
+		return
+		
 	var old_position = position
 	var new_position = position + direction*(speed*delta)
 	var query = PhysicsRayQueryParameters3D.create(old_position,new_position,ray_collision_mask)

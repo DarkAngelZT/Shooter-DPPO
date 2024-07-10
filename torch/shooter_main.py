@@ -7,6 +7,7 @@ import ai_pb2
 import util
 import numpy as np
 import time
+import select
 
 from torch.nn import functional as F
 import torch.multiprocessing as mp
@@ -204,21 +205,32 @@ class TrainMode(object):
 			print('load net success')
 
 	def chief_logic(traffic_signal, record_counter,shared_record, shared_actor, power):
+		client = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+		client.setblocking(False)
+		client.settimeout(0.0)
 		client.connect(("127.0.0.1",6699)) # 控制用连接
 		ep_num = 0
 		next_update_time = 0
 		server_msg = ai_pb2.ServerCtrlMsg()
-		while True:
-			data = client.recv(buffer_size)
-			server_msg.ParseFromString(data)
-			cmd = in_msg.cmd
-			if cmd == S_CLOSE:
-				power.switch()
-				break
-			if cmd == S_SAVE:
-				# save nerual network
-				self.save('',ep_num)
-			
+		r_list = [client]
+		w_list = []
+		x_list = []
+		running = True
+		while running:
+			readable,writable,exceptions = select.select(r_list,w_list,x_list)
+			for s in readable:
+				data = s.recv(buffer_size)
+				server_msg.ParseFromString(data)
+				cmd = in_msg.cmd
+				if cmd == S_CLOSE:
+					power.switch()
+					running = False
+				if cmd == S_SAVE:
+					# save nerual network
+					self.save('',ep_num)
+			for s in exceptions:
+				r_list.remove(s)
+				
 			if not traffic_signal.get():
 				self.train()
 				record_counter.reset()
@@ -246,6 +258,7 @@ class TrainMode(object):
 
 
 def worker(traffic_signal, record_counter,shared_record, shared_actor, power):
+	client = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 	client.connect(("127.0.0.1",6666))
 	paused = False
 	restart = True
@@ -277,8 +290,11 @@ def worker(traffic_signal, record_counter,shared_record, shared_actor, power):
 		elif msg_type == S_GAME_STATE:
 			game_end = in_msg.game_end
 
-			raw_sensor_data = in_msg.sensor_data
-			sensor_data = process_state(raw_sensor_data)
+			sensor_data = None
+
+			if not game_end:
+				raw_sensor_data = in_msg.sensor_data
+				sensor_data = process_state(raw_sensor_data)
 			if restart or state == None:
 				state = sensor_data
 				action = None

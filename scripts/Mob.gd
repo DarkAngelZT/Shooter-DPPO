@@ -26,6 +26,14 @@ func _ready():
 	#nav_agent.velocity_computed.connect(on_move_velocity)
 
 func _physics_process(delta):
+	if is_game_paused():
+		if not behaviour_tree.is_paused():
+			behaviour_tree.pause()
+		return
+	else:
+		if behaviour_tree.is_paused():
+			behaviour_tree.resume()
+		
 	nav_move()
 
 func die():

@@ -273,6 +273,16 @@ func enable() -> void:
 func disable() -> void:
 	self.enabled = false
 
+func pause():
+	set_physics_process(false)
+	set_process(false)
+	
+func resume():
+	set_physics_process(true and process_thread == ProcessThread.PHYSICS)
+	set_process(true and process_thread == ProcessThread.IDLE)
+	
+func is_paused():
+	return not (is_processing() or is_physics_processing()) 
 
 func _exit_tree() -> void:
 	if custom_monitor:

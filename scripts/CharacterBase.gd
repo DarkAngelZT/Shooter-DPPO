@@ -36,6 +36,9 @@ func set_can_shoot(v):
 func _process(delta):
 	if is_dead:
 		return
+	if is_game_paused():
+		last_shoot_time += delta*1000
+		return
 	var now = Time.get_ticks_msec()
 	if now - last_shoot_time > shoot_interval_sec*1000:
 		set_can_shoot(true)
@@ -75,3 +78,6 @@ func get_bullet_speed()->float:
 
 func get_shoot_cd_left():
 	return maxi(0, shoot_interval_sec*1000 - (Time.get_ticks_msec() - last_shoot_time))
+	
+func is_game_paused():
+	return GameData.game_pause[field_id]

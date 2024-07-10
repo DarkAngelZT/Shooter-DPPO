@@ -1,7 +1,7 @@
 class_name GameManager
 extends Node
 
-static var instance
+static var instance:GameManager
 enum GameMode {
 	Train = 1,
 	Play = 2
@@ -57,6 +57,8 @@ var game_mode:GameMode = GameMode.Train
 @export
 var control_mode:ControlMode = ControlMode.Manual
 
+var next_ai_update_time = 0
+
 var training_fields = {} #{field_id:field}
 var players = {} #{field_id:player}
 var monsters = {} #{field_id:{monster_id:monster}}
@@ -69,6 +71,7 @@ func _ready():
 	if game_mode == GameMode.Play:
 		create_game_data(1)
 		var field = load_arena()
+		training_fields[0] = field
 		train_camera.set_active(false)
 		game_camera.set_active(true)
 		
@@ -87,7 +90,10 @@ func create_game_data(amount):
 	for i in range(amount):
 		GameData.player_input[i]=GameData.PlayerInputState.new(i)
 		GameData.game_end[i]=false
+		GameData.game_pause[i]=false
 		GameData.actor_info[i]={}
+		if control_mode == ControlMode.AI:
+			GameData.ai_need_update[i]=false
 
 func _physics_process(delta):
 	if control_mode == ControlMode.Manual and players.has(0):
@@ -111,6 +117,11 @@ func _physics_process(delta):
 		var aim_dir = Vector2(result_dir.x,result_dir.z)
 		aim_dir = aim_dir.normalized()
 		GameData.player_input[0].aim_direction = aim_dir
+	elif control_mode == ControlMode.AI:
+		if Input.is_key_pressed(KEY_P):
+			#manual save
+			NetworkManager.instance.request_save()
+		ai_loop()
 
 func load_trainning_field(center):
 	var field = training_field_prefab.instantiate()
@@ -144,6 +155,7 @@ func initialize_training_fields():
 			field.on_player_spawn.connect(on_player_spawn)
 			field.on_player_dead.connect(on_player_dead)
 			field.init(id_counter)
+			training_fields[id_counter] = field
 			TraningRoot.add_child(field)
 			id_counter += 1
 			amount += 1
@@ -157,6 +169,7 @@ func reset_field(field_id):
 		var field = training_fields[field_id]
 		field.reset()
 		GameData.game_end[field_id] = false
+		GameData.game_pause[field_id] = false
 
 func spawn_player(scene_root, position, rotation=Quaternion.IDENTITY):
 	var player = player_prefab.instantiate()
@@ -178,13 +191,44 @@ func on_player_spawn(player):
 func on_player_dead(player):
 	players.erase(player.id)
 	GameData.game_end[player.field_id] = true
+
+func pause_game(field_id):
+	GameData.game_pause[field_id] = true
 	
+func resume_game(field_id):
+	GameData.game_pause[field_id] = false
+
 func spawn_blast(pos):
 	var blast = blast_prefab.instantiate()
 	pos.y+=1
 	blast.position = pos
 	root.add_child(blast)
 	
+func ai_loop():
+	if Time.get_ticks_msec() > next_ai_update_time:
+		next_ai_update_time = Time.get_ticks_msec()+game_settings.ai_update_interval*1000
+	else:
+		return
+		
+	for f in training_fields:
+		var field_id = f.id
+		if not GameData.game_pause[field_id] and GameData.ai_need_update[field_id] == 1:
+			if GameData.game_end[field_id]:
+				NetworkManager.instance.send_server_state(field_id,field_id,null,0,true)
+			else:
+				var p = f.player
+				var data = p.get_sensor_data()
+				var game_end = GameData.game_end[p.field_id]
+				var reward = calculate_reward(p.field_id)
+				NetworkManager.instance.send_server_state(p.field_id,p.id,data,reward,game_end)
+			GameData.ai_need_update[field_id] = 0
+		if GameData.ai_need_update[field_id] > 0:
+			GameData.ai_need_update[field_id] -= 1
+
+func calculate_reward(field_id)->float:
+	var traing_field = training_fields[field_id]
+	return 0
+
 func test_func():
 	var sensor_data = players[0].get_sensor_data()
 	var p_data = sensor_data.player_data

@@ -10,13 +10,15 @@ const C_OP = 11
 const C_PAUSE = 12
 const C_RESUME = 13
 
+static var instance:NetworkManager
+
 var server = TCPServer.new()
 var server_ctrl = TCPServer.new()
 
 var pending_clients:Array[StreamPeerTCP] = []
 var clients = {}
 var client_id_counter = 0
-var ctrl_client
+var ctrl_client:StreamPeerTCP
 
 @export
 var reconnect_interval:float = 1
@@ -27,7 +29,10 @@ var training = false
 var next_retry_time = 0
 var test_recved = false
 const ai_pb = preload("res://protobuf/ai_pb.gd")
-# Called when the node enters the scene tree for the first time.
+
+func _enter_tree():
+	instance = self
+	
 func _ready():
 	if GameManager.instance.control_mode != GameManager.ControlMode.Manual:
 		server.listen(6666)
@@ -68,14 +73,31 @@ func _process(delta):
 				if msg_type == C_RESET:
 					var field_id = msg_recv.get_field_id()
 					GameManager.instance.reset_field(field_id)
+					GameData.ai_need_update[field_id] = 1
 				elif msg_type == C_OP:
 					var id = msg_recv.get_id()
 					var action = msg_recv.get_action()
 					process_agent_action(id,action)	
+					#在下一帧发送state和reward
+					GameData.ai_need_update[msg_recv.get_field_id()] = 2
 				elif msg_type == C_PAUSE:
-					pass
+					GameManager.instance.pause_game(msg_recv.get_field_id())
 				elif msg_type == C_RESUME:
-					pass
+					GameManager.instance.resume_game(msg_recv.get_field_id())
+
+func _notification(what):
+	if what == NOTIFICATION_PREDELETE:
+		if ctrl_client.get_status() == StreamPeerTCP.STATUS_CONNECTED :
+			var ctrl_msg = ai_pb.ServerCtrlMsg.new()
+			ctrl_msg.set_cmd(S_CLOSE)
+			var packed = ctrl_msg.to_bytes()
+			ctrl_client.put_data(packed)
+		
+		var serverMsg = ai_pb.ServerMsg.new()
+		serverMsg.set_msg_type(S_CLOSE)
+		var packed = serverMsg.to_bytes()
+		for client in clients.values():
+			client.put_data(packed)
 
 func get_client(id):
 	if clients.has(id):
@@ -127,7 +149,8 @@ func send_server_state(field_id,id,sensor_data,reward,game_end):
 	server_msg.set_msg_type(S_GAME_STATE)
 	server_msg.set_reward(reward)
 	server_msg.set_game_end(game_end)
-	serialize_sensor_data(sensor_data,server_msg)
+	if sensor_data != null:
+		serialize_sensor_data(sensor_data,server_msg)
 
 	var packed  = server_msg.to_bytes()
 	client.put_data(packed)
@@ -153,3 +176,9 @@ func process_agent_action(id,action):
 	GameData.player_input[id].direction = move_dir
 	GameData.player_input[id].aim_direction = aim_dir
 
+func request_save():
+	if ctrl_client.get_status() == StreamPeerTCP.STATUS_CONNECTED :
+		var ctrl_msg = ai_pb.ServerCtrlMsg.new()
+		ctrl_msg.set_cmd(S_SAVE)
+		var packed = ctrl_msg.to_bytes()
+		ctrl_client.put_data(packed)

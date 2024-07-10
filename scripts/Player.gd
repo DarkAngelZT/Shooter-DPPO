@@ -20,6 +20,9 @@ func _process(delta):
 	super._process(delta)
 
 func _physics_process(delta):
+	if is_game_paused():
+		return
+		
 	if GameData.actor_info[field_id][id].hp<=0:
 		return
 	var input = GameData.player_input[id]

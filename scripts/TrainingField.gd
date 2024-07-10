@@ -66,6 +66,9 @@ func eqs_setup():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(_delta):
+	if GameData.game_pause[id]:
+		eqs_update_time+=_delta*1000
+		return
 	if EQS.initilized and player and Time.get_ticks_msec() > eqs_update_time:
 		EQS.set_center(player.global_position)
 		eqs_update_time = Time.get_ticks_msec()+GameManager.instance.game_settings.eqs_update_interval*1000
