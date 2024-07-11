@@ -145,7 +145,8 @@ class TrainMode(object):
 		self.actor.share_memory()
 
 	def make_sample(self):
-		return self.record.get_records()
+		s,a,r,s_,d = self.record.get_records()
+		return torch.FloatTensor(s),torch.FloatTensor(a),torch.FloatTensor(s_),torch.FloatTensor(d)
 
 	def compute_advantage(gamma, lmbda, td_delta):
 		td_delta = td_delta.detach().numpy()
@@ -329,10 +330,10 @@ def worker(traffic_signal, record_counter,shared_record, shared_actor, power):
 						client.send(msg)
 						paused = False
 
-				s.append(state)
+				s.append(state.detach().tolist())
 				a.append(action)
 				r.append(in_msg.reward)
-				s_.append(sensor_data)
+				s_.append(sensor_data.detach().tolist())
 				done.append(0 if game_end else 1)
 				state = sensor_data
 				shared_counter.increase()
