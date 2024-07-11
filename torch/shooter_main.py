@@ -12,8 +12,8 @@ import select
 from torch.nn import functional as F
 import torch.multiprocessing as mp
 
-import model.Actor as Actor
-import model.Critic as Critic
+from model import Actor
+from model import Critic
 
 STATE_DIM = 201
 ACTION_DIM = 4
@@ -62,7 +62,7 @@ def process_state(sensor_data):
 	player_data = [
 	sensor_data.hp, sensor_data.move_dir,sensor_data.aim_dir,
 	conv_bool(sensor_data.is_moving), sensor_data.shoot_cd_left ]
-	player_terrian_data = [i for i int sensor_data.terrain_info]
+	player_terrian_data = [i for i in sensor_data.terrain_info]
 	mob_data = [d for m in sensor_data.mob_data for d in (m.amount,m.dir_info)]
 	mob_bullet = [d for m in sensor_data.mob_bullet_data for d in (m.amount,m.dir_info)]
 	player_bullet = [d for m in sensor_data.player_bullet_data for d in (m.amount,m.dir_info)]
@@ -116,7 +116,8 @@ class PlayMode(object):
 			self.client.send(msg)
 			return True
 
-	def main_loop(self):		
+	def main_loop(self):
+		print('start play mode')
 		self.client.connect(("127.0.0.1",6666))
 		server_msg = ai_pb2.ServerMsg()
 		while True:
@@ -131,9 +132,9 @@ class TrainMode(object):
 	def __init__(self):
 		super(TrainMode, self).__init__()
 		self.actor = Actor(STATE_DIM,ACTION_DIM,HIDDEN_LAYER)
-		self.critic = Critic(STATE_DIM)
+		self.critic = Critic(STATE_DIM,HIDDEN_LAYER)
 		self.actor_opt = torch.optim.Adam(self.actor.parameters(), lr=actor_lr)
-		self.critic_opt = torcj.optim.Adam(self.critic.parameters(),lr=critic_lr)
+		self.critic_opt = torch.optim.Adam(self.critic.parameters(),lr=critic_lr)
 
 		self.record = util.GameRecord()
 		self.traffic_signal = util.TrafficLight()
@@ -205,7 +206,7 @@ class TrainMode(object):
 			self.critic.load_state_dict(torch.load(critic_path))
 			print('load net success')
 
-	def chief_logic(traffic_signal, record_counter,shared_record, shared_actor, power):
+	def chief_logic(self,traffic_signal, record_counter,shared_record, shared_actor, power):
 		client = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 		client.setblocking(False)
 		client.settimeout(0.0)
@@ -244,6 +245,7 @@ class TrainMode(object):
 		client.close()
 
 	def main_loop(self):
+		print("start training mode")
 		main_p = mp.Process(target=self.chief_logic,args=(self.traffic_signal,self.record_counter,self.record,self.actor,self.power))
 		self.process.append(main_p)
 
@@ -366,23 +368,25 @@ def worker(traffic_signal, record_counter,shared_record, shared_actor, power):
 	client.close()
 
 
-	#=============main=================
-	if __name__ == '__main__':
-		argc = len(argv)
-		cmd_mode = sys.argv[1] if argc>1 else 'play'
-		mode = None
-		if cmd_mode == 'play':
-			mode = PlayMode()
-			if argc > 2:
-				fname = argv[2]
-				mode.load(fname)
-		elif cmd_mode == 'train':
-			mode = TrainMode()
-			if argc > 4:
-				folder = argv[2]
-				a_name = argv[3]
-				c_name = argv[4]
-				mode.load(folder,a_name,c_name)
+#=============main=================
+if __name__ == '__main__':
+	argc = len(sys.argv)
+	cmd_mode = sys.argv[1] if argc>1 else 'play'
+	mode = None
+	if cmd_mode == 'play':
+		mode = PlayMode()
+		if argc > 2:
+			fname = sys.argv[2]
+			mode.load(fname)
+	elif cmd_mode == 'train':
+		mode = TrainMode()
+		if argc > 4:
+			folder = sys.argv[2]
+			a_name = sys.argv[3]
+			c_name = sys.argv[4]
+			mode.load(folder,a_name,c_name)
 
-		if mode != None:
-			mode.main_loop()
+	if mode != None:
+		mode.main_loop()
+	else:
+		print("invalid mode: %s"%cmd_mode)

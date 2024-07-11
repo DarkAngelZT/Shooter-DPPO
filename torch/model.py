@@ -11,7 +11,7 @@ class Actor(nn.Module):
 			nn.Linear(n_states, hidden_dim),
 			nn.ReLU(inplace=True),
 			nn.Linear(hidden_dim,hidden_dim),
-			nn.ReLU(inplace=True)
+			nn.ReLU(inplace=True),
 			nn.Linear(hidden_dim,n_actions),
 		)
 		self.actor_logstd = nn.Parameter(torch.zeros(1, n_actions))
@@ -36,12 +36,12 @@ class Actor(nn.Module):
 
 class Critic(nn.Module):
 	"""Critic Net"""
-	def __init__(self, n_states):
+	def __init__(self, n_states, hidden_dim):
 		super(Critic, self).__init__()
 		self.model = nn.Sequential(
 			nn.Linear(n_states, hidden_dim*3),
 			nn.ReLU(inplace=True),
-			nn.Linear(hidden_dim*3,1)
+			nn.Linear(hidden_dim*3,1),
 		)
 	
 	def forward(self, inputs):

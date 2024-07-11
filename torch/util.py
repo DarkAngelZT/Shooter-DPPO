@@ -63,7 +63,7 @@ class TrafficLight:
 class Counter(object):
 	def __init__(self):
 		self.val = mp.Value("i",0)
-		self.lock = mo.Lock()
+		self.lock = mp.Lock()
 
 	def get(self):
 		with self.lock:
