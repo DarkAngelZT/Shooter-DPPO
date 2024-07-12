@@ -6,35 +6,35 @@ memory_capacity = 10000
 
 class GameRecord(object):
 	"""docstring for GameRecord"""
-	def __init__(self):
+	def __init__(self,manager):
 		super(GameRecord, self).__init__()
 		self.lock = mp.Lock()
-		self.s=mp.Array('f',[])
-		self.a=mp.Array('f',[])
-		self.r=mp.Array('f',[])
-		self.s_prime=mp.Array('f',[])
-		self.done = mp.Array('f',[])
+		self.s=manager.list()
+		self.a=manager.list()
+		self.r=manager.list()
+		self.s_prime=manager.list()
+		self.done = manager.list()
 		self.memory_amount = mp.Value('i',0)
 		self.memory_index = mp.Value('i',0)
 
 	def add_records(self, states, actions, rewards, next_states, done):
 		with self.lock:
-			self.s.value.extend(state)
-			self.a.value.extend(action)
-			self.r.value.extend(reward)
-			self.s_prime.value.extend(next_state)
-			self.done.value.extend(done)
+			self.s.append(state)
+			self.a.append(action)
+			self.r.append(reward)
+			self.s_prime.append(next_state)
+			self.done.append(done)
 
 			self.memory_index += len(states)
 			self.memory_amount+= len(states)
 
 	def reset(self):
 		with self.lock:
-			self.s.value=[]
-			self.a.value=[]
-			self.r.value=[]
-			self.s_prime.value=[]
-			self.done.value = []
+			del self.s=[:]
+			del self.a=[:]
+			del self.r=[:]
+			del self.s_prime=[:]
+			del self.done = [:]
 
 			self.memory_amount = 0
 			self.memory_index = 0

@@ -136,7 +136,8 @@ class TrainMode(object):
 		self.actor_opt = torch.optim.Adam(self.actor.parameters(), lr=actor_lr)
 		self.critic_opt = torch.optim.Adam(self.critic.parameters(),lr=critic_lr)
 
-		self.record = util.GameRecord()
+		self.mp_manager = mp.Manager()
+		self.record = util.GameRecord(mp_manager)
 		self.traffic_signal = util.TrafficLight()
 		self.record_counter = util.Counter()
 
