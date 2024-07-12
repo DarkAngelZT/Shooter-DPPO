@@ -227,7 +227,12 @@ func ai_loop():
 
 func calculate_reward(field_id)->float:
 	var traing_field = training_fields[field_id]
-	return 0
+	if GameData.game_end[field_id]:
+		return 0
+	else:
+		var reward = 1
+		var life_loss_penalty = 0.05
+		return reward
 
 func test_func():
 	var sensor_data = players[0].get_sensor_data()

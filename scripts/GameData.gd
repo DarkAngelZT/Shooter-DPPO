@@ -34,3 +34,9 @@ static var actor_info = {} #{field_id:{actor_id:ActorState}}
 static var game_pause = {} #{field_id:true/false}
 
 static var ai_need_update = {} #{field_id:frame_to_run}
+
+# for reward calculation
+# these data reset every ai logic update frame(not game frame nor physics frame)
+static var player_hp_cache = {} # {id:hp}
+static var player_shooted = {} # {id:true/false}
+static var mob_kill_cache = {} # {id:count}

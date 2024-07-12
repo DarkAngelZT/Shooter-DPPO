@@ -62,3 +62,7 @@ func get_bullet_speed()->float:
 	
 func get_sensor_data():
 	return $PlayerSensor.gether_sensor_data()
+	
+func take_damage(damage):
+	super.take_damage(damage)
+	GameData.player_hp_cache[id] = health
