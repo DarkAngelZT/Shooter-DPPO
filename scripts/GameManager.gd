@@ -93,7 +93,8 @@ func create_game_data(amount):
 		GameData.game_pause[i]=false
 		GameData.actor_info[i]={}
 		if control_mode == ControlMode.AI:
-			GameData.ai_need_update[i]=false
+			GameData.ai_need_update[i] = 1
+			GameData.mob_kill_cache[i] = 0
 
 func _physics_process(delta):
 	if control_mode == ControlMode.Manual and players.has(0):
@@ -187,6 +188,8 @@ func spawn_monster(scene_root, position, rotation=Quaternion.IDENTITY):
 	
 func on_player_spawn(player):
 	players[player.id] = player
+	GameData.player_hp_cache[player.id] = player.health
+	GameData.player_shooted[player.id] = false
 	
 func on_player_dead(player):
 	players.erase(player.id)
@@ -210,7 +213,7 @@ func ai_loop():
 	else:
 		return
 		
-	for f in training_fields:
+	for f in training_fields.values():
 		var field_id = f.id
 		if not GameData.game_pause[field_id] and GameData.ai_need_update[field_id] == 1:
 			if GameData.game_end[field_id]:
@@ -221,17 +224,25 @@ func ai_loop():
 				var game_end = GameData.game_end[p.field_id]
 				var reward = calculate_reward(p.field_id)
 				NetworkManager.instance.send_server_state(p.field_id,p.id,data,reward,game_end)
+				GameData.player_shooted[p.id] = false
+				GameData.mob_kill_cache[p.id] = 0
 			GameData.ai_need_update[field_id] = 0
 		if GameData.ai_need_update[field_id] > 0:
 			GameData.ai_need_update[field_id] -= 1
 
 func calculate_reward(field_id)->float:
-	var traing_field = training_fields[field_id]
+	var training_field = training_fields[field_id]
 	if GameData.game_end[field_id]:
 		return 0
 	else:
-		var reward = 1
-		var life_loss_penalty = 0.05
+		var player = training_field.player
+
+		var stay_penalty = -0.02 * (1 if GameData.player_input[player.id].move_state==GameData.Op_Stop else 0)
+		var life_loss_penalty = -0.05 * (GameData.player_hp_cache[player.id] - player.health)
+		var shoot_bonus = 0.01 if GameData.player_shooted[player.id] else 0
+		var kill_reward = 0.03 * GameData.mob_kill_cache[player.id]
+		
+		var reward = stay_penalty + life_loss_penalty + shoot_bonus + kill_reward
 		return reward
 
 func test_func():

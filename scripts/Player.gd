@@ -66,3 +66,8 @@ func get_sensor_data():
 func take_damage(damage):
 	super.take_damage(damage)
 	GameData.player_hp_cache[id] = health
+	
+func shoot():
+	if can_shoot:
+		GameData.player_shooted[id] = true
+	super.shoot()
