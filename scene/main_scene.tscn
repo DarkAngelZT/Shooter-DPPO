@@ -38,7 +38,6 @@ script = ExtResource("1_r0unh")
 process_mode = 3
 editor_description = "场景管理器"
 script = ExtResource("1_xmjsa")
-field_amount = 9
 TraningRoot = NodePath("../TrainingRoot")
 ArenaRoot = NodePath("../Arena")
 root = NodePath("..")
@@ -50,7 +49,7 @@ blast_prefab = ExtResource("7_81spr")
 game_settings = ExtResource("6_og74n")
 train_camera = NodePath("../TrainingCamera")
 game_camera = NodePath("../FollowCamera")
-game_mode = 2
+control_mode = 2
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.875118, 0.465046, -0.133789, 0, 0.276476, 0.961021, 0.483909, -0.841007, 0.241949, 0, 4.66107, 0)
