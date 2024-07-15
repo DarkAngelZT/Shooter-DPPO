@@ -19,8 +19,8 @@ class Actor(nn.Module):
 	def forward(self, inputs):
 		x = self.model(inputs)
 		mean = torch.tanh(x)
-		action_logstd = self.actor_logstd.expand_as(mean)
-		action_std = torch.exp(actor_logstd)
+		# action_logstd = self.actor_logstd.expand_as(mean)
+		action_std = torch.exp(self.actor_logstd)
 		dist = torch.distributions.Normal(mean, action_std)
 		a = dist.sample()
 		return a, dist.log_prob(a).sum(1)
@@ -28,8 +28,8 @@ class Actor(nn.Module):
 	def get_action(self,inputs):
 		x = self.model(inputs)
 		mean = torch.tanh(x)
-		action_logstd = self.actor_logstd.expand_as(mean)
-		action_std = torch.exp(actor_logstd)
+		# action_logstd = self.actor_logstd.expand_as(mean)
+		action_std = torch.exp(self.actor_logstd)
 		dist = torch.distributions.Normal(mean, action_std)
 		a = dist.sample()
 		return a

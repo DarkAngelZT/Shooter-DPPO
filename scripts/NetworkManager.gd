@@ -56,6 +56,7 @@ func _process(delta):
 	for c in pending_clients:
 		clients[client_id_counter] = c
 		send_client_assignment_msg(c, client_id_counter, client_id_counter)
+		GameData.game_pause[client_id_counter] = false
 		client_id_counter += 1	
 
 	pending_clients.clear()
@@ -67,8 +68,6 @@ func _process(delta):
 			var msg_recv = ai_pb.ClientMsg.new()
 			var result_code = msg_recv.from_bytes(packet[1])
 			if result_code == ai_pb.PB_ERR.NO_ERRORS:
-				print('receive data')
-				print(msg_recv.to_string())
 				var msg_type = msg_recv.get_msg_type()
 				if msg_type == C_RESET:
 					var field_id = msg_recv.get_field_id()
@@ -87,7 +86,7 @@ func _process(delta):
 
 func _notification(what):
 	if what == NOTIFICATION_PREDELETE:
-		if ctrl_client.get_status() == StreamPeerTCP.STATUS_CONNECTED :
+		if ctrl_client != null and ctrl_client.get_status() == StreamPeerTCP.STATUS_CONNECTED :
 			var ctrl_msg = ai_pb.ServerCtrlMsg.new()
 			ctrl_msg.set_cmd(S_CLOSE)
 			var packed = ctrl_msg.to_bytes()
@@ -111,7 +110,7 @@ func _angle_to_vect2(angle):
 	return Vector2(x,y)
 
 func serialize_sensor_data(sensor_data, target_msg):
-	var msg = target_msg.new_sesnor_data()
+	var msg = target_msg.new_sensor_data()
 	var player_state = msg.new_player_state()
 	#===player state===
 	player_state.set_hp(sensor_data.player_data.hp)
@@ -120,7 +119,7 @@ func serialize_sensor_data(sensor_data, target_msg):
 	player_state.set_is_moving(sensor_data.player_data.is_moving)
 	player_state.set_shoot_cd_left(sensor_data.player_data.shoot_cd_left)
 	for distance in sensor_data.player_data.terrain_info:
-		player_state.terrain_info.add_terrain_info(distance)
+		player_state.add_terrain_info(distance)
 	#===================
 	for i in range(PlayerSensor.NEAR,PlayerSensor.FAR+1):
 		#===mob data===
@@ -142,7 +141,7 @@ func serialize_sensor_data(sensor_data, target_msg):
 func send_server_state(field_id,id,sensor_data,reward,game_end):
 	var client = get_client(id)
 	if client == null:
-		return
+		return false
 	var server_msg = ai_pb.ServerMsg.new()
 	server_msg.set_field_id(field_id)
 	server_msg.set_id(id)
@@ -154,6 +153,7 @@ func send_server_state(field_id,id,sensor_data,reward,game_end):
 
 	var packed  = server_msg.to_bytes()
 	client.put_data(packed)
+	return true
 
 func send_client_assignment_msg(client,field_id,id):
 	var server_msg = ai_pb.ServerMsg.new()

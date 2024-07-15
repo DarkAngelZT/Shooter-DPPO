@@ -10,12 +10,14 @@ var speed:float = 0
 var direction:Vector3
 var space_state
 var instigator
+var instigator_field_id
+var instigator_id
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	space_state = get_world_3d().direct_space_state
 
 func _physics_process(delta):
-	if GameData.game_pause[instigator.field_id]:
+	if GameData.game_pause[instigator_field_id]:
 		return
 		
 	var old_position = position
@@ -34,3 +36,11 @@ func _physics_process(delta):
 func on_hit(other):
 	hit.emit(other)
 	queue_free()
+
+func on_field_reset(field_id):
+	if field_id == instigator_field_id:
+		queue_free()
+
+func _notification(what):
+	if what == NOTIFICATION_PREDELETE:
+		GameManager.instance.on_field_reset.disconnect(on_field_reset)

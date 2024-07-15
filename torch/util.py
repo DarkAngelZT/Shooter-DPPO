@@ -30,11 +30,11 @@ class GameRecord(object):
 
 	def reset(self):
 		with self.lock:
-			del self.s=[:]
-			del self.a=[:]
-			del self.r=[:]
-			del self.s_prime=[:]
-			del self.done = [:]
+			del self.s[:]
+			del self.a[:]
+			del self.r[:]
+			del self.s_prime[:]
+			del self.done[:]
 
 			self.memory_amount = 0
 			self.memory_index = 0

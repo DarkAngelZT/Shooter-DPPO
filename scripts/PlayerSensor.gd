@@ -221,11 +221,17 @@ func gether_sensor_data():
 		else:
 			var obj_owner = obj.owner
 			if obj_owner is Bullet:
-				if obj_owner.instigator.field_id == owner_field_id:
-					if obj_owner.instigator is Player:
-						bullet_player.append(obj_owner)
-					elif obj_owner.instigator is Mob:
-						bullet_monster.append(obj_owner)
+				if obj_owner.instigator_field_id == owner_field_id:
+					if  obj_owner.instigator != null:
+						if obj_owner.instigator is Player:
+							bullet_player.append(obj_owner)
+						elif obj_owner.instigator is Mob:
+							bullet_monster.append(obj_owner)
+					else:
+						if GameManager.instance.players.has(obj_owner.instigator_id):
+							bullet_player.append(obj_owner)
+						else:
+							bullet_monster.append(obj_owner)
 	#计算分区信息
 	analyse_bullets(bullet_monster,sensor_data.mob_bullet_data)
 	analyse_bullets(bullet_player, sensor_data.player_bullet_data)

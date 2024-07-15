@@ -53,8 +53,11 @@ func shoot():
 		
 		bullet.speed = get_bullet_speed()
 		bullet.instigator = self
+		bullet.instigator_id = self.id
+		bullet.instigator_field_id = self.field_id
 		
 		bullet.hit.connect(on_bullet_hit)
+		GameManager.instance.on_field_reset.connect(bullet.on_field_reset)
 		GameManager.instance.root.add_child(bullet)
 		set_can_shoot(false)
 

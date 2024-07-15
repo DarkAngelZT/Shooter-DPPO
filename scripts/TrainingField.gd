@@ -27,8 +27,11 @@ func reset():
 	monsters.clear()
 	for spawner in mob_spawner:
 		spawner.reset()
-	player.queue_free()
+	if player:
+		player.queue_free()
 	GameData.actor_info[id].clear()
+	GameData.mob_kill_cache[id]=0
+	GameData.player_hp_cache[id] = GameManager.instance.game_settings.player_health
 	init(id)
 	on_reset.emit(self)
 # Called when the node enters the scene tree for the first time.
@@ -86,6 +89,7 @@ func on_monster_spawned(mob):
 
 func on_mob_dead(mob):
 	if is_instance_valid(mob):
+		GameData.mob_kill_cache[id]+=1
 		GameData.actor_info[id].erase(mob.id)
 		monsters.erase(mob.id)
 		mob.queue_free()

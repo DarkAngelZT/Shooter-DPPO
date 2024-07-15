@@ -15,7 +15,7 @@ import torch.multiprocessing as mp
 from model import Actor
 from model import Critic
 
-STATE_DIM = 201
+STATE_DIM = 205
 ACTION_DIM = 4
 HIDDEN_LAYER = 600
 
@@ -41,14 +41,14 @@ eps = 0.2
 batch_size = 64
 auto_save_ep = 10
 
-worker_amount = 9
+worker_amount = 1
 
 def conv_bool(b):
 	return 1 if b else 0
 
 def random_normal(mu,std):
 	a = torch.normal(mu,std)
-	return [a.item()]
+	return a.detach().tolist()[0]
 
 def process_action(a_mean):
 	a = random_normal(a_mean,1)
@@ -60,9 +60,9 @@ def process_action(a_mean):
 
 def process_state(sensor_data):
 	player_data = [
-	sensor_data.hp, sensor_data.move_dir,sensor_data.aim_dir,
-	conv_bool(sensor_data.is_moving), sensor_data.shoot_cd_left ]
-	player_terrian_data = [i for i in sensor_data.terrain_info]
+	sensor_data.player_state.hp, sensor_data.player_state.move_dir,sensor_data.player_state.aim_dir,
+	conv_bool(sensor_data.player_state.is_moving), sensor_data.player_state.shoot_cd_left ]
+	player_terrian_data = [i for i in sensor_data.player_state.terrain_info]
 	mob_data = [d for m in sensor_data.mob_data for d in (m.amount,m.dir_info)]
 	mob_bullet = [d for m in sensor_data.mob_bullet_data for d in (m.amount,m.dir_info)]
 	player_bullet = [d for m in sensor_data.player_bullet_data for d in (m.amount,m.dir_info)]
@@ -91,12 +91,13 @@ class PlayMode(object):
 		if msg_type == S_START:
 			self.field_id = in_msg.field_id
 			self.id = in_msg.id
+			print("get player info: field: %i, id: %i"%(self.field_id,self.id))
 			return True
 		elif msg_type == S_CLOSE:
 			return False
 		elif msg_type == S_GAME_STATE:
-			if in_msg.game_end:
-				out_msg = ai_pb2.ClientMsg()
+			out_msg = ai_pb2.ClientMsg()
+			if in_msg.game_end:				
 				out_msg.field_id = self.field_id
 				out_msg.id = self.id
 				out_msg.msg_type = C_RESET

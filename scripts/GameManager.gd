@@ -12,6 +12,8 @@ enum ControlMode{
 	AI = 2
 }
 
+signal on_field_reset
+
 @export
 var field_amount:int = 1
 
@@ -90,7 +92,7 @@ func create_game_data(amount):
 	for i in range(amount):
 		GameData.player_input[i]=GameData.PlayerInputState.new(i)
 		GameData.game_end[i]=false
-		GameData.game_pause[i]=false
+		GameData.game_pause[i]= true if control_mode == ControlMode.AI else false
 		GameData.actor_info[i]={}
 		if control_mode == ControlMode.AI:
 			GameData.ai_need_update[i] = 1
@@ -171,6 +173,8 @@ func reset_field(field_id):
 		field.reset()
 		GameData.game_end[field_id] = false
 		GameData.game_pause[field_id] = false
+		
+		on_field_reset.emit(field_id)
 
 func spawn_player(scene_root, position, rotation=Quaternion.IDENTITY):
 	var player = player_prefab.instantiate()
@@ -215,20 +219,22 @@ func ai_loop():
 		
 	for f in training_fields.values():
 		var field_id = f.id
-		if not GameData.game_pause[field_id] and GameData.ai_need_update[field_id] == 1:
-			if GameData.game_end[field_id]:
-				NetworkManager.instance.send_server_state(field_id,field_id,null,0,true)
-			else:
-				var p = f.player
-				var data = p.get_sensor_data()
-				var game_end = GameData.game_end[p.field_id]
-				var reward = calculate_reward(p.field_id)
-				NetworkManager.instance.send_server_state(p.field_id,p.id,data,reward,game_end)
-				GameData.player_shooted[p.id] = false
-				GameData.mob_kill_cache[p.id] = 0
-			GameData.ai_need_update[field_id] = 0
-		if GameData.ai_need_update[field_id] > 0:
-			GameData.ai_need_update[field_id] -= 1
+		if not GameData.game_pause[field_id]:
+			if GameData.ai_need_update[field_id] == 1:
+				if GameData.game_end[field_id]:
+					NetworkManager.instance.send_server_state(field_id,field_id,null,0,true)
+				else:
+					var p = f.player
+					var data = p.get_sensor_data()
+					var game_end = GameData.game_end[p.field_id]
+					var reward = calculate_reward(p.field_id)
+					if not NetworkManager.instance.send_server_state(p.field_id,p.id,data,reward,game_end):
+						return
+					GameData.player_shooted[p.id] = false
+					GameData.mob_kill_cache[p.id] = 0
+				GameData.ai_need_update[field_id] = 0
+			if GameData.ai_need_update[field_id] > 0:
+				GameData.ai_need_update[field_id] -= 1
 
 func calculate_reward(field_id)->float:
 	var training_field = training_fields[field_id]
@@ -243,6 +249,11 @@ func calculate_reward(field_id)->float:
 		var kill_reward = 0.03 * GameData.mob_kill_cache[player.id]
 		
 		var reward = stay_penalty + life_loss_penalty + shoot_bonus + kill_reward
+		
+		#clean up
+		GameData.mob_kill_cache[player.id] = 0
+		GameData.player_shooted[player.id] =false
+		GameData.player_hp_cache[player.id] = player.health
 		return reward
 
 func test_func():
