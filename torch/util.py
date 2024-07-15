@@ -19,14 +19,14 @@ class GameRecord(object):
 
 	def add_records(self, states, actions, rewards, next_states, done):
 		with self.lock:
-			self.s.append(state)
-			self.a.append(action)
-			self.r.append(reward)
-			self.s_prime.append(next_state)
-			self.done.append(done)
+			self.s.extend(states)
+			self.a.extend(actions)
+			self.r.extend(rewards)
+			self.s_prime.extend(next_states)
+			self.done.extend(done)
 
-			self.memory_index += len(states)
-			self.memory_amount+= len(states)
+			self.memory_index.value += len(states)
+			self.memory_amount.value += len(states)
 
 	def reset(self):
 		with self.lock:
@@ -36,8 +36,8 @@ class GameRecord(object):
 			del self.s_prime[:]
 			del self.done[:]
 
-			self.memory_amount = 0
-			self.memory_index = 0
+			self.memory_amount.value = 0
+			self.memory_index.value = 0
 
 	def get_records(self):
 		with self.lock:

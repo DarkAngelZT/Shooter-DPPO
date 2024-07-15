@@ -137,8 +137,8 @@ class TrainMode(object):
 		self.actor_opt = torch.optim.Adam(self.actor.parameters(), lr=actor_lr)
 		self.critic_opt = torch.optim.Adam(self.critic.parameters(),lr=critic_lr)
 
-		self.mp_manager = mp.Manager()
-		self.record = util.GameRecord(self.mp_manager)
+		mp_manager = mp.Manager()
+		self.record = util.GameRecord(mp_manager)
 		self.traffic_signal = util.TrafficLight()
 		self.record_counter = util.Counter()
 
@@ -149,9 +149,9 @@ class TrainMode(object):
 
 	def make_sample(self):
 		s,a,r,s_,d = self.record.get_records()
-		return torch.FloatTensor(s),torch.FloatTensor(a),torch.FloatTensor(s_),torch.FloatTensor(d)
+		return torch.FloatTensor(s),torch.FloatTensor(a),torch.FloatTensor(r),torch.FloatTensor(s_),torch.FloatTensor(d)
 
-	def compute_advantage(gamma, lmbda, td_delta):
+	def compute_advantage(self, gamma, lmbda, td_delta):
 		td_delta = td_delta.detach().numpy()
 		adv_list = []
 		adv = 0
@@ -162,23 +162,25 @@ class TrainMode(object):
 		return torch.FloatTensor(adv_list)
 
 	def train(self):
+		print("start train")
 		states,actions,rewards,next_states, done = self.make_sample()
 
 		td_target = rewards+gamma*self.critic(next_states)*(1-done)
-		q = self.critic(state)
+		q = self.critic(states)
 		td_delta = td_target - q
 		advantage = self.compute_advantage(gamma, lmbda, td_delta)
 
 		action_, old_log_probs = self.actor(states)
-
-		for _ in range(A_UPDATE_STEP):			
+		print('old probs')
+		for i in range(A_UPDATE_STEP):		
+			print('ep',i)	
 			_, log_prob = self.actor(states)
 
 			ratio = torch.exp(log_prob-old_log_probs)
 			surr1 = ratio *advantage
 			surr2 = torch.clamp(ratio, 1 - eps, 1 + eps) * advantage
 
-			new_q = self.critic(state)
+			new_q = self.critic(states)
 			actor_loss = torch.mean(-torch.min(surr1,surr2)).float()
 			critic_loss = torch.mean(F.mse_loss(new_q,td_target.detach()))
 			self.actor_opt.zero_grad()
@@ -210,8 +212,6 @@ class TrainMode(object):
 
 	def chief_logic(self,traffic_signal, record_counter,shared_record, shared_actor, power):
 		client = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-		client.setblocking(False)
-		client.settimeout(0.0)
 		client.connect(("127.0.0.1",6699)) # 控制用连接
 		ep_num = 0
 		next_update_time = 0
@@ -225,7 +225,7 @@ class TrainMode(object):
 			for s in readable:
 				data = s.recv(buffer_size)
 				server_msg.ParseFromString(data)
-				cmd = in_msg.cmd
+				cmd = server_msg.cmd
 				if cmd == S_CLOSE:
 					power.switch()
 					running = False
@@ -285,20 +285,20 @@ def worker(traffic_signal, record_counter,shared_record, shared_actor, power):
 			break
 		data = client.recv(buffer_size)
 		server_msg.ParseFromString(data)
-		msg_type = in_msg.msg_type
+		msg_type = server_msg.msg_type
 		if msg_type == S_START:
-			field_id = in_msg.field_id
-			cid = in_msg.id
+			field_id = server_msg.field_id
+			cid = server_msg.id
 			continue
 		elif msg_type == S_CLOSE:
 			break
 		elif msg_type == S_GAME_STATE:
-			game_end = in_msg.game_end
+			game_end = server_msg.game_end
 
 			sensor_data = None
 
 			if not game_end:
-				raw_sensor_data = in_msg.sensor_data
+				raw_sensor_data = server_msg.sensor_data
 				sensor_data = process_state(raw_sensor_data)
 			if restart or state == None:
 				state = sensor_data
@@ -336,20 +336,23 @@ def worker(traffic_signal, record_counter,shared_record, shared_actor, power):
 
 				s.append(state.detach().tolist())
 				a.append(action)
-				r.append(in_msg.reward)
-				s_.append(sensor_data.detach().tolist())
+				r.append(server_msg.reward)
+				if sensor_data is not None:					
+					s_.append(sensor_data.detach().tolist())
+				else:
+					s_.append(state.detach().tolist())
 				done.append(0 if game_end else 1)
 				state = sensor_data
-				shared_counter.increase()
-				count = shared_counter.get()
-				if ep == EP_LEN-1 or count >= batch_size or game_end:
+				record_counter.increase()
+				count = record_counter.get()
+				if count >= batch_size or game_end:
 					shared_record.add_records(s,a,r,s_,done)
 
 					if count>=batch_size:
 						traffic_signal.turn_off()
 
-			if game_end:
-				out_msg = ai_pb2.ClientMsg()
+			out_msg = ai_pb2.ClientMsg()
+			if game_end:				
 				out_msg.field_id = field_id
 				out_msg.id = cid
 				out_msg.msg_type = C_RESET
@@ -362,8 +365,8 @@ def worker(traffic_signal, record_counter,shared_record, shared_actor, power):
 				out_msg.field_id = field_id
 				out_msg.id = cid
 				out_msg.msg_type = C_OP
-				a = out_msg.action
-				a.move_dir,a.aim_dir,a.move_state,a.shoot_state = action
+				out_a = out_msg.action
+				out_a.move_dir,out_a.aim_dir,out_a.move_state,out_a.shoot_state = action
 				msg = out_msg.SerializeToString()
 				client.send(msg)
 
