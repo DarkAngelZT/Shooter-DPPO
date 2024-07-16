@@ -20,6 +20,7 @@ ACTION_DIM = 4
 HIDDEN_LAYER = 600
 
 A_UPDATE_STEP = 6
+C_UPDATE_STEP = 6
 
 buffer_size = 1024
 
@@ -162,7 +163,6 @@ class TrainMode(object):
 		return torch.FloatTensor(adv_list)
 
 	def train(self):
-		print("start train")
 		states,actions,rewards,next_states, done = self.make_sample()
 
 		td_target = rewards+gamma*self.critic(next_states)*(1-done)
@@ -171,7 +171,7 @@ class TrainMode(object):
 		advantage = self.compute_advantage(gamma, lmbda, td_delta)
 
 		action_, old_log_probs = self.actor(states)
-		print('old probs')
+
 		for i in range(A_UPDATE_STEP):		
 			print('ep',i)	
 			_, log_prob = self.actor(states)
@@ -181,13 +181,14 @@ class TrainMode(object):
 			surr2 = torch.clamp(ratio, 1 - eps, 1 + eps) * advantage
 
 			new_q = self.critic(states)
+
 			actor_loss = torch.mean(-torch.min(surr1,surr2)).float()
 			critic_loss = torch.mean(F.mse_loss(new_q,td_target.detach()))
-			self.actor_opt.zero_grad()
+			# self.actor_opt.zero_grad()
 			self.critic_opt.zero_grad()
-			actor_loss.backward()
+			# actor_loss.backward()
 			critic_loss.backward()
-			self.actor_opt.step()
+			# self.actor_opt.step()
 			self.critic_opt.step()
 	
 	def save(self,folder, ep_num):
@@ -212,16 +213,23 @@ class TrainMode(object):
 
 	def chief_logic(self,traffic_signal, record_counter,shared_record, shared_actor, power):
 		client = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-		client.connect(("127.0.0.1",6699)) # 控制用连接
+		client.setblocking(False)
+		client.settimeout(2)
+		try:
+			client.connect(("127.0.0.1",6699)) # 控制用连接
+		except BlockingIOError as e:
+			pass
+		
+		print('chief connected')
 		ep_num = 0
 		next_update_time = 0
 		server_msg = ai_pb2.ServerCtrlMsg()
 		r_list = [client]
 		w_list = []
 		x_list = []
-		running = True
+		running = True		
 		while running:
-			readable,writable,exceptions = select.select(r_list,w_list,x_list)
+			readable,writable,exceptions = select.select(r_list,w_list,x_list,0.1)
 			for s in readable:
 				data = s.recv(buffer_size)
 				server_msg.ParseFromString(data)
@@ -234,7 +242,7 @@ class TrainMode(object):
 					self.save('',ep_num)
 			for s in exceptions:
 				r_list.remove(s)
-				
+			
 			if not traffic_signal.get():
 				self.train()
 				record_counter.reset()
@@ -322,10 +330,11 @@ def worker(traffic_signal, record_counter,shared_record, shared_actor, power):
 						paused = True
 
 					while not traffic_signal.get():
-						pass
-					s,a,r,s_,done = [], [], [], []
+						time.sleep(0.1)
+					s,a,r,s_,done = [], [], [], [], []
 
 					if paused:
+						time.sleep(0.1)
 						out_msg = ai_pb2.ClientMsg()
 						out_msg.field_id = field_id
 						out_msg.id = cid
@@ -333,15 +342,16 @@ def worker(traffic_signal, record_counter,shared_record, shared_actor, power):
 						msg = out_msg.SerializeToString()
 						client.send(msg)
 						paused = False
+						time.sleep(0.1) #必须停一下，不然消息包会被后面的消息覆盖
 
 				s.append(state.detach().tolist())
 				a.append(action)
-				r.append(server_msg.reward)
+				r.append([server_msg.reward])
 				if sensor_data is not None:					
 					s_.append(sensor_data.detach().tolist())
 				else:
 					s_.append(state.detach().tolist())
-				done.append(0 if game_end else 1)
+				done.append([0 if game_end else 1])
 				state = sensor_data
 				record_counter.increase()
 				count = record_counter.get()
