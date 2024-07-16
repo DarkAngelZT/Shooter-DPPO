@@ -42,7 +42,7 @@ eps = 0.2
 batch_size = 64
 auto_save_ep = 10
 
-worker_amount = 1
+worker_amount = 3
 
 def conv_bool(b):
 	return 1 if b else 0
@@ -173,22 +173,21 @@ class TrainMode(object):
 		action_, old_log_probs = self.actor(states)
 
 		for i in range(A_UPDATE_STEP):		
-			print('ep',i)	
 			_, log_prob = self.actor(states)
 
-			ratio = torch.exp(log_prob-old_log_probs)
-			surr1 = ratio *advantage
-			surr2 = torch.clamp(ratio, 1 - eps, 1 + eps) * advantage
+			ratio = torch.exp(log_prob-old_log_probs.detach())
+			surr1 = ratio * advantage.detach()
+			surr2 = torch.clamp(ratio, 1 - eps, 1 + eps) * advantage.detach()
 
 			new_q = self.critic(states)
 
 			actor_loss = torch.mean(-torch.min(surr1,surr2)).float()
 			critic_loss = torch.mean(F.mse_loss(new_q,td_target.detach()))
-			# self.actor_opt.zero_grad()
+			self.actor_opt.zero_grad()
 			self.critic_opt.zero_grad()
-			# actor_loss.backward()
+			actor_loss.backward()
 			critic_loss.backward()
-			# self.actor_opt.step()
+			self.actor_opt.step()
 			self.critic_opt.step()
 	
 	def save(self,folder, ep_num):
