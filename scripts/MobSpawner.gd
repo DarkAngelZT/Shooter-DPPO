@@ -32,6 +32,9 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	if GameData.game_pause[owner_field.id]:
+		next_spawn_time += delta*1000
+		return
 	if can_spawn:
 		if Time.get_ticks_msec() > next_spawn_time:
 			spawn()
