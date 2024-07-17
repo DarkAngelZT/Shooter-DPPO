@@ -19,8 +19,8 @@ STATE_DIM = 205
 ACTION_DIM = 4
 HIDDEN_LAYER = 600
 
-A_UPDATE_STEP = 6
-C_UPDATE_STEP = 6
+A_UPDATE_STEP = 9
+C_UPDATE_STEP = 9
 
 buffer_size = 1024
 
@@ -37,12 +37,13 @@ C_RESUME = 13
 actor_lr = 3e-4
 critic_lr = 1e-3
 gamma = 0.93
+continuous_gamma = 0.6
 lmbda = 0.9
 eps = 0.2
 batch_size = 64
 auto_save_ep = 10
 
-worker_amount = 3
+worker_amount = 4
 
 def conv_bool(b):
 	return 1 if b else 0
@@ -355,6 +356,18 @@ def worker(traffic_signal, record_counter,shared_record, shared_actor, power):
 				record_counter.increase()
 				count = record_counter.get()
 				if count >= batch_size or game_end:
+					#对reward进行连续动作统计处理
+					total = len(r)
+					final_value = r[-1][0]
+					for i in reversed(range(total)):
+						if i == total -1:
+							next_value = final_value
+							next_done = 1.0 - done[-1][0]
+						else:
+							next_value = r[i + 1][0]
+							next_done = 1.0 - done[-1][0]
+						r[i][0] = r[i][0] + continuous_gamma*next_done*next_value
+
 					shared_record.add_records(s,a,r,s_,done)
 
 					if count>=batch_size:
