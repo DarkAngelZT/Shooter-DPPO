@@ -21,6 +21,8 @@ var mob_id_counter:int = 100
 var EQS:SimpleEQS
 var eqs_update_time:float = 0
 
+var player_sensor_data_cache = null
+
 func reset():
 	for m in monsters.values():
 		m.queue_free()
@@ -95,7 +97,8 @@ func on_mob_dead(mob):
 		mob.queue_free()
 
 func on_player_die(target_player):
-	on_player_dead.emit(target_player)
+	player_sensor_data_cache = player.get_sensor_data()
+	on_player_dead.emit(target_player)	
 	player = null	
  
 func get_attack_position():

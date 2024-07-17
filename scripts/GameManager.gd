@@ -222,7 +222,8 @@ func ai_loop():
 		if not GameData.game_pause[field_id]:
 			if GameData.ai_need_update[field_id] == 1:
 				if GameData.game_end[field_id]:
-					NetworkManager.instance.send_server_state(field_id,field_id,null,0,true)
+					var data = f.player_sensor_data_cache
+					NetworkManager.instance.send_server_state(field_id,field_id,data,0,true)
 				else:
 					var p = f.player
 					var data = p.get_sensor_data()
