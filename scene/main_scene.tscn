@@ -1,5 +1,6 @@
-[gd_scene load_steps=15 format=3 uid="uid://dpk7pwe2sp58r"]
+[gd_scene load_steps=16 format=3 uid="uid://dpk7pwe2sp58r"]
 
+[ext_resource type="Script" path="res://scripts/UIManager.gd" id="1_86nrv"]
 [ext_resource type="Script" path="res://scripts/NetworkManager.gd" id="1_r0unh"]
 [ext_resource type="Script" path="res://scripts/GameManager.gd" id="1_xmjsa"]
 [ext_resource type="PackedScene" uid="uid://jxsgncw3xmlp" path="res://assets/nodes/player.tscn" id="2_uuajh"]
@@ -30,6 +31,13 @@ outline_size = 2
 outline_color = Color(0, 0, 0, 0.780392)
 
 [node name="SceneRoot" type="Node3D"]
+
+[node name="UIManager" type="Node" parent="." node_paths=PackedStringArray("ep_num", "health", "hp_label", "ep_label")]
+script = ExtResource("1_86nrv")
+ep_num = NodePath("../EpNum")
+health = NodePath("../HPNum")
+hp_label = NodePath("../HPLabel")
+ep_label = NodePath("../EPLabel")
 
 [node name="NetworkManager" type="Node" parent="."]
 script = ExtResource("1_r0unh")
@@ -77,14 +85,15 @@ offset = Vector3(0, 15, 0)
 transform = Transform3D(1, 0, 0, 0, 0.173648, 0.984808, 0, -0.984808, 0.173648, 0, 0, 1.475)
 
 [node name="EpNum" type="Label" parent="."]
-offset_left = 380.0
-offset_top = 18.0
-offset_right = 460.0
-offset_bottom = 49.0
+offset_left = 390.0
+offset_top = 17.0
+offset_right = 470.0
+offset_bottom = 48.0
 text = "123"
 label_settings = SubResource("LabelSettings_hs12s")
 
 [node name="TestButton" type="Button" parent="."]
+visible = false
 anchors_preset = -1
 anchor_left = 0.021
 anchor_top = 0.028

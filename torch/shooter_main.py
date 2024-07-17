@@ -33,6 +33,7 @@ C_RESET = 10
 C_OP = 11
 C_PAUSE = 12
 C_RESUME = 13
+C_EP = 14
 
 actor_lr = 3e-4
 critic_lr = 1e-3
@@ -248,6 +249,12 @@ class TrainMode(object):
 				record_counter.reset()
 				shared_record.reset()
 				ep_num += 1
+
+				out_msg = ai_pb2.ClientMsg()
+				out_msg.msg_type = C_EP
+				msg = out_msg.SerializeToString()
+				client.send(msg)
+
 				if ep_num % auto_save_ep == 0:
 					self.save('',ep_num)
 				traffic_signal.switch()

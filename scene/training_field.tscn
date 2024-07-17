@@ -22,7 +22,7 @@ uv1_scale = Vector3(30, 30, 1)
 [sub_resource type="BoxMesh" id="BoxMesh_ad0uq"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_usrdh"]
-size = Vector3(32, 2, 1)
+size = Vector3(32, 2, 2)
 
 [sub_resource type="BoxMesh" id="BoxMesh_v537c"]
 
@@ -37,6 +37,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
 [node name="Spawner" parent="." instance=ExtResource("3_2l37y")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0428228, 0.3, 13.1137)
 spawn_time_sec = 4.0
+spawn_limit = 3
 
 [node name="MeshInstance3D" parent="Spawner" index="0"]
 transform = Transform3D(27, 0, 0, 0, 1, 0, 0, 0, 3.5, 0, 0.495547, 0)
@@ -44,6 +45,7 @@ transform = Transform3D(27, 0, 0, 0, 1, 0, 0, 0, 3.5, 0, 0.495547, 0)
 [node name="Spawner2" parent="." instance=ExtResource("3_2l37y")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -12.9987)
 spawn_time_sec = 3.0
+spawn_limit = 3
 
 [node name="MeshInstance3D" parent="Spawner2" index="0"]
 transform = Transform3D(27, 0, 0, 0, 1, 0, 0, 0, 3.5, 0, 0.495547, 0)
@@ -51,6 +53,7 @@ transform = Transform3D(27, 0, 0, 0, 1, 0, 0, 0, 3.5, 0, 0.495547, 0)
 [node name="Spawner3" parent="." instance=ExtResource("3_2l37y")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.5593, 0.3, 0.323344)
 spawn_time_sec = 4.0
+spawn_limit = 3
 
 [node name="MeshInstance3D" parent="Spawner3" index="0"]
 transform = Transform3D(3.5, 0, 0, 0, 1, 0, 0, 0, 22, 0, 0.495547, 0)
@@ -58,6 +61,7 @@ transform = Transform3D(3.5, 0, 0, 0, 1, 0, 0, 0, 22, 0, 0.495547, 0)
 [node name="Spawner4" parent="." instance=ExtResource("3_2l37y")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.0068, 0.3, 0)
 spawn_time_sec = 3.5
+spawn_limit = 3
 
 [node name="MeshInstance3D" parent="Spawner4" index="0"]
 transform = Transform3D(3.5, 0, 0, 0, 1, 0, 0, 0, 22, 0, 0.495547, 0)

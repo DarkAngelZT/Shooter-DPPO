@@ -4,11 +4,13 @@ const S_START = 1
 const S_GAME_STATE = 2
 const S_CLOSE = 3
 const S_SAVE = 4
+const S_EP = 5
 
 const C_RESET = 10
 const C_OP = 11
 const C_PAUSE = 12
 const C_RESUME = 13
+const C_EP = 14
 
 static var instance:NetworkManager
 
@@ -48,6 +50,7 @@ func _process(delta):
 	
 	if training and server_ctrl.is_connection_available():
 		ctrl_client = server_ctrl.take_connection()
+		clients[-1] = ctrl_client
 	
 	if server.is_connection_available():
 		var connection = server.take_connection()
@@ -83,6 +86,8 @@ func _process(delta):
 					GameManager.instance.pause_game(msg_recv.get_field_id())
 				elif msg_type == C_RESUME:
 					GameManager.instance.resume_game(msg_recv.get_field_id())
+				elif msg_type == C_EP:
+					GameManager.instance.increase_ep()
 
 func _notification(what):
 	if what == NOTIFICATION_PREDELETE:

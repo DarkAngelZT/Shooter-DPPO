@@ -21,7 +21,7 @@ collision_mask = 3
 script = ExtResource("1_6pc4g")
 bullet_prefab = ExtResource("2_kx61h")
 shoot_position = NodePath("ShootPos")
-shoot_interval_sec = 0.9
+shoot_interval_sec = 1.2
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(-0.018, 0, -1.57361e-09, 0, 0.018, 0, 1.57361e-09, 0, -0.018, 0, 0, 0)

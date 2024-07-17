@@ -64,6 +64,7 @@ var next_ai_update_time = 0
 var training_fields = {} #{field_id:field}
 var players = {} #{field_id:player}
 var monsters = {} #{field_id:{monster_id:monster}}
+var ep = 1
 # Called when the node enters the scene tree for the first time.
 func _enter_tree():
 	instance = self
@@ -76,6 +77,9 @@ func _ready():
 		training_fields[0] = field
 		train_camera.set_active(false)
 		game_camera.set_active(true)
+		UIManager.instance.show_health(true)
+		UIManager.instance.show_ep(false)
+		UIManager.instance.set_health(GameData.actor_info[0].hp)
 		
 	elif game_mode == GameMode.Train:
 		create_game_data(field_amount)
@@ -83,6 +87,10 @@ func _ready():
 		
 		train_camera.set_active(true)
 		game_camera.set_active(false)
+		
+		UIManager.instance.show_health(false)
+		UIManager.instance.show_ep(true)
+		UIManager.instance.set_ep(1)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -236,6 +244,10 @@ func ai_loop():
 				GameData.ai_need_update[field_id] = 0
 			if GameData.ai_need_update[field_id] > 0:
 				GameData.ai_need_update[field_id] -= 1
+
+func increase_ep():
+	ep += 1
+	UIManager.instance.set_ep(ep)
 
 func calculate_reward(field_id)->float:
 	var training_field = training_fields[field_id]

@@ -24,7 +24,7 @@ uv1_scale = Vector3(30, 30, 1)
 size = Vector3(50, 0.5, 50)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_usrdh"]
-size = Vector3(52, 2, 1)
+size = Vector3(52, 2, 2)
 
 [sub_resource type="BoxMesh" id="BoxMesh_ecaum"]
 size = Vector3(52, 2, 1)
