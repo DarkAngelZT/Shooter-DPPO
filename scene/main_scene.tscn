@@ -74,7 +74,7 @@ zoom_speed = 10.0
 move_speed = 15.0
 
 [node name="Camera3D" type="Camera3D" parent="TrainingCamera"]
-transform = Transform3D(1, 0, 0, 0, 0.258819, 0.965926, 0, -0.965926, 0.258819, 0, 4.80559, 0)
+transform = Transform3D(1, 0, 0, 0, 0.0697565, 0.997564, 0, -0.997564, 0.0697565, 0, 4.80559, 0)
 
 [node name="FollowCamera" type="Marker3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15, 0)

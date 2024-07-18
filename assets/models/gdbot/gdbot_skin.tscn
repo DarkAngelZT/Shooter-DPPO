@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" path="res://assets/models/gdbot/gdbot_skin.gd" id="1_dt082"]
 [ext_resource type="PackedScene" uid="uid://c4fba1hyqkstw" path="res://assets/models/gdbot/gdbot.glb" id="1_no8yw"]
+[ext_resource type="PackedScene" uid="uid://dgdh4ffgaen3l" path="res://assets/models/gun.tscn" id="3_rn4wg"]
 [ext_resource type="AnimationLibrary" uid="uid://dlohfyy3w0jbd" path="res://assets/models/gdbot/custom_animations/custom_lib.res" id="6_dcd8b"]
-[ext_resource type="PackedScene" uid="uid://cgxrm6d3qlo56" path="res://assets/models/gun.glb" id="6_e3h5y"]
 [ext_resource type="PackedScene" uid="uid://dvy2nao23i4rl" path="res://assets/models/gdbot/gdbot_face.tscn" id="7_6dl0h"]
 
 [sub_resource type="Animation" id="Animation_yp8jn"]
@@ -2568,7 +2568,7 @@ animation = &"fall"
 animation = &"ground_impact"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_5hj5e"]
-animation = &"Idle"
+animation = &"custom_lib/idle_new"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_l3ki4"]
 animation = &"jump"
@@ -2635,6 +2635,7 @@ states/Start/position = Vector2(419, 100)
 states/Walk/node = SubResource("AnimationNodeBlendSpace1D_xd5tt")
 states/Walk/position = Vector2(716, 100)
 transitions = ["Jump", "Fall", SubResource("AnimationNodeStateMachineTransition_g1ve6"), "Fall", "GroundImpact", SubResource("AnimationNodeStateMachineTransition_uw3s0"), "Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_1c8yj"), "Walk", "Idle", SubResource("AnimationNodeStateMachineTransition_0gith"), "Idle", "Jump", SubResource("AnimationNodeStateMachineTransition_56gx2"), "Start", "Idle", SubResource("AnimationNodeStateMachineTransition_g2g34"), "Idle", "Fall", SubResource("AnimationNodeStateMachineTransition_r5wub"), "GroundImpact", "Walk", SubResource("AnimationNodeStateMachineTransition_ujnev"), "GroundImpact", "Idle", SubResource("AnimationNodeStateMachineTransition_ilpop"), "Walk", "Jump", SubResource("AnimationNodeStateMachineTransition_ate5f"), "Walk", "Fall", SubResource("AnimationNodeStateMachineTransition_pvlmb")]
+graph_offset = Vector2(207, -17)
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_q32ex"]
 graph_offset = Vector2(-561.333, -50)
@@ -2657,65 +2658,45 @@ script = ExtResource("1_dt082")
 [node name="gdbot" parent="." instance=ExtResource("1_no8yw")]
 
 [node name="Skeleton3D" parent="gdbot/Armature" index="0"]
-bones/2/position = Vector3(0.00994601, -8.69511e-10, 0.517031)
-bones/2/rotation = Quaternion(0.0428664, 0.706275, 0.705806, 0.0343005)
-bones/3/rotation = Quaternion(1, 1.77785e-12, -7.63155e-08, -3.56568e-11)
-bones/4/rotation = Quaternion(-0.190824, -0.21797, -0.114237, 0.950276)
-bones/5/rotation = Quaternion(0.320953, 5.68095e-08, -8.12249e-08, 0.947095)
-bones/7/rotation = Quaternion(-0.183186, 0.113517, 0.0878736, 0.97254)
-bones/8/rotation = Quaternion(0.352761, -6.68695e-08, 1.19656e-07, 0.935714)
-bones/10/rotation = Quaternion(-0.541513, -0.475286, -0.43803, 0.537584)
-bones/11/rotation = Quaternion(6.33432e-11, 2.16914e-08, -0.00175844, 0.999998)
+bones/2/rotation = Quaternion(3.09086e-08, 0.707107, 0.707107, 3.09086e-08)
+bones/4/rotation = Quaternion(-0.115911, -2.57656e-08, 5.29041e-08, 0.99326)
+bones/5/rotation = Quaternion(0.198843, 5.30058e-08, -5.38571e-08, 0.980031)
+bones/7/rotation = Quaternion(-0.115911, 8.72134e-08, -6.00749e-08, 0.99326)
+bones/8/rotation = Quaternion(0.198843, -5.00951e-08, 6.82031e-08, 0.980031)
+bones/10/rotation = Quaternion(-0.505414, -0.494527, -0.494527, 0.505414)
+bones/11/rotation = Quaternion(-5.46012e-10, 2.14316e-08, -0.0279458, 0.999609)
 bones/13/rotation = Quaternion(0.0819346, 1.62373e-07, 6.18589e-09, 0.996638)
-bones/14/rotation = Quaternion(-0.0819202, 0.00153683, 0.0186937, 0.996462)
+bones/14/rotation = Quaternion(-0.0819346, 0, -1.95347e-08, 0.996638)
 bones/16/rotation = Quaternion(-0.362118, -0.311101, -0.735239, -0.481156)
 bones/17/rotation = Quaternion(-0.0469922, -0.00499917, -0.077987, 0.995834)
-bones/19/rotation = Quaternion(-0.391114, -0.0079801, -0.00129221, 0.920307)
-bones/20/rotation = Quaternion(-0.277507, -2.52358e-07, -9.94341e-08, 0.960724)
-bones/21/rotation = Quaternion(-0.38504, -0.130181, 0.00239691, 0.913669)
-bones/22/rotation = Quaternion(-0.277506, 6.90892e-07, -4.39039e-08, 0.960724)
-bones/23/rotation = Quaternion(-0.391124, 0.0040795, 0.000660612, 0.920329)
-bones/24/rotation = Quaternion(-0.277506, 5.78611e-07, 1.10348e-07, 0.960724)
-bones/25/rotation = Quaternion(-0.386896, 0.0855178, -0.0227219, 0.917868)
-bones/26/rotation = Quaternion(-0.277506, -2.58292e-09, -9.82245e-08, 0.960724)
-bones/27/rotation = Quaternion(-0.293954, 0.794438, -0.105766, 0.520838)
-bones/28/rotation = Quaternion(-0.277506, -3.63708e-07, -5.31396e-07, 0.960724)
-bones/29/rotation = Quaternion(-0.648665, -0.233715, -0.69019, 0.219654)
-bones/30/rotation = Quaternion(-1.59238e-08, 1.07847e-08, -0.441319, 0.89735)
-bones/32/rotation = Quaternion(0.0137324, -0.0277935, -0.442743, 0.896112)
-bones/33/rotation = Quaternion(-0.509062, 0.522224, 0.459886, 0.5066)
-bones/34/rotation = Quaternion(-3.20804e-09, 4.38632e-09, 0.262469, 0.96494)
+bones/19/rotation = Quaternion(-0.120361, -0.00802529, 0.000973064, 0.992697)
+bones/21/rotation = Quaternion(-0.116368, -0.124403, 0.0384288, 0.984635)
+bones/22/rotation = Quaternion(6.38189e-07, 6.45407e-07, -2.47732e-07, 1)
+bones/25/rotation = Quaternion(-0.116986, 0.0758535, -0.0455612, 0.989184)
+bones/26/rotation = Quaternion(8.61473e-09, -1.58325e-08, -7.35745e-08, 1)
+bones/29/rotation = Quaternion(-0.505414, -0.494527, -0.494527, 0.505414)
+bones/30/rotation = Quaternion(-5.46012e-10, 2.14316e-08, -0.0279458, 0.999609)
+bones/33/rotation = Quaternion(-0.505414, 0.494527, 0.494527, 0.505414)
+bones/34/rotation = Quaternion(2.08907e-10, 5.56092e-09, 0.0279458, 0.999609)
 bones/37/rotation = Quaternion(-0.646856, -0.0339925, 0.761831, 0.00599861)
 bones/38/rotation = Quaternion(0.126977, -0.010998, 0.77186, 0.622887)
-bones/40/rotation = Quaternion(-0.391114, 0.00798011, 0.00129221, 0.920307)
-bones/41/rotation = Quaternion(-0.277507, 2.41907e-07, 1.20579e-07, 0.960724)
-bones/42/rotation = Quaternion(-0.38504, 0.130181, -0.00239689, 0.913669)
-bones/43/rotation = Quaternion(-0.277506, -6.4933e-07, 2.01537e-08, 0.960724)
-bones/44/rotation = Quaternion(-0.391124, -0.00407954, -0.000660702, 0.920329)
-bones/45/rotation = Quaternion(-0.277506, -6.01846e-07, -9.99273e-08, 0.960724)
-bones/46/rotation = Quaternion(-0.386896, -0.0855178, 0.0227219, 0.917868)
-bones/47/rotation = Quaternion(-0.277506, -2.36655e-08, 1.00422e-07, 0.960724)
-bones/48/rotation = Quaternion(-0.293954, -0.794438, 0.105766, 0.520838)
-bones/49/rotation = Quaternion(-0.277506, 3.69605e-07, 5.06519e-07, 0.960724)
-bones/50/rotation = Quaternion(-0.704151, 0.214513, 0.633483, 0.238442)
-bones/51/rotation = Quaternion(1.66219e-09, 1.5086e-08, 0.386925, 0.922111)
-bones/53/rotation = Quaternion(-0.0233691, -0.0472983, 0.44234, 0.895295)
-bones/54/position = Vector3(-0.174585, 0.00406308, 0.113821)
-bones/54/rotation = Quaternion(0, 0, 0.147009, 0.989135)
-bones/55/position = Vector3(0, -1.49012e-08, 0)
+bones/40/rotation = Quaternion(-0.120361, 0.00802529, -0.000973064, 0.992697)
+bones/42/rotation = Quaternion(-0.116368, 0.124403, -0.0384288, 0.984635)
+bones/43/rotation = Quaternion(6.37723e-07, -6.44941e-07, 2.47732e-07, 1)
+bones/46/rotation = Quaternion(-0.116986, -0.0758535, 0.0455612, 0.989184)
+bones/47/rotation = Quaternion(9.31322e-09, 1.67638e-08, 7.54371e-08, 1)
+bones/50/rotation = Quaternion(-0.505414, 0.494527, 0.494527, 0.505414)
+bones/51/rotation = Quaternion(2.08907e-10, 5.56092e-09, 0.0279458, 0.999609)
 bones/56/rotation = Quaternion(0, 0, 1, 0)
-bones/58/position = Vector3(0.171403, -0.051028, 0.113821)
-bones/58/rotation = Quaternion(0, 0, -0.15168, 0.98843)
-bones/59/position = Vector3(-3.80919e-08, 1.09979e-08, 1.49704e-07)
 bones/60/rotation = Quaternion(0, 0, 1, 0)
 
 [node name="BoneAttachment3D" type="BoneAttachment3D" parent="gdbot/Armature/Skeleton3D" index="1"]
-transform = Transform3D(-0.14745, -0.0992768, -0.984075, -0.977767, 0.164615, 0.129898, 0.149097, 0.981349, -0.121342, -0.190219, 0.594623, -0.0286288)
+transform = Transform3D(-0.142105, 0.0102442, -0.989798, -0.975906, 0.165808, 0.141827, 0.165569, 0.986105, -0.0135649, -0.18137, 0.614442, -0.00891813)
 bone_name = "lowerarm.R"
 bone_idx = 38
 
-[node name="gun" parent="gdbot/Armature/Skeleton3D/BoneAttachment3D" instance=ExtResource("6_e3h5y")]
-transform = Transform3D(-0.00045837, -0.00193781, 0.000186541, 0.000109637, 0.000165643, 0.00199011, -0.00194368, 0.00046633, 6.82644e-05, 0, 0.51, -0.045)
+[node name="gun2" parent="gdbot/Armature/Skeleton3D/BoneAttachment3D" instance=ExtResource("3_rn4wg")]
+transform = Transform3D(7.54979e-08, -1, -1.48619e-08, 0, -4.37114e-08, 0.34, -1, -7.54979e-08, -1.12204e-15, -0.0379615, 0.427294, -0.0360797)
 
 [node name="AnimationPlayer" parent="gdbot" index="1"]
 libraries = {

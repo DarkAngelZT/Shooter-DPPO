@@ -15,9 +15,10 @@ var eyes_textures = {
 var current_face = null : set = _set_face
 
 func _ready():
-	_blinking_timer.connect("timeout", _on_blink_timer_timeout)
-	_set_blinking(true)
-	current_face = "default"
+	#_blinking_timer.connect("timeout", _on_blink_timer_timeout)
+	#_set_blinking(true)
+	#current_face = "default"
+	pass
 	
 func _set_blinking(value : bool):
 	_blinking = value
