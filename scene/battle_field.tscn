@@ -1,7 +1,7 @@
 [gd_scene load_steps=13 format=3 uid="uid://ffo7w3oxk7p1"]
 
 [ext_resource type="Script" path="res://scripts/TrainingField.gd" id="1_j83sw"]
-[ext_resource type="Texture2D" uid="uid://chw5jrxrjb5go" path="res://assets/textures/glowblock.png" id="2_ovxd5"]
+[ext_resource type="Texture2D" uid="uid://c6y53noilbya3" path="res://assets/textures/lab_floor.png" id="3_51kn3"]
 [ext_resource type="PackedScene" uid="uid://xwlx0mo2yvbp" path="res://assets/nodes/Spawner.tscn" id="3_dkxkb"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_jp0xg"]
@@ -17,7 +17,8 @@ agent_radius = 0.35
 size = Vector3(50, 0.5, 50)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ux68f"]
-albedo_texture = ExtResource("2_ovxd5")
+albedo_color = Color(0.407843, 0.407843, 0.407843, 1)
+albedo_texture = ExtResource("3_51kn3")
 uv1_scale = Vector3(30, 30, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_ad0uq"]

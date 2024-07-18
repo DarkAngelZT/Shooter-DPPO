@@ -1,8 +1,8 @@
 [gd_scene load_steps=10 format=3 uid="uid://b57j43s2lo4ei"]
 
 [ext_resource type="Script" path="res://scripts/TrainingField.gd" id="1_btx8r"]
-[ext_resource type="Texture2D" uid="uid://chw5jrxrjb5go" path="res://assets/textures/glowblock.png" id="1_lhxma"]
 [ext_resource type="PackedScene" uid="uid://xwlx0mo2yvbp" path="res://assets/nodes/Spawner.tscn" id="3_2l37y"]
+[ext_resource type="Texture2D" uid="uid://c6y53noilbya3" path="res://assets/textures/lab_floor.png" id="3_llgvb"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_yvbjh"]
 vertices = PackedVector3Array(15.5, 2.25, -15.4783, 15, 2.25, -15.4783, 15.25, 2.25, 15.0217, 15.5, 2.25, 15.5217, -15.5, 2.25, -15.4783, -15.5, 2.25, 15.5217, -15, 2.25, 15.2717, -15, 2.25, -15.4783, 15.5, 2.25, 15.5217, 15.25, 2.25, 15.0217, -15, 2.25, 15.2717, -15.5, 2.25, 15.5217, -14.25, 0.75, -14.2283, -14.25, 0.75, 14.2717, 14.25, 0.75, 14.2717, 14.25, 0.75, -14.2283)
@@ -16,7 +16,8 @@ agent_radius = 0.35
 size = Vector3(30, 0.5, 30)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ux68f"]
-albedo_texture = ExtResource("1_lhxma")
+albedo_color = Color(0.407843, 0.407843, 0.407843, 1)
+albedo_texture = ExtResource("3_llgvb")
 uv1_scale = Vector3(30, 30, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_ad0uq"]

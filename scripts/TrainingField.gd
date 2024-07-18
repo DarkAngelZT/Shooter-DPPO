@@ -91,7 +91,8 @@ func on_monster_spawned(mob):
 
 func on_mob_dead(mob):
 	if is_instance_valid(mob):
-		GameData.mob_kill_cache[id]+=1
+		if GameManager.instance.control_mode == GameManager.ControlMode.AI:
+			GameData.mob_kill_cache[id]+=1
 		GameData.actor_info[id].erase(mob.id)
 		monsters.erase(mob.id)
 		mob.queue_free()

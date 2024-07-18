@@ -25,6 +25,40 @@ shoot_interval_sec = 0.15
 [node name="GDbotSkin" parent="." instance=ExtResource("1_8x5t2")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
 
+[node name="Skeleton3D" parent="GDbotSkin/gdbot/Armature" index="0"]
+bones/2/rotation = Quaternion(3.09086e-08, 0.707107, 0.707107, 3.09086e-08)
+bones/4/rotation = Quaternion(-0.115911, -2.57656e-08, 5.29041e-08, 0.99326)
+bones/5/rotation = Quaternion(0.198843, 5.30058e-08, -5.38571e-08, 0.980031)
+bones/7/rotation = Quaternion(-0.115911, 8.72134e-08, -6.00749e-08, 0.99326)
+bones/8/rotation = Quaternion(0.198843, -5.00951e-08, 6.82031e-08, 0.980031)
+bones/10/rotation = Quaternion(-0.505414, -0.494527, -0.494527, 0.505414)
+bones/11/rotation = Quaternion(-5.46012e-10, 2.14316e-08, -0.0279458, 0.999609)
+bones/13/rotation = Quaternion(0.0819346, 1.62373e-07, 6.18589e-09, 0.996638)
+bones/14/rotation = Quaternion(-0.0819346, 0, -1.95347e-08, 0.996638)
+bones/16/rotation = Quaternion(-0.362118, -0.311101, -0.735239, -0.481156)
+bones/17/rotation = Quaternion(-0.0469922, -0.00499917, -0.077987, 0.995834)
+bones/19/rotation = Quaternion(-0.120361, -0.00802529, 0.000973064, 0.992697)
+bones/21/rotation = Quaternion(-0.116368, -0.124403, 0.0384288, 0.984635)
+bones/22/rotation = Quaternion(6.38189e-07, 6.45407e-07, -2.47732e-07, 1)
+bones/25/rotation = Quaternion(-0.116986, 0.0758535, -0.0455612, 0.989184)
+bones/26/rotation = Quaternion(8.61473e-09, -1.58325e-08, -7.35745e-08, 1)
+bones/29/rotation = Quaternion(-0.505414, -0.494527, -0.494527, 0.505414)
+bones/30/rotation = Quaternion(-5.46012e-10, 2.14316e-08, -0.0279458, 0.999609)
+bones/33/rotation = Quaternion(-0.505414, 0.494527, 0.494527, 0.505414)
+bones/34/rotation = Quaternion(2.08907e-10, 5.56092e-09, 0.0279458, 0.999609)
+bones/37/rotation = Quaternion(-0.646856, -0.0339925, 0.761831, 0.00599861)
+bones/38/rotation = Quaternion(0.126977, -0.010998, 0.77186, 0.622887)
+bones/40/rotation = Quaternion(-0.120361, 0.00802529, -0.000973064, 0.992697)
+bones/42/rotation = Quaternion(-0.116368, 0.124403, -0.0384288, 0.984635)
+bones/43/rotation = Quaternion(6.37723e-07, -6.44941e-07, 2.47732e-07, 1)
+bones/46/rotation = Quaternion(-0.116986, -0.0758535, 0.0455612, 0.989184)
+bones/47/rotation = Quaternion(9.31322e-09, 1.67638e-08, 7.54371e-08, 1)
+bones/50/rotation = Quaternion(-0.505414, 0.494527, 0.494527, 0.505414)
+bones/51/rotation = Quaternion(2.08907e-10, 5.56092e-09, 0.0279458, 0.999609)
+
+[node name="BoneAttachment3D" parent="GDbotSkin/gdbot/Armature/Skeleton3D" index="1"]
+transform = Transform3D(-0.142105, 0.0102442, -0.989798, -0.975906, 0.165808, 0.141827, 0.165569, 0.986105, -0.0135649, -0.18137, 0.614442, -0.00891813)
+
 [node name="gun2" parent="GDbotSkin/gdbot/Armature/Skeleton3D/BoneAttachment3D" index="0"]
 transform = Transform3D(1.06171e-07, -1, -1.49012e-08, -2.79397e-09, -1.49012e-08, 0.27, -1, -5.79748e-08, 6.98492e-10, -0.0643446, 0.27016, -0.0339181)
 

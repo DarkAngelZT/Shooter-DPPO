@@ -33,7 +33,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
 shape = SubResource("CapsuleShape3D_xr2fo")
 
 [node name="ShootPos" type="Marker3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.208008, 0.763776, -1.63695)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.208008, 0.763776, -1.41947)
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
 path_desired_distance = 0.5

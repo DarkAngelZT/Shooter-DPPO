@@ -65,6 +65,8 @@ func get_sensor_data():
 	
 func take_damage(damage):
 	super.take_damage(damage)
+	if GameManager.instance.game_mode == GameManager.GameMode.Play:
+		UIManager.instance.set_health(GameData.actor_info[field_id][id].hp)
 	
 func shoot():
 	if can_shoot:

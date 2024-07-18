@@ -79,7 +79,7 @@ func _ready():
 		game_camera.set_active(true)
 		UIManager.instance.show_health(true)
 		UIManager.instance.show_ep(false)
-		UIManager.instance.set_health(GameData.actor_info[0].hp)
+		UIManager.instance.set_health(GameManager.instance.game_settings.player_health)
 		
 	elif game_mode == GameMode.Train:
 		create_game_data(field_amount)
@@ -181,6 +181,8 @@ func reset_field(field_id):
 		field.reset()
 		GameData.game_end[field_id] = false
 		GameData.game_pause[field_id] = false
+		if game_mode == GameMode.Play:
+			game_camera.target = field.player
 		
 		on_field_reset.emit(field_id)
 
