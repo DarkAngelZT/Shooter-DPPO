@@ -54,8 +54,12 @@ func spawn():
 func do_spawn():
 	var game_mgr = GameManager.instance
 	if game_mgr != null:
-		var pos = Vector3(randf_range(-size.x*0.5+0.5,size.x*0.5-0.5),0,randf_range(-size.y*0.5+0.5,size.y*0.5-0.5))
-		pos += position
+		var pos:Vector3
+		if GameManager.instance.game_mode == GameManager.GameMode.Train and TrainingManager.instance.training_level == 1:
+			pos = owner_field.get_lv1_training_mob_spawn_pos()
+		else:
+			pos = Vector3(randf_range(-size.x*0.5+0.5,size.x*0.5-0.5),0,randf_range(-size.y*0.5+0.5,size.y*0.5-0.5))
+			pos += position
 		var mob = game_mgr.spawn_monster(owner_field,pos)
 		mob.spawner = self		
 		on_monster_spawn.emit(mob)

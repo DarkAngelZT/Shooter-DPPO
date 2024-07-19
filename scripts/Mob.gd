@@ -33,8 +33,9 @@ func _physics_process(delta):
 	else:
 		if behaviour_tree.is_paused():
 			behaviour_tree.resume()
-		
-	nav_move()
+	
+	if is_move_enable():
+		nav_move()
 
 func die():
 	spawner.on_mob_dead(self)
@@ -107,4 +108,13 @@ func is_target_in_range()->bool:
 
 func get_bullet_speed()->float:
 	return GameManager.instance.game_settings.bullet_speed_monster
-	
+
+func is_move_enable()->bool:
+	if GameManager.instance.game_mode == GameManager.GameMode.Train:
+		return TrainingManager.enable_mob_move()
+	return true
+
+func is_shoot_enable()->bool:
+	if GameManager.instance.game_mode == GameManager.GameMode.Train:
+		return TrainingManager.enable_mob_shoot()
+	return true

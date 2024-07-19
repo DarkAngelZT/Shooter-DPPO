@@ -65,6 +65,8 @@ var training_fields = {} #{field_id:field}
 var players = {} #{field_id:player}
 var monsters = {} #{field_id:{monster_id:monster}}
 var ep = 1
+
+var reward_func:Callable
 # Called when the node enters the scene tree for the first time.
 func _enter_tree():
 	instance = self
@@ -87,6 +89,23 @@ func _ready():
 		
 		train_camera.set_active(true)
 		game_camera.set_active(false)
+		
+		#set traiing level
+		var trainning_level = TrainingManager.instance.training_level
+		if trainning_level == 1:
+			TrainingManager.instance.mob_move_enabled = false
+			TrainingManager.instance.mob_shoot_enabled = false
+			TrainingManager.instance.player_move_enabled = false
+			reward_func = Callable(self,"calculate_reward_lv1")
+		elif trainning_level == 2:
+			TrainingManager.instance.mob_shoot_enabled = false
+			TrainingManager.instance.player_move_enabled = false
+			reward_func = Callable(self,"calculate_reward_lv1")
+		elif  trainning_level == 3:
+			TrainingManager.instance.player_shoot_enabled = false
+			reward_func = Callable(self,"calculate_reward_lv2")
+		elif trainning_level == 4:
+			reward_func = Callable(self,"calculate_reward")
 		
 		UIManager.instance.show_health(false)
 		UIManager.instance.show_ep(true)
@@ -238,7 +257,7 @@ func ai_loop():
 					var p = f.player
 					var data = p.get_sensor_data()
 					var game_end = GameData.game_end[p.field_id]
-					var reward = calculate_reward(p.field_id)
+					var reward = reward_func.call(p.field_id)
 					if not NetworkManager.instance.send_server_state(p.field_id,p.id,data,reward,game_end):
 						return
 					GameData.player_shooted[p.id] = false
@@ -267,9 +286,33 @@ func calculate_reward(field_id)->float:
 		
 		#clean up
 		GameData.mob_kill_cache[player.id] = 0
-		GameData.player_shooted[player.id] =false
+		GameData.player_shooted[player.id] = false
 		GameData.player_hp_cache[player.id] = player.health
 		return reward
+
+func calculate_reward_lv1(field_id)->float:
+	var reward = 0
+	var training_field = training_fields[field_id]
+	var player = training_field.player
+	
+	reward = 0.1 * GameData.mob_kill_cache[player.id]
+	
+	GameData.mob_kill_cache[player.id] = 0
+	return reward
+
+func calculate_reward_lv2(field_id)->float:
+	var reward = 0
+	var training_field = training_fields[field_id]
+	if GameData.game_end[field_id]:
+		return -1
+		
+	var player = training_field.player
+	
+	var life_loss_penalty = -0.1 * (GameData.player_hp_cache[player.id] - player.health)
+	reward = life_loss_penalty
+		
+	GameData.player_hp_cache[player.id] = player.health
+	return reward
 
 func test_func():
 	var sensor_data = players[0].get_sensor_data()

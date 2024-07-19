@@ -107,3 +107,10 @@ func get_attack_position():
 		return EQS.get_point()
 	else:
 		return player.global_position
+
+func get_lv1_training_mob_spawn_pos()->Vector3:
+	var pos:Vector3
+	var distance = randf_range(2,GameManager.instance.game_settings.eqs_outer_radius)
+	var angle = deg_to_rad(randf_range(0,360))
+	pos = Vector3(distance*sin(angle),0,distance*cos(angle))
+	return pos+player.position

@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://dpk7pwe2sp58r"]
+[gd_scene load_steps=17 format=3 uid="uid://dpk7pwe2sp58r"]
 
 [ext_resource type="Script" path="res://scripts/UIManager.gd" id="1_86nrv"]
 [ext_resource type="Script" path="res://scripts/NetworkManager.gd" id="1_r0unh"]
@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://bmea3n3lciyjs" path="res://assets/nodes/blast.tscn" id="7_81spr"]
 [ext_resource type="Script" path="res://scripts/camera/TrainingCamera.gd" id="7_a7bef"]
 [ext_resource type="Script" path="res://scripts/camera/FollowCamera.gd" id="8_dl3fe"]
+[ext_resource type="Script" path="res://scripts/TrainingManager.gd" id="10_nw2ui"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_hs12s"]
 font_size = 22
@@ -58,7 +59,11 @@ blast_prefab = ExtResource("7_81spr")
 game_settings = ExtResource("6_og74n")
 train_camera = NodePath("../TrainingCamera")
 game_camera = NodePath("../FollowCamera")
-game_mode = 2
+control_mode = 2
+
+[node name="TrainingManager" type="Node" parent="."]
+script = ExtResource("10_nw2ui")
+training_level = 1
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.875118, 0.465046, -0.133789, 0, 0.276476, 0.961021, 0.483909, -0.841007, 0.241949, 0, 4.66107, 0)

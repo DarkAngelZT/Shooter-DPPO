@@ -44,7 +44,7 @@ func _process(delta):
 		set_can_shoot(true)
 		
 func shoot():
-	if can_shoot:
+	if can_shoot and is_shoot_enable():
 		last_shoot_time = Time.get_ticks_msec()
 		var bullet = bullet_prefab.instantiate()
 		bullet.position = shoot_position.global_position
@@ -84,3 +84,9 @@ func get_shoot_cd_left():
 	
 func is_game_paused():
 	return GameData.game_pause[field_id]
+
+func is_move_enable()->bool:
+	return true
+
+func is_shoot_enable()->bool:
+	return true

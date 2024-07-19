@@ -26,23 +26,24 @@ func _physics_process(delta):
 	if GameData.actor_info[field_id][id].hp<=0:
 		return
 	var input = GameData.player_input[id]
-	if is_instance_valid(input):
-		var direction = Vector3.ZERO
-		direction.z = input.direction.y
-		direction.x = input.direction.x
+	if is_instance_valid(input):		
 		basis = Basis.looking_at(Vector3(input.aim_direction.x,0,input.aim_direction.y))
 		GameData.actor_info[field_id][id].direction = input.aim_direction
 		
-		if input.move_state == GameData.Op_Move:
-			var speed = direction * move_speed
-			velocity = speed
-			character_mesh.walk()
-			move_and_slide()
-			GameData.actor_info[field_id][id].move_dir=Vector2(direction.x,direction.z)
-		elif input.move_state == GameData.Op_Stop:
-			velocity = Vector3.ZERO
-			GameData.actor_info[field_id][id].move_dir=Vector2.ZERO
-			character_mesh.idle()
+		if is_move_enable():
+			var direction = Vector3.ZERO
+			direction.z = input.direction.y
+			direction.x = input.direction.x
+			if input.move_state == GameData.Op_Move:
+				var speed = direction * move_speed
+				velocity = speed
+				character_mesh.walk()
+				move_and_slide()
+				GameData.actor_info[field_id][id].move_dir=Vector2(direction.x,direction.z)
+			elif input.move_state == GameData.Op_Stop:
+				velocity = Vector3.ZERO
+				GameData.actor_info[field_id][id].move_dir=Vector2.ZERO
+				character_mesh.idle()
 	
 	if input.shooting:
 		shoot()
@@ -72,3 +73,13 @@ func shoot():
 	if can_shoot:
 		GameData.player_shooted[id] = true
 	super.shoot()
+
+func is_move_enable()->bool:
+	if GameManager.instance.game_mode == GameManager.GameMode.Train:
+		return TrainingManager.enable_player_move()
+	return true
+
+func is_shoot_enable()->bool:
+	if GameManager.instance.game_mode == GameManager.GameMode.Train:
+		return TrainingManager.enable_player_shoot()
+	return true
