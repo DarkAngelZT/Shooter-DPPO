@@ -71,6 +71,20 @@ func eqs_setup():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(_delta):
+	var pos = player.global_position
+	pos.y+=1
+	DebugDraw3D.draw_cylinder_ab(player.global_position,pos,
+	GameManager.instance.game_settings.eqs_outer_radius,Color.RED,0.1)
+	var lines = []	
+	for l in range(6):
+		var p = player.global_position
+		var dir = Vector2.from_angle(deg_to_rad(l*30))
+		var s = Vector2(p.x,p.z)+dir*GameManager.instance.game_settings.eqs_outer_radius
+		var e = Vector2(p.x,p.z)-dir*GameManager.instance.game_settings.eqs_outer_radius
+		lines.append(Vector3(s.x,p.y+0.5,s.y))
+		lines.append(Vector3(e.x,p.y+0.5,e.y))
+	var p_lines: PackedVector3Array = PackedVector3Array(lines)
+	DebugDraw3D.draw_lines(p_lines,Color.ORANGE,0.1)
 	if GameData.game_pause[id]:
 		eqs_update_time+=_delta*1000
 		return
