@@ -322,23 +322,9 @@ func test_func():
 	"aim",p_data.aim_dir,"moving",p_data.is_moving,
 	"shoot_cd",p_data.shoot_cd_left)
 	prints("terrain info", p_data.terrain_info)
-	print("===mob data===")
-	var m = sensor_data.mob_data
-	for r in m:
-		for s in range(m[r].size()):
-			if m[r][s].amount>0:
-				prints("region",r,"section",s,"amount",m[r][s].amount,"dir",m[r][s].region_dir_info)
-	print("===mob bullet info===")
-	var bm = sensor_data.mob_bullet_data
-	for r in bm:
-		for s in range(bm[r].size()):
-			if bm[r][s].amount>0:
-				prints("region",r,"section",s,"amount",bm[r][s].amount,"dir",bm[r][s].dir_info)
-	print("===player bullet info===")
-	var bp = sensor_data.player_bullet_data
-	for r in bp:
-		for s in range(bp[r].size()):
-			if bp[r][s].amount>0:
-				prints("region",r,"section",s,"amount",bp[r][s].amount,"dir",bp[r][s].dir_info)
+	print("===region data===")
+	var region_info = sensor_data.compose_final_cell()
+	for r in range(18):
+		print(region_info.slice(r*18,(r+1)*18))
 				
 	prints("Param total", sensor_data.get_nn_param_total())

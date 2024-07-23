@@ -773,61 +773,6 @@ class PlayerState:
 			return PB_ERR.PARSE_INCOMPLETE
 		return result
 	
-class RegionInfo:
-	func _init():
-		var service
-		
-		__amount = PBField.new("amount", PB_DATA_TYPE.INT32, PB_RULE.OPTIONAL, 1, true, DEFAULT_VALUES_3[PB_DATA_TYPE.INT32])
-		service = PBServiceField.new()
-		service.field = __amount
-		data[__amount.tag] = service
-		
-		__dir_info = PBField.new("dir_info", PB_DATA_TYPE.INT32, PB_RULE.OPTIONAL, 2, true, DEFAULT_VALUES_3[PB_DATA_TYPE.INT32])
-		service = PBServiceField.new()
-		service.field = __dir_info
-		data[__dir_info.tag] = service
-		
-	var data = {}
-	
-	var __amount: PBField
-	func get_amount() -> int:
-		return __amount.value
-	func clear_amount() -> void:
-		data[1].state = PB_SERVICE_STATE.UNFILLED
-		__amount.value = DEFAULT_VALUES_3[PB_DATA_TYPE.INT32]
-	func set_amount(value : int) -> void:
-		__amount.value = value
-	
-	var __dir_info: PBField
-	func get_dir_info() -> int:
-		return __dir_info.value
-	func clear_dir_info() -> void:
-		data[2].state = PB_SERVICE_STATE.UNFILLED
-		__dir_info.value = DEFAULT_VALUES_3[PB_DATA_TYPE.INT32]
-	func set_dir_info(value : int) -> void:
-		__dir_info.value = value
-	
-	func _to_string() -> String:
-		return PBPacker.message_to_string(data)
-		
-	func to_bytes() -> PackedByteArray:
-		return PBPacker.pack_message(data)
-		
-	func from_bytes(bytes : PackedByteArray, offset : int = 0, limit : int = -1) -> int:
-		var cur_limit = bytes.size()
-		if limit != -1:
-			cur_limit = limit
-		var result = PBPacker.unpack_message(data, bytes, offset, cur_limit)
-		if result == cur_limit:
-			if PBPacker.check_required(data):
-				if limit == -1:
-					return PB_ERR.NO_ERRORS
-			else:
-				return PB_ERR.REQUIRED_FIELDS
-		elif limit == -1 && result > 0:
-			return PB_ERR.PARSE_INCOMPLETE
-		return result
-	
 class Action:
 	func _init():
 		var service
@@ -921,26 +866,11 @@ class SensorData:
 		service.func_ref = Callable(self, "new_player_state")
 		data[__player_state.tag] = service
 		
-		var __mob_data_default: Array[RegionInfo] = []
-		__mob_data = PBField.new("mob_data", PB_DATA_TYPE.MESSAGE, PB_RULE.REPEATED, 2, true, __mob_data_default)
+		var __region_info_default: Array[float] = []
+		__region_info = PBField.new("region_info", PB_DATA_TYPE.FLOAT, PB_RULE.REPEATED, 2, true, __region_info_default)
 		service = PBServiceField.new()
-		service.field = __mob_data
-		service.func_ref = Callable(self, "add_mob_data")
-		data[__mob_data.tag] = service
-		
-		var __mob_bullet_data_default: Array[RegionInfo] = []
-		__mob_bullet_data = PBField.new("mob_bullet_data", PB_DATA_TYPE.MESSAGE, PB_RULE.REPEATED, 3, true, __mob_bullet_data_default)
-		service = PBServiceField.new()
-		service.field = __mob_bullet_data
-		service.func_ref = Callable(self, "add_mob_bullet_data")
-		data[__mob_bullet_data.tag] = service
-		
-		var __player_bullet_data_default: Array[RegionInfo] = []
-		__player_bullet_data = PBField.new("player_bullet_data", PB_DATA_TYPE.MESSAGE, PB_RULE.REPEATED, 4, true, __player_bullet_data_default)
-		service = PBServiceField.new()
-		service.field = __player_bullet_data
-		service.func_ref = Callable(self, "add_player_bullet_data")
-		data[__player_bullet_data.tag] = service
+		service.field = __region_info
+		data[__region_info.tag] = service
 		
 	var data = {}
 	
@@ -954,38 +884,14 @@ class SensorData:
 		__player_state.value = PlayerState.new()
 		return __player_state.value
 	
-	var __mob_data: PBField
-	func get_mob_data() -> Array[RegionInfo]:
-		return __mob_data.value
-	func clear_mob_data() -> void:
+	var __region_info: PBField
+	func get_region_info() -> Array[float]:
+		return __region_info.value
+	func clear_region_info() -> void:
 		data[2].state = PB_SERVICE_STATE.UNFILLED
-		__mob_data.value = []
-	func add_mob_data() -> RegionInfo:
-		var element = RegionInfo.new()
-		__mob_data.value.append(element)
-		return element
-	
-	var __mob_bullet_data: PBField
-	func get_mob_bullet_data() -> Array[RegionInfo]:
-		return __mob_bullet_data.value
-	func clear_mob_bullet_data() -> void:
-		data[3].state = PB_SERVICE_STATE.UNFILLED
-		__mob_bullet_data.value = []
-	func add_mob_bullet_data() -> RegionInfo:
-		var element = RegionInfo.new()
-		__mob_bullet_data.value.append(element)
-		return element
-	
-	var __player_bullet_data: PBField
-	func get_player_bullet_data() -> Array[RegionInfo]:
-		return __player_bullet_data.value
-	func clear_player_bullet_data() -> void:
-		data[4].state = PB_SERVICE_STATE.UNFILLED
-		__player_bullet_data.value = []
-	func add_player_bullet_data() -> RegionInfo:
-		var element = RegionInfo.new()
-		__player_bullet_data.value.append(element)
-		return element
+		__region_info.value = []
+	func add_region_info(value : float) -> void:
+		__region_info.value.append(value)
 	
 	func _to_string() -> String:
 		return PBPacker.message_to_string(data)

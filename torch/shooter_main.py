@@ -15,14 +15,13 @@ import torch.multiprocessing as mp
 from model import Actor
 from model import Critic
 
-STATE_DIM = 205
+STATE_DIM = 337
 ACTION_DIM = 4
 HIDDEN_LAYER = 600
 
-A_UPDATE_STEP = 9
-C_UPDATE_STEP = 9
+A_UPDATE_STEP = 12
 
-buffer_size = 1024
+buffer_size = 2048
 
 S_START = 1
 S_GAME_STATE = 2
@@ -66,10 +65,8 @@ def process_state(sensor_data):
 	sensor_data.player_state.hp, sensor_data.player_state.move_dir,sensor_data.player_state.aim_dir,
 	conv_bool(sensor_data.player_state.is_moving), sensor_data.player_state.shoot_cd_left ]
 	player_terrian_data = [i for i in sensor_data.player_state.terrain_info]
-	mob_data = [d for m in sensor_data.mob_data for d in (m.amount,m.dir_info)]
-	mob_bullet = [d for m in sensor_data.mob_bullet_data for d in (m.amount,m.dir_info)]
-	player_bullet = [d for m in sensor_data.player_bullet_data for d in (m.amount,m.dir_info)]
-	data = np.hstack([player_data,player_terrian_data,mob_data,mob_bullet,player_bullet])
+	region_data = sensor_data.region_info
+	data = np.hstack([player_data,player_terrian_data,region_data])
 	return torch.FloatTensor(data)
 
 class PlayMode(object):

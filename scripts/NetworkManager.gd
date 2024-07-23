@@ -126,22 +126,9 @@ func serialize_sensor_data(sensor_data, target_msg):
 	for distance in sensor_data.player_data.terrain_info:
 		player_state.add_terrain_info(distance)
 	#===================
-	for i in range(PlayerSensor.NEAR,PlayerSensor.FAR+1):
-		#===mob data===
-		for m in sensor_data.mob_data[i]:
-			var mob_region_info = msg.add_mob_data()
-			mob_region_info.set_amount(m.amount)
-			mob_region_info.set_dir_info(m.region_dir_info)
-		#===mob bullet===
-		for b in sensor_data.mob_bullet_data[i]:
-			var m_bullet = msg.add_mob_bullet_data()
-			m_bullet.set_amount(b.amount)
-			m_bullet.set_dir_info(b.dir_info)
-		#===player bullet===
-		for pb in sensor_data.player_bullet_data[i]:
-			var p_bullet = msg.add_player_bullet_data()
-			p_bullet.set_amount(pb.amount)
-			p_bullet.set_dir_info(pb.dir_info)
+	var region_info = sensor_data.compose_final_cell()
+	for info in region_info:
+		msg.add_region_info(info)
 
 func send_server_state(field_id,id,sensor_data,reward,game_end):
 	var client = get_client(id)
