@@ -257,7 +257,7 @@ func ai_loop():
 					var p = f.player
 					var data = p.get_sensor_data()
 					var game_end = GameData.game_end[p.field_id]
-					var reward = reward_func.call(p.field_id)
+					var reward = reward_func.call(p.field_id, data)
 					if not NetworkManager.instance.send_server_state(p.field_id,p.id,data,reward,game_end):
 						return
 					GameData.player_shooted[p.id] = false
@@ -270,19 +270,20 @@ func increase_ep():
 	ep += 1
 	UIManager.instance.set_ep(ep)
 
-func calculate_reward(field_id)->float:
+func calculate_reward(field_id, sensor_data)->float:
 	var training_field = training_fields[field_id]
 	if GameData.game_end[field_id]:
 		return 0
 	else:
 		var player = training_field.player
 
-		var stay_penalty = -0.02 * (1 if GameData.player_input[player.id].move_state==GameData.Op_Stop else 0)
+		var stay_penalty = -0.01 * (1 if GameData.player_input[player.id].move_state==GameData.Op_Stop else 0)
 		var life_loss_penalty = -0.05 * (GameData.player_hp_cache[player.id] - player.health)
-		var shoot_bonus = 0.01 if GameData.player_shooted[player.id] else 0
 		var kill_reward = 0.03 * GameData.mob_kill_cache[player.id]
+		var closest_d = sensor_data.player_data.terrain_info.min()
+		var edge_panelty = 0 if closest_d > 2 else -0.01
 		
-		var reward = stay_penalty + life_loss_penalty + shoot_bonus + kill_reward
+		var reward = stay_penalty + life_loss_penalty + kill_reward + edge_panelty
 		
 		#clean up
 		GameData.mob_kill_cache[player.id] = 0
@@ -290,7 +291,7 @@ func calculate_reward(field_id)->float:
 		GameData.player_hp_cache[player.id] = player.health
 		return reward
 
-func calculate_reward_lv1(field_id)->float:
+func calculate_reward_lv1(field_id, sensor_data)->float:
 	var reward = 0
 	var training_field = training_fields[field_id]
 	var player = training_field.player
@@ -300,7 +301,7 @@ func calculate_reward_lv1(field_id)->float:
 	GameData.mob_kill_cache[player.id] = 0
 	return reward
 
-func calculate_reward_lv2(field_id)->float:
+func calculate_reward_lv2(field_id, sensor_data)->float:
 	var reward = 0
 	var training_field = training_fields[field_id]
 	if GameData.game_end[field_id]:

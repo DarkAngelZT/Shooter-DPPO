@@ -75,8 +75,8 @@ func _physics_process(_delta):
 		return
 	var pos = player.global_position
 	pos.y+=1
-	DebugDraw3D.draw_box(player.global_position,Quaternion.IDENTITY,
-	Vector3(18,2,18),Color.RED,true)
+	#DebugDraw3D.draw_box(player.global_position,Quaternion.IDENTITY,
+	#Vector3(18,2,18),Color.RED,true)
 	
 	if GameData.game_pause[id]:
 		eqs_update_time+=_delta*1000

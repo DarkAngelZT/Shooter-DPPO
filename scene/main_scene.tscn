@@ -47,7 +47,7 @@ script = ExtResource("1_r0unh")
 process_mode = 3
 editor_description = "场景管理器"
 script = ExtResource("1_xmjsa")
-field_amount = 4
+field_amount = 6
 TraningRoot = NodePath("../TrainingRoot")
 ArenaRoot = NodePath("../Arena")
 root = NodePath("..")
@@ -63,7 +63,6 @@ control_mode = 2
 
 [node name="TrainingManager" type="Node" parent="."]
 script = ExtResource("10_nw2ui")
-training_level = 1
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.875118, 0.465046, -0.133789, 0, 0.276476, 0.961021, 0.483909, -0.841007, 0.241949, 0, 4.66107, 0)

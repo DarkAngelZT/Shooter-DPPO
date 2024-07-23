@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_03cka")
 bullet_speed_monster = 8.5
-bullet_speed_player = 30.0
+bullet_speed_player = 40.0
 bullet_damage = 1
 player_move_speed = 6.0
 player_health = 10

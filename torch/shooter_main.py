@@ -37,13 +37,13 @@ C_EP = 14
 actor_lr = 3e-4
 critic_lr = 1e-3
 gamma = 0.93
-continuous_gamma = 0.6
+continuous_gamma = 0.9
 lmbda = 0.9
 eps = 0.2
 batch_size = 64
-auto_save_ep = 10
+auto_save_ep = 20
 
-worker_amount = 4
+worker_amount = 6
 
 def conv_bool(b):
 	return 1 if b else 0

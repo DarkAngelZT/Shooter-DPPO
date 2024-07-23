@@ -20,7 +20,7 @@ func _process(delta):
 	super._process(delta)
 
 func _physics_process(delta):
-	if is_game_paused():
+	if is_game_paused() or GameData.game_end[field_id]:
 		return
 		
 	if GameData.actor_info[field_id][id].hp<=0:
@@ -40,6 +40,8 @@ func _physics_process(delta):
 				character_mesh.walk()
 				move_and_slide()
 				GameData.actor_info[field_id][id].move_dir=Vector2(direction.x,direction.z)
+				#if is_out_of_field():
+					#GameData.game_end[field_id]=true
 			elif input.move_state == GameData.Op_Stop:
 				velocity = Vector3.ZERO
 				GameData.actor_info[field_id][id].move_dir=Vector2.ZERO
@@ -83,3 +85,10 @@ func is_shoot_enable()->bool:
 	if GameManager.instance.game_mode == GameManager.GameMode.Train:
 		return TrainingManager.enable_player_shoot()
 	return true
+
+func is_out_of_field():
+	if GameManager.instance.game_mode == GameManager.GameMode.Train:
+		var d = max(abs(position.x),abs(position.z))
+		return d>14
+	else:
+		return false
