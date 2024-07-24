@@ -55,9 +55,9 @@ continuous_gamma = 0.9
 lmbda = 0.9
 eps = 0.2
 batch_size = 64
-auto_save_ep = 20
+auto_save_ep = 30
 
-worker_amount = 6
+worker_amount = 9
 
 def conv_bool(b):
 	return 1 if b else 0

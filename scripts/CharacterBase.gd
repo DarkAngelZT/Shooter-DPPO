@@ -56,12 +56,12 @@ func shoot():
 		bullet.instigator_id = self.id
 		bullet.instigator_field_id = self.field_id
 		
-		bullet.hit.connect(on_bullet_hit)
+		bind_bullet_event(bullet)
 		GameManager.instance.on_field_reset.connect(bullet.on_field_reset)
 		GameManager.instance.root.add_child(bullet)
 		set_can_shoot(false)
 
-func on_bullet_hit(other):
+func bind_bullet_event(bullet):
 	pass
 
 func die():

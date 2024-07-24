@@ -5,15 +5,16 @@
 [ext_resource type="Texture2D" uid="uid://c6y53noilbya3" path="res://assets/textures/lab_floor.png" id="3_llgvb"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_yvbjh"]
-vertices = PackedVector3Array(15.5, 2.25, -15.4783, 15, 2.25, -15.4783, 15.25, 2.25, 15.0217, 15.5, 2.25, 15.5217, -15.5, 2.25, -15.4783, -15.5, 2.25, 15.5217, -15, 2.25, 15.2717, -15, 2.25, -15.4783, 15.5, 2.25, 15.5217, 15.25, 2.25, 15.0217, -15, 2.25, 15.2717, -15.5, 2.25, 15.5217, -14.25, 0.75, -14.2283, -14.25, 0.75, 14.2717, 14.25, 0.75, 14.2717, 14.25, 0.75, -14.2283)
-polygons = [PackedInt32Array(1, 0, 2), PackedInt32Array(2, 0, 3), PackedInt32Array(7, 6, 4), PackedInt32Array(4, 6, 5), PackedInt32Array(9, 8, 10), PackedInt32Array(10, 8, 11), PackedInt32Array(15, 14, 12), PackedInt32Array(12, 14, 13)]
+vertices = PackedVector3Array(-20.5741, 2.25, 20.6352, -19.5741, 2.25, 20.6352, -19.3241, 2.25, 20.1352, -19.3241, 2.25, 18.8852, -19.5741, 2.25, -19.3648, -20.5741, 2.25, -20.6148, 18.9259, 2.25, 20.1352, 19.1759, 2.25, 20.6352, 20.4259, 2.25, 20.6352, 19.1759, 2.25, 18.6352, -20.5741, 2.25, -20.6148, -19.5741, 2.25, -19.3648, 18.9259, 2.25, -19.6148, 20.4259, 2.25, -20.6148, 18.9259, 2.25, 20.1352, 19.1759, 2.25, 18.6352, -19.3241, 2.25, 18.8852, -19.3241, 2.25, 20.1352, 20.4259, 2.25, -20.6148, 18.9259, 2.25, -19.6148, 19.1759, 2.25, 18.6352, 20.4259, 2.25, 20.6352, -18.3241, 0.75, -18.3648, -18.3241, 0.75, 17.8852, 18.1759, 0.75, 17.8852, 18.1759, 0.75, -18.3648)
+polygons = [PackedInt32Array(1, 0, 2), PackedInt32Array(2, 0, 3), PackedInt32Array(3, 0, 4), PackedInt32Array(4, 0, 5), PackedInt32Array(7, 6, 8), PackedInt32Array(8, 6, 9), PackedInt32Array(11, 10, 12), PackedInt32Array(12, 10, 13), PackedInt32Array(17, 16, 14), PackedInt32Array(14, 16, 15), PackedInt32Array(19, 18, 20), PackedInt32Array(20, 18, 21), PackedInt32Array(25, 24, 22), PackedInt32Array(22, 24, 23)]
 geometry_parsed_geometry_type = 1
+geometry_collision_mask = 4294967041
 geometry_source_geometry_mode = 1
 geometry_source_group_name = &"LevelMesh"
 agent_radius = 0.35
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6fmic"]
-size = Vector3(30, 0.5, 30)
+size = Vector3(40, 0.5, 40)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ux68f"]
 albedo_color = Color(0.407843, 0.407843, 0.407843, 1)
@@ -23,7 +24,7 @@ uv1_scale = Vector3(30, 30, 1)
 [sub_resource type="BoxMesh" id="BoxMesh_ad0uq"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_usrdh"]
-size = Vector3(32, 2, 2)
+size = Vector3(42, 2, 2)
 
 [sub_resource type="BoxMesh" id="BoxMesh_v537c"]
 
@@ -39,7 +40,7 @@ mob_spawner = [NodePath("Spawner"), NodePath("Spawner2"), NodePath("Spawner3"), 
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
 
 [node name="Spawner" parent="." instance=ExtResource("3_2l37y")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0428228, 0.3, 13.1137)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0428228, 0.3, 16.5455)
 spawn_time_sec = 4.0
 spawn_limit = 3
 
@@ -47,7 +48,7 @@ spawn_limit = 3
 transform = Transform3D(27, 0, 0, 0, 1, 0, 0, 0, 3.5, 0, 0.495547, 0)
 
 [node name="Spawner2" parent="." instance=ExtResource("3_2l37y")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -12.9987)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -17.5261)
 spawn_time_sec = 3.0
 spawn_limit = 3
 
@@ -55,7 +56,7 @@ spawn_limit = 3
 transform = Transform3D(27, 0, 0, 0, 1, 0, 0, 0, 3.5, 0, 0.495547, 0)
 
 [node name="Spawner3" parent="." instance=ExtResource("3_2l37y")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.5593, 0.3, 0.323344)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.198, 0.3, 0.323344)
 spawn_time_sec = 4.0
 spawn_limit = 3
 
@@ -63,7 +64,7 @@ spawn_limit = 3
 transform = Transform3D(3.5, 0, 0, 0, 1, 0, 0, 0, 22, 0, 0.495547, 0)
 
 [node name="Spawner4" parent="." instance=ExtResource("3_2l37y")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.0068, 0.3, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.5056, 0.3, 0)
 spawn_time_sec = 3.5
 spawn_limit = 3
 
@@ -83,48 +84,48 @@ disable_mode = 1
 shape = SubResource("BoxShape3D_6fmic")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="LevelMap/Floor"]
-transform = Transform3D(30, 0, 0, 0, 0.5, 0, 0, 0, 30, 0, 0, 0)
+transform = Transform3D(40, 0, 0, 0, 0.5, 0, 0, 0, 40, 0, 0, 0)
 material_override = SubResource("StandardMaterial3D_ux68f")
 mesh = SubResource("BoxMesh_ad0uq")
 
 [node name="Wall" type="StaticBody3D" parent="LevelMap"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.798338, 15.5077)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.798338, 19.3876)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="LevelMap/Wall"]
 shape = SubResource("BoxShape3D_usrdh")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="LevelMap/Wall"]
-transform = Transform3D(32, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0)
+transform = Transform3D(42, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_v537c")
 
 [node name="Wall2" type="StaticBody3D" parent="LevelMap"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.798338, -15.4783)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.798338, -20.1148)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="LevelMap/Wall2"]
 shape = SubResource("BoxShape3D_usrdh")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="LevelMap/Wall2"]
-transform = Transform3D(32, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0)
+transform = Transform3D(42, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_v537c")
 
 [node name="Wall3" type="StaticBody3D" parent="LevelMap"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 15.2589, 0.798338, 0.0835881)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 19.8533, 0.798338, 0.0835881)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="LevelMap/Wall3"]
 shape = SubResource("BoxShape3D_usrdh")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="LevelMap/Wall3"]
-transform = Transform3D(32, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0)
+transform = Transform3D(42, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_v537c")
 
 [node name="Wall4" type="StaticBody3D" parent="LevelMap"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -15.4756, 0.798338, 0.0835881)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -20.0741, 0.798338, 0.0835881)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="LevelMap/Wall4"]
 shape = SubResource("BoxShape3D_usrdh")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="LevelMap/Wall4"]
-transform = Transform3D(32, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0)
+transform = Transform3D(42, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_v537c")
 
 [node name="PlayerBlock" type="StaticBody3D" parent="LevelMap"]

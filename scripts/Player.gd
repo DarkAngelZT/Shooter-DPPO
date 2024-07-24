@@ -66,10 +66,6 @@ func die():
 	on_player_dead.emit(self)
 	#destroy
 	queue_free()
-	
-func on_bullet_hit(other):
-	if other is Mob:
-		other.take_damage(damage)
 		
 func get_bullet_speed()->float:
 	return GameManager.instance.game_settings.bullet_speed_player
@@ -125,3 +121,6 @@ func auto_shoot():
 		GameData.player_input[id].shooting = true
 	else:
 		GameData.player_input[id].shooting = false
+
+func bind_bullet_event(bullet):
+	bullet.hit.connect(GameManager.instance.on_player_bullet_hit)

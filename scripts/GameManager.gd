@@ -257,7 +257,11 @@ func ai_loop():
 					var p = f.player
 					var data = p.get_sensor_data()
 					var game_end = GameData.game_end[p.field_id]
-					var reward = reward_func.call(p.field_id, data)
+					var reward
+					if reward_func.is_valid():
+						reward = reward_func.call(p.field_id, data)
+					else:
+						reward = 0
 					if not NetworkManager.instance.send_server_state(p.field_id,p.id,data,reward,game_end):
 						return
 					GameData.player_shooted[p.id] = false
@@ -284,7 +288,9 @@ func calculate_reward(field_id, sensor_data)->float:
 		var edge_panelty = -0.01*(4-closest_d)
 		var shoot_bonus = 0.03 if GameData.player_shooted[player.id] else 0
 		
-		var reward = stay_penalty + life_loss_penalty
+		var alive_reward = 0.01 * player.health if (GameData.player_hp_cache[player.id] - player.health) == 0 else 0
+		
+		var reward = stay_penalty + life_loss_penalty + alive_reward
 		
 		#clean up
 		GameData.mob_kill_cache[player.id] = 0
@@ -318,6 +324,14 @@ func calculate_reward_lv2(field_id, sensor_data)->float:
 		
 	GameData.player_hp_cache[player.id] = player.health
 	return reward
+
+func on_player_bullet_hit(other):
+	if other is Mob:
+		other.take_damage(GameManager.instance.game_settings.bullet_damage)
+	
+func on_mob_bullet_hit(other):
+	if other is Player:
+		other.take_damage(GameManager.instance.game_settings.bullet_damage)
 
 func test_func():
 	var sensor_data = players[0].get_sensor_data()

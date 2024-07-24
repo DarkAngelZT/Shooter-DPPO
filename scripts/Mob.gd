@@ -42,10 +42,6 @@ func die():
 		spawner.on_mob_dead(self)
 	queue_free()
 
-func on_bullet_hit(other):
-	if other is Player:
-		other.take_damage(damage)
-
 func move_to(target):
 	if target != target_pos:
 		target_pos = target
@@ -121,3 +117,6 @@ func is_shoot_enable()->bool:
 	if GameManager.instance.game_mode == GameManager.GameMode.Train:
 		return TrainingManager.enable_mob_shoot()
 	return true
+	
+func bind_bullet_event(bullet):
+	bullet.hit.connect(GameManager.instance.on_mob_bullet_hit)
