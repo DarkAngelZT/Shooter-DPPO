@@ -38,7 +38,8 @@ func _physics_process(delta):
 		nav_move()
 
 func die():
-	spawner.on_mob_dead(self)
+	if spawner!= null:
+		spawner.on_mob_dead(self)
 	queue_free()
 
 func on_bullet_hit(other):
@@ -85,6 +86,8 @@ func adjust_rotation(move_dir:Vector3):
 	GameData.actor_info[field_id][id].direction = Vector2(forward.x,forward.z)
 	
 func get_attack_position() -> Vector3:
+	if spawner==null:
+		return Vector3.ZERO
 	return spawner.owner_field.get_attack_position()
 	
 func is_reach_destination() -> bool:

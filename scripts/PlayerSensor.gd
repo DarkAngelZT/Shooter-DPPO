@@ -33,7 +33,6 @@ class SensorData:
 	class PlayerData:
 		var hp:int
 		var move_dir:float
-		var aim_dir:float
 		var is_moving:bool
 		var shoot_cd_left:float
 		var terrain_info:Array[float]
@@ -176,7 +175,6 @@ func gether_player_info(player_data:SensorData.PlayerData):
 	
 	player_data.hp = player_state.hp
 	player_data.move_dir = forward.angle_to(player_state.move_dir)
-	player_data.aim_dir = forward.angle_to(player_state.direction)
 	player_data.shoot_cd_left = owner.get_shoot_cd_left()
 	player_data.is_moving = not player_state.move_dir.is_zero_approx()
 	# collect terrain info	
@@ -220,9 +218,9 @@ func gether_sensor_data():
 							bullet_monster.append(obj_owner)
 	#计算分区信息
 	analyse_bullets(bullet_monster,sensor_data.mob_bullet_data)
-	analyse_bullets(bullet_player, sensor_data.player_bullet_data)
+	#analyse_bullets(bullet_player, sensor_data.player_bullet_data)
 	
-	analyse_mob(monsters,sensor_data.mob_data)
+	#analyse_mob(monsters,sensor_data.mob_data)
 	
 	gether_player_info(sensor_data.player_data)
 	return sensor_data

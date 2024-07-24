@@ -3,17 +3,14 @@ syntax="proto3";
 message PlayerState{
 	int32 hp=1;
 	float move_dir=2;
-	float aim_dir=3;
-	bool is_moving=4;
-	float shoot_cd_left=5;
-	repeated float terrain_info=6;
+	bool is_moving=3;
+	float shoot_cd_left=4;
+	repeated float terrain_info=5;
 }
 
 message Action {
 	float move_dir = 1;
-	float aim_dir = 2;
-	bool move_state = 3;
-	bool shoot_state = 4;
+	bool move_state = 2;
 }
 
 message SensorData{

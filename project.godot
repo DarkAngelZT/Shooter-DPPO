@@ -72,6 +72,8 @@ zoom_out={
 3d_navigation/layer_2="ai"
 3d_physics/layer_3="monster"
 3d_physics/layer_4="bullet"
+3d_physics/layer_5="trigger"
+3d_physics/layer_6="blocker"
 avoidance/layer_1="ai"
 
 [rendering]

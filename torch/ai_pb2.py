@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x08\x61i.proto\"|\n\x0bPlayerState\x12\n\n\x02hp\x18\x01 \x01(\x05\x12\x10\n\x08move_dir\x18\x02 \x01(\x02\x12\x0f\n\x07\x61im_dir\x18\x03 \x01(\x02\x12\x11\n\tis_moving\x18\x04 \x01(\x08\x12\x15\n\rshoot_cd_left\x18\x05 \x01(\x02\x12\x14\n\x0cterrain_info\x18\x06 \x03(\x02\"T\n\x06\x41\x63tion\x12\x10\n\x08move_dir\x18\x01 \x01(\x02\x12\x0f\n\x07\x61im_dir\x18\x02 \x01(\x02\x12\x12\n\nmove_state\x18\x03 \x01(\x08\x12\x13\n\x0bshoot_state\x18\x04 \x01(\x08\"E\n\nSensorData\x12\"\n\x0cplayer_state\x18\x01 \x01(\x0b\x32\x0c.PlayerState\x12\x13\n\x0bregion_info\x18\x02 \x03(\x02\"\x7f\n\tServerMsg\x12\x10\n\x08\x66ield_id\x18\x01 \x01(\x05\x12\n\n\x02id\x18\x02 \x01(\x05\x12\x10\n\x08msg_type\x18\x03 \x01(\x05\x12 \n\x0bsensor_data\x18\x04 \x01(\x0b\x32\x0b.SensorData\x12\x0e\n\x06reward\x18\x05 \x01(\x02\x12\x10\n\x08game_end\x18\x06 \x01(\x08\"T\n\tClientMsg\x12\x10\n\x08\x66ield_id\x18\x01 \x01(\x05\x12\n\n\x02id\x18\x02 \x01(\x05\x12\x10\n\x08msg_type\x18\x03 \x01(\x05\x12\x17\n\x06\x61\x63tion\x18\x04 \x01(\x0b\x32\x07.Action\"\x1c\n\rServerCtrlMsg\x12\x0b\n\x03\x63md\x18\x01 \x01(\x05\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x08\x61i.proto\"k\n\x0bPlayerState\x12\n\n\x02hp\x18\x01 \x01(\x05\x12\x10\n\x08move_dir\x18\x02 \x01(\x02\x12\x11\n\tis_moving\x18\x03 \x01(\x08\x12\x15\n\rshoot_cd_left\x18\x04 \x01(\x02\x12\x14\n\x0cterrain_info\x18\x05 \x03(\x02\".\n\x06\x41\x63tion\x12\x10\n\x08move_dir\x18\x01 \x01(\x02\x12\x12\n\nmove_state\x18\x02 \x01(\x08\"E\n\nSensorData\x12\"\n\x0cplayer_state\x18\x01 \x01(\x0b\x32\x0c.PlayerState\x12\x13\n\x0bregion_info\x18\x02 \x03(\x02\"\x7f\n\tServerMsg\x12\x10\n\x08\x66ield_id\x18\x01 \x01(\x05\x12\n\n\x02id\x18\x02 \x01(\x05\x12\x10\n\x08msg_type\x18\x03 \x01(\x05\x12 \n\x0bsensor_data\x18\x04 \x01(\x0b\x32\x0b.SensorData\x12\x0e\n\x06reward\x18\x05 \x01(\x02\x12\x10\n\x08game_end\x18\x06 \x01(\x08\"T\n\tClientMsg\x12\x10\n\x08\x66ield_id\x18\x01 \x01(\x05\x12\n\n\x02id\x18\x02 \x01(\x05\x12\x10\n\x08msg_type\x18\x03 \x01(\x05\x12\x17\n\x06\x61\x63tion\x18\x04 \x01(\x0b\x32\x07.Action\"\x1c\n\rServerCtrlMsg\x12\x0b\n\x03\x63md\x18\x01 \x01(\x05\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -21,15 +21,15 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'ai_pb2', _globals)
 if _descriptor._USE_C_DESCRIPTORS == False:
   DESCRIPTOR._options = None
   _globals['_PLAYERSTATE']._serialized_start=12
-  _globals['_PLAYERSTATE']._serialized_end=136
-  _globals['_ACTION']._serialized_start=138
-  _globals['_ACTION']._serialized_end=222
-  _globals['_SENSORDATA']._serialized_start=224
-  _globals['_SENSORDATA']._serialized_end=293
-  _globals['_SERVERMSG']._serialized_start=295
-  _globals['_SERVERMSG']._serialized_end=422
-  _globals['_CLIENTMSG']._serialized_start=424
-  _globals['_CLIENTMSG']._serialized_end=508
-  _globals['_SERVERCTRLMSG']._serialized_start=510
-  _globals['_SERVERCTRLMSG']._serialized_end=538
+  _globals['_PLAYERSTATE']._serialized_end=119
+  _globals['_ACTION']._serialized_start=121
+  _globals['_ACTION']._serialized_end=167
+  _globals['_SENSORDATA']._serialized_start=169
+  _globals['_SENSORDATA']._serialized_end=238
+  _globals['_SERVERMSG']._serialized_start=240
+  _globals['_SERVERMSG']._serialized_end=367
+  _globals['_CLIENTMSG']._serialized_start=369
+  _globals['_CLIENTMSG']._serialized_end=453
+  _globals['_SERVERCTRLMSG']._serialized_start=455
+  _globals['_SERVERCTRLMSG']._serialized_end=483
 # @@protoc_insertion_point(module_scope)

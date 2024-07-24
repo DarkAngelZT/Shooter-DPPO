@@ -675,23 +675,18 @@ class PlayerState:
 		service.field = __move_dir
 		data[__move_dir.tag] = service
 		
-		__aim_dir = PBField.new("aim_dir", PB_DATA_TYPE.FLOAT, PB_RULE.OPTIONAL, 3, true, DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT])
-		service = PBServiceField.new()
-		service.field = __aim_dir
-		data[__aim_dir.tag] = service
-		
-		__is_moving = PBField.new("is_moving", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 4, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
+		__is_moving = PBField.new("is_moving", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 3, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
 		service = PBServiceField.new()
 		service.field = __is_moving
 		data[__is_moving.tag] = service
 		
-		__shoot_cd_left = PBField.new("shoot_cd_left", PB_DATA_TYPE.FLOAT, PB_RULE.OPTIONAL, 5, true, DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT])
+		__shoot_cd_left = PBField.new("shoot_cd_left", PB_DATA_TYPE.FLOAT, PB_RULE.OPTIONAL, 4, true, DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT])
 		service = PBServiceField.new()
 		service.field = __shoot_cd_left
 		data[__shoot_cd_left.tag] = service
 		
 		var __terrain_info_default: Array[float] = []
-		__terrain_info = PBField.new("terrain_info", PB_DATA_TYPE.FLOAT, PB_RULE.REPEATED, 6, true, __terrain_info_default)
+		__terrain_info = PBField.new("terrain_info", PB_DATA_TYPE.FLOAT, PB_RULE.REPEATED, 5, true, __terrain_info_default)
 		service = PBServiceField.new()
 		service.field = __terrain_info
 		data[__terrain_info.tag] = service
@@ -716,20 +711,11 @@ class PlayerState:
 	func set_move_dir(value : float) -> void:
 		__move_dir.value = value
 	
-	var __aim_dir: PBField
-	func get_aim_dir() -> float:
-		return __aim_dir.value
-	func clear_aim_dir() -> void:
-		data[3].state = PB_SERVICE_STATE.UNFILLED
-		__aim_dir.value = DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT]
-	func set_aim_dir(value : float) -> void:
-		__aim_dir.value = value
-	
 	var __is_moving: PBField
 	func get_is_moving() -> bool:
 		return __is_moving.value
 	func clear_is_moving() -> void:
-		data[4].state = PB_SERVICE_STATE.UNFILLED
+		data[3].state = PB_SERVICE_STATE.UNFILLED
 		__is_moving.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
 	func set_is_moving(value : bool) -> void:
 		__is_moving.value = value
@@ -738,7 +724,7 @@ class PlayerState:
 	func get_shoot_cd_left() -> float:
 		return __shoot_cd_left.value
 	func clear_shoot_cd_left() -> void:
-		data[5].state = PB_SERVICE_STATE.UNFILLED
+		data[4].state = PB_SERVICE_STATE.UNFILLED
 		__shoot_cd_left.value = DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT]
 	func set_shoot_cd_left(value : float) -> void:
 		__shoot_cd_left.value = value
@@ -747,7 +733,7 @@ class PlayerState:
 	func get_terrain_info() -> Array[float]:
 		return __terrain_info.value
 	func clear_terrain_info() -> void:
-		data[6].state = PB_SERVICE_STATE.UNFILLED
+		data[5].state = PB_SERVICE_STATE.UNFILLED
 		__terrain_info.value = []
 	func add_terrain_info(value : float) -> void:
 		__terrain_info.value.append(value)
@@ -782,20 +768,10 @@ class Action:
 		service.field = __move_dir
 		data[__move_dir.tag] = service
 		
-		__aim_dir = PBField.new("aim_dir", PB_DATA_TYPE.FLOAT, PB_RULE.OPTIONAL, 2, true, DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT])
-		service = PBServiceField.new()
-		service.field = __aim_dir
-		data[__aim_dir.tag] = service
-		
-		__move_state = PBField.new("move_state", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 3, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
+		__move_state = PBField.new("move_state", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 2, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
 		service = PBServiceField.new()
 		service.field = __move_state
 		data[__move_state.tag] = service
-		
-		__shoot_state = PBField.new("shoot_state", PB_DATA_TYPE.BOOL, PB_RULE.OPTIONAL, 4, true, DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL])
-		service = PBServiceField.new()
-		service.field = __shoot_state
-		data[__shoot_state.tag] = service
 		
 	var data = {}
 	
@@ -808,32 +784,14 @@ class Action:
 	func set_move_dir(value : float) -> void:
 		__move_dir.value = value
 	
-	var __aim_dir: PBField
-	func get_aim_dir() -> float:
-		return __aim_dir.value
-	func clear_aim_dir() -> void:
-		data[2].state = PB_SERVICE_STATE.UNFILLED
-		__aim_dir.value = DEFAULT_VALUES_3[PB_DATA_TYPE.FLOAT]
-	func set_aim_dir(value : float) -> void:
-		__aim_dir.value = value
-	
 	var __move_state: PBField
 	func get_move_state() -> bool:
 		return __move_state.value
 	func clear_move_state() -> void:
-		data[3].state = PB_SERVICE_STATE.UNFILLED
+		data[2].state = PB_SERVICE_STATE.UNFILLED
 		__move_state.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
 	func set_move_state(value : bool) -> void:
 		__move_state.value = value
-	
-	var __shoot_state: PBField
-	func get_shoot_state() -> bool:
-		return __shoot_state.value
-	func clear_shoot_state() -> void:
-		data[4].state = PB_SERVICE_STATE.UNFILLED
-		__shoot_state.value = DEFAULT_VALUES_3[PB_DATA_TYPE.BOOL]
-	func set_shoot_state(value : bool) -> void:
-		__shoot_state.value = value
 	
 	func _to_string() -> String:
 		return PBPacker.message_to_string(data)

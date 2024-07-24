@@ -23,6 +23,10 @@ var eqs_update_time:float = 0
 
 var player_sensor_data_cache = null
 
+var lv1_spawn_time:int = 0
+var lv1_monster:Mob = null
+var lv1_shoot_penalty_cache = 1
+
 func reset():
 	for m in monsters.values():
 		m.queue_free()
@@ -58,6 +62,11 @@ func init(field_id):
 	
 	EQS = SimpleEQS.new()
 	
+	if GameManager.instance.game_mode == GameManager.GameMode.Train:
+		if TrainingManager.instance.training_level == 1:
+			for spawner in mob_spawner:
+				spawner.enabled = false
+	
 	call_deferred("eqs_setup")
 
 func eqs_setup():
@@ -77,7 +86,14 @@ func _physics_process(_delta):
 	pos.y+=1
 	#DebugDraw3D.draw_box(player.global_position,Quaternion.IDENTITY,
 	#Vector3(18,2,18),Color.RED,true)
-	
+	if GameManager.instance.game_mode == GameManager.GameMode.Train:
+		if TrainingManager.instance.training_level == 1:
+			if lv1_monster == null and Time.get_ticks_msec() > lv1_spawn_time:
+				lv1_spawn_time =Time.get_ticks_msec() + 200
+				spawn_lv1_training_mob()
+			if lv1_monster != null and lv1_shoot_penalty_cache>0:
+				lv1_shoot_penalty_cache = get_training_lv1_shoot_penalty()
+		
 	if GameData.game_pause[id]:
 		eqs_update_time+=_delta*1000
 		return
@@ -100,6 +116,9 @@ func on_mob_dead(mob):
 	if is_instance_valid(mob):
 		if GameManager.instance.control_mode == GameManager.ControlMode.AI:
 			GameData.mob_kill_cache[id]+=1
+		if GameManager.instance.game_mode == GameManager.GameMode.Train:
+			if TrainingManager.instance.training_level == 1:
+				lv1_monster = null
 		GameData.actor_info[id].erase(mob.id)
 		monsters.erase(mob.id)
 		mob.queue_free()
@@ -121,3 +140,19 @@ func get_lv1_training_mob_spawn_pos()->Vector3:
 	var angle = deg_to_rad(randf_range(0,360))
 	pos = Vector3(distance*sin(angle),0,distance*cos(angle))
 	return pos+player.position
+	
+func spawn_lv1_training_mob():
+	var pos = get_lv1_training_mob_spawn_pos()
+	var mob = GameManager.instance.spawn_monster(self,pos)
+	mob.spawner = self
+	lv1_monster = mob
+	on_monster_spawned(mob)
+	mob_id_counter -= 1
+
+func get_training_lv1_shoot_penalty()->float:
+	var target_dir = lv1_monster.position - player.position
+	target_dir = Vector2(target_dir.x,target_dir.z)
+	var aim_dir:Vector2 = GameData.actor_info[id][player.id].direction
+	var angle = abs(aim_dir.angle_to(target_dir))
+	var penalty = -0.1*(max(angle-deg_to_rad(5),0))
+	return penalty

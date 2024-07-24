@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://b57j43s2lo4ei"]
+[gd_scene load_steps=11 format=3 uid="uid://b57j43s2lo4ei"]
 
 [ext_resource type="Script" path="res://scripts/TrainingField.gd" id="1_btx8r"]
 [ext_resource type="PackedScene" uid="uid://xwlx0mo2yvbp" path="res://assets/nodes/Spawner.tscn" id="3_2l37y"]
@@ -26,6 +26,9 @@ uv1_scale = Vector3(30, 30, 1)
 size = Vector3(32, 2, 2)
 
 [sub_resource type="BoxMesh" id="BoxMesh_v537c"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5uwx7"]
+size = Vector3(30, 2, 1)
 
 [node name="TrainingField" type="Node3D" node_paths=PackedStringArray("player_spawn", "mob_spawner")]
 script = ExtResource("1_btx8r")
@@ -123,6 +126,42 @@ shape = SubResource("BoxShape3D_usrdh")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="LevelMap/Wall4"]
 transform = Transform3D(32, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_v537c")
+
+[node name="PlayerBlock" type="StaticBody3D" parent="LevelMap"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10.4516)
+collision_layer = 32
+collision_mask = 2
+
+[node name="PlayerBlocker" type="CollisionShape3D" parent="LevelMap/PlayerBlock"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.208, 0)
+shape = SubResource("BoxShape3D_5uwx7")
+
+[node name="PlayerBlock2" type="StaticBody3D" parent="LevelMap"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8.47225)
+collision_layer = 32
+collision_mask = 2
+
+[node name="PlayerBlocker" type="CollisionShape3D" parent="LevelMap/PlayerBlock2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.208, 0)
+shape = SubResource("BoxShape3D_5uwx7")
+
+[node name="PlayerBlock3" type="StaticBody3D" parent="LevelMap"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -10.203, 0, 0.401258)
+collision_layer = 32
+collision_mask = 2
+
+[node name="PlayerBlocker" type="CollisionShape3D" parent="LevelMap/PlayerBlock3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.208, 0)
+shape = SubResource("BoxShape3D_5uwx7")
+
+[node name="PlayerBlock4" type="StaticBody3D" parent="LevelMap"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 9.32373, 0, 0.401258)
+collision_layer = 32
+collision_mask = 2
+
+[node name="PlayerBlocker" type="CollisionShape3D" parent="LevelMap/PlayerBlock4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.208, 0)
+shape = SubResource("BoxShape3D_5uwx7")
 
 [editable path="Spawner"]
 [editable path="Spawner2"]

@@ -13,6 +13,9 @@ var size_cube:Node3D
 @export
 var spawn_limit:int = 4
 
+@export
+var enabled:bool = true
+
 var size:Vector2
 
 var monster_amount:int = 0
@@ -32,6 +35,8 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	if not enabled:
+		return
 	if GameData.game_pause[owner_field.id]:
 		next_spawn_time += delta*1000
 		return
@@ -61,7 +66,7 @@ func do_spawn():
 			pos = Vector3(randf_range(-size.x*0.5+0.5,size.x*0.5-0.5),0,randf_range(-size.y*0.5+0.5,size.y*0.5-0.5))
 			pos += position
 		var mob = game_mgr.spawn_monster(owner_field,pos)
-		mob.spawner = self		
+		mob.spawner = self
 		on_monster_spawn.emit(mob)
 
 func on_mob_dead(mob):

@@ -15,8 +15,22 @@ import torch.multiprocessing as mp
 from model import Actor
 from model import Critic
 
-STATE_DIM = 337
-ACTION_DIM = 4
+import matplotlib.pyplot as plt
+
+fig = plt.figure()
+actor_loss_plot = fig.add_subplot(2,1,1)
+critic_loss_plot = fig.add_subplot(2,1,2)
+# reward_plot = fig.add_subplot(3,1,3)
+# q_plot = fig.add_subplot(2,2,4)
+
+actor_loss_plot.set_title('actor loss')
+critic_loss_plot.set_title('critic loss')
+actor_loss_data = []
+critic_loss_data = []
+reward_data = []
+
+STATE_DIM = 336
+ACTION_DIM = 2
 HIDDEN_LAYER = 600
 
 A_UPDATE_STEP = 12
@@ -48,22 +62,17 @@ worker_amount = 6
 def conv_bool(b):
 	return 1 if b else 0
 
-def random_normal(mu,std):
-	a = torch.normal(mu,std)
-	return a.detach().tolist()[0]
-
-def process_action(a_mean):
-	a = random_normal(a_mean,1)
-	move_d = np.clip(a[0], -1,1)*180
-	aim_d = np.clip(a[1],-1,1)*180
-	move_state = a[2] >= 0
-	shoot_state = a[3] >= 0
-	return [move_d,aim_d,move_state,shoot_state]
+def process_action(a):
+	a = a.detach().tolist()[0]
+	move_d = np.clip(a[0], -1,1)*180	
+	move_state = a[1] >= 0
+	# shoot_state = a[2] >= 0
+	return [move_d,move_state]#,shoot_state]
 
 def process_state(sensor_data):
 	player_data = [
-	sensor_data.player_state.hp, sensor_data.player_state.move_dir,sensor_data.player_state.aim_dir,
-	conv_bool(sensor_data.player_state.is_moving), sensor_data.player_state.shoot_cd_left ]
+	sensor_data.player_state.hp, sensor_data.player_state.move_dir,sensor_data.player_state.shoot_cd_left,
+	conv_bool(sensor_data.player_state.is_moving)]
 	player_terrian_data = [i for i in sensor_data.player_state.terrain_info]
 	region_data = sensor_data.region_info
 	data = np.hstack([player_data,player_terrian_data,region_data])
@@ -112,7 +121,7 @@ class PlayMode(object):
 			out_msg.id = self.id
 			out_msg.msg_type = C_OP
 			a = out_msg.action
-			a.move_dir,a.aim_dir,a.move_state,a.shoot_state = action
+			a.move_dir,a.move_state = action
 			msg = out_msg.SerializeToString()
 			self.client.send(msg)
 			return True
@@ -159,6 +168,7 @@ class TrainMode(object):
 			adv = gamma*lmbda*adv + delta
 			adv_list.append(adv)
 		adv_list.reverse()
+		adv_list = np.array(adv_list)
 		return torch.FloatTensor(adv_list)
 
 	def train(self):
@@ -188,6 +198,7 @@ class TrainMode(object):
 			critic_loss.backward()
 			self.actor_opt.step()
 			self.critic_opt.step()
+		return actor_loss.detach(),critic_loss.detach()
 	
 	def save(self,folder, ep_num):
 		root = ''
@@ -242,7 +253,7 @@ class TrainMode(object):
 				r_list.remove(s)
 			
 			if not traffic_signal.get():
-				self.train()
+				a_loss,c_loss = self.train()
 				record_counter.reset()
 				shared_record.reset()
 				ep_num += 1
@@ -252,11 +263,18 @@ class TrainMode(object):
 				msg = out_msg.SerializeToString()
 				client.send(msg)
 
-				if ep_num % auto_save_ep == 0:
+				if ep_num % auto_save_ep == 0:					
 					self.save('',ep_num)
 				traffic_signal.switch()
 
+				actor_loss_data.append(a_loss.numpy())
+				critic_loss_data.append(c_loss.numpy())
+				print('ep ',ep_num, 'a_loss',a_loss.float(),'c_loss',c_loss.float())
+
 		client.close()
+		actor_loss_plot.plot(actor_loss_data)
+		critic_loss_plot.plot(critic_loss_data)
+		plt.show()
 
 	def main_loop(self):
 		print("start training mode")
@@ -361,16 +379,16 @@ def worker(traffic_signal, record_counter,shared_record, shared_actor, power):
 				count = record_counter.get()
 				if count >= batch_size or game_end:
 					#对reward进行连续动作统计处理
-					total = len(r)
-					final_value = r[-1][0]
-					for i in reversed(range(total)):
-						if i == total -1:
-							next_value = final_value
-							next_done = 1.0 - done[-1][0]
-						else:
-							next_value = r[i + 1][0]
-							next_done = 1.0 - done[-1][0]
-						r[i][0] = r[i][0] + continuous_gamma*next_done*next_value
+					# total = len(r)
+					# final_value = r[-1][0]
+					# for i in reversed(range(total)):
+					# 	if i == total -1:
+					# 		next_value = final_value
+					# 		next_done = 1.0 - done[-1][0]
+					# 	else:
+					# 		next_value = r[i + 1][0]
+					# 		next_done = 1.0 - done[-1][0]
+					# 	r[i][0] = r[i][0] + continuous_gamma*next_done*next_value
 
 					shared_record.add_records(s,a,r,s_,done)
 
@@ -392,7 +410,7 @@ def worker(traffic_signal, record_counter,shared_record, shared_actor, power):
 				out_msg.id = cid
 				out_msg.msg_type = C_OP
 				out_a = out_msg.action
-				out_a.move_dir,out_a.aim_dir,out_a.move_state,out_a.shoot_state = action
+				out_a.move_dir,out_a.move_state = action
 				msg = out_msg.SerializeToString()
 				client.send(msg)
 

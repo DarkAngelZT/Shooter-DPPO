@@ -120,9 +120,7 @@ func serialize_sensor_data(sensor_data, target_msg):
 	#===player state===
 	player_state.set_hp(sensor_data.player_data.hp)
 	player_state.set_move_dir(sensor_data.player_data.move_dir)
-	player_state.set_aim_dir(sensor_data.player_data.aim_dir)
 	player_state.set_is_moving(sensor_data.player_data.is_moving)
-	player_state.set_shoot_cd_left(sensor_data.player_data.shoot_cd_left)
 	for distance in sensor_data.player_data.terrain_info:
 		player_state.add_terrain_info(distance)
 	#===================
@@ -162,11 +160,9 @@ func process_agent_action(id,action):
 	else:
 		GameData.player_input[id].move_state = GameData.Op_Stop
 	
-	GameData.player_input[id].shooting = action.get_shoot_state()
+	#GameData.player_input[id].shooting = action.get_shoot_state()
 	var move_dir = _angle_to_vect2(action.get_move_dir())
-	var aim_dir = _angle_to_vect2(action.get_aim_dir())
 	GameData.player_input[id].direction = move_dir
-	GameData.player_input[id].aim_direction = aim_dir
 
 func request_save():
 	if ctrl_client.get_status() == StreamPeerTCP.STATUS_CONNECTED :

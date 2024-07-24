@@ -9,12 +9,21 @@ var character_mesh:Node3D
 @export
 var damage:int
 
+var detect_shape = SphereShape3D.new()
+var space:PhysicsDirectSpaceState3D
+var query_param = PhysicsShapeQueryParameters3D.new()
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	move_speed = GameManager.instance.game_settings.player_move_speed
 	health = GameManager.instance.game_settings.player_health
-	damage = GameManager.instance.game_settings.bullet_damage
-
+	damage = GameManager.instance.game_settings.bullet_damage	
+	
+	detect_shape.radius = 9
+	space = get_world_3d().direct_space_state	
+	query_param.collision_mask = 4 #monster
+	query_param.shape = detect_shape
+	query_param.collide_with_bodies = true
+	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	super._process(delta)
@@ -25,6 +34,8 @@ func _physics_process(delta):
 		
 	if GameData.actor_info[field_id][id].hp<=0:
 		return
+	if GameManager.instance.control_mode == GameManager.ControlMode.AI:
+		auto_shoot()
 	var input = GameData.player_input[id]
 	if is_instance_valid(input):		
 		basis = Basis.looking_at(Vector3(input.aim_direction.x,0,input.aim_direction.y))
@@ -92,3 +103,25 @@ func is_out_of_field():
 		return d>14
 	else:
 		return false
+
+func auto_shoot():	
+	query_param.transform.origin = global_position
+	var result = space.intersect_shape(query_param)
+	var target = null
+	var closet_d = 999
+	for hit_result in result:
+		var obj = hit_result.collider
+		if obj is Mob :
+			if obj.field_id != field_id:
+				continue
+			var d = obj.position.distance_to(position)
+			if d < closet_d:
+				closet_d = d
+				target = obj
+	if target != null:
+		var aim_d = target.position - position
+		aim_d = Vector2(aim_d.x,aim_d.z)		
+		GameData.player_input[id].aim_direction = aim_d.normalized()
+		GameData.player_input[id].shooting = true
+	else:
+		GameData.player_input[id].shooting = false

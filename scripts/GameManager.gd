@@ -261,7 +261,7 @@ func ai_loop():
 					if not NetworkManager.instance.send_server_state(p.field_id,p.id,data,reward,game_end):
 						return
 					GameData.player_shooted[p.id] = false
-					GameData.mob_kill_cache[p.id] = 0
+					GameData.mob_kill_cache[p.id] = 0					
 				GameData.ai_need_update[field_id] = 0
 			if GameData.ai_need_update[field_id] > 0:
 				GameData.ai_need_update[field_id] -= 1
@@ -273,17 +273,18 @@ func increase_ep():
 func calculate_reward(field_id, sensor_data)->float:
 	var training_field = training_fields[field_id]
 	if GameData.game_end[field_id]:
-		return 0
+		return -2
 	else:
 		var player = training_field.player
 
-		var stay_penalty = -0.01 * (1 if GameData.player_input[player.id].move_state==GameData.Op_Stop else 0)
-		var life_loss_penalty = -0.05 * (GameData.player_hp_cache[player.id] - player.health)
-		var kill_reward = 0.03 * GameData.mob_kill_cache[player.id]
+		var stay_penalty = -0.05 * (1 if GameData.player_input[player.id].move_state==GameData.Op_Stop else 0)
+		var life_loss_penalty = -0.1 * (GameData.player_hp_cache[player.id] - player.health)
+		var kill_reward = 0.06 * GameData.mob_kill_cache[player.id]
 		var closest_d = sensor_data.player_data.terrain_info.min()
-		var edge_panelty = 0 if closest_d > 2 else -0.01
+		var edge_panelty = -0.01*(4-closest_d)
+		var shoot_bonus = 0.03 if GameData.player_shooted[player.id] else 0
 		
-		var reward = stay_penalty + life_loss_penalty + kill_reward + edge_panelty
+		var reward = stay_penalty + life_loss_penalty
 		
 		#clean up
 		GameData.mob_kill_cache[player.id] = 0
@@ -295,10 +296,13 @@ func calculate_reward_lv1(field_id, sensor_data)->float:
 	var reward = 0
 	var training_field = training_fields[field_id]
 	var player = training_field.player
+	var shoot_dir_penalty = training_field.lv1_shoot_penalty_cache if training_field.lv1_shoot_penalty_cache <0 else 0
+	var do_nothing_penalty = -0.02
 	
-	reward = 0.1 * GameData.mob_kill_cache[player.id]
+	reward = 0.5 * GameData.mob_kill_cache[player.id] + shoot_dir_penalty+do_nothing_penalty
 	
 	GameData.mob_kill_cache[player.id] = 0
+	training_field.lv1_shoot_penalty_cache = 1
 	return reward
 
 func calculate_reward_lv2(field_id, sensor_data)->float:
