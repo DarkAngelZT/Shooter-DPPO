@@ -4,7 +4,7 @@ class_name PlayerSensor extends Node
 @export var radius_near:float
 @export var detect_shape:Shape3D
 @export_flags_3d_physics var collision_mask
-@export var terrain_detect_range:float = 9
+@export var terrain_detect_range:float = 100
 
 var owner_id:int
 var owner_field_id:int
@@ -25,7 +25,7 @@ const Behind = 0x8
 
 const cell_size = 324
 
-const Collision_Mask_Floor = 1
+const Collision_Mask_Floor = 32 # blocker
 
 const RegionNums = [8,12,12]
 
@@ -218,9 +218,9 @@ func gether_sensor_data():
 							bullet_monster.append(obj_owner)
 	#计算分区信息
 	analyse_bullets(bullet_monster,sensor_data.mob_bullet_data)
-	#analyse_bullets(bullet_player, sensor_data.player_bullet_data)
+	analyse_bullets(bullet_player, sensor_data.player_bullet_data)
 	
-	#analyse_mob(monsters,sensor_data.mob_data)
+	analyse_mob(monsters,sensor_data.mob_data)
 	
 	gether_player_info(sensor_data.player_data)
 	return sensor_data

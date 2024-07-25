@@ -18,13 +18,14 @@ from model import Critic
 import matplotlib.pyplot as plt
 
 fig = plt.figure()
-actor_loss_plot = fig.add_subplot(2,1,1)
-critic_loss_plot = fig.add_subplot(2,1,2)
-# reward_plot = fig.add_subplot(3,1,3)
+actor_loss_plot = fig.add_subplot(3,1,1)
+critic_loss_plot = fig.add_subplot(3,1,2)
+reward_plot = fig.add_subplot(3,1,3)
 # q_plot = fig.add_subplot(2,2,4)
 
 actor_loss_plot.set_title('actor loss')
 critic_loss_plot.set_title('critic loss')
+reward_plot.set_title('reward')
 actor_loss_data = []
 critic_loss_data = []
 reward_data = []
@@ -54,10 +55,10 @@ gamma = 0.93
 continuous_gamma = 0.9
 lmbda = 0.9
 eps = 0.2
-batch_size = 64
-auto_save_ep = 30
+batch_size = 128
+auto_save_ep = 80
 
-worker_amount = 9
+worker_amount = 6
 
 def conv_bool(b):
 	return 1 if b else 0
@@ -198,7 +199,7 @@ class TrainMode(object):
 			critic_loss.backward()
 			self.actor_opt.step()
 			self.critic_opt.step()
-		return actor_loss.detach(),critic_loss.detach()
+		return actor_loss.detach(),critic_loss.detach(),rewards.detach().numpy().mean()
 	
 	def save(self,folder, ep_num):
 		root = ''
@@ -253,7 +254,7 @@ class TrainMode(object):
 				r_list.remove(s)
 			
 			if not traffic_signal.get():
-				a_loss,c_loss = self.train()
+				a_loss,c_loss,reward = self.train()
 				record_counter.reset()
 				shared_record.reset()
 				ep_num += 1
@@ -269,11 +270,13 @@ class TrainMode(object):
 
 				actor_loss_data.append(a_loss.numpy())
 				critic_loss_data.append(c_loss.numpy())
-				print('ep ',ep_num, 'a_loss',a_loss.float(),'c_loss',c_loss.float())
+				reward_data.append(reward)
+				print('ep ',ep_num, 'a_loss',a_loss.float(),'c_loss',c_loss.float(),'reward mean',reward)
 
 		client.close()
 		actor_loss_plot.plot(actor_loss_data)
 		critic_loss_plot.plot(critic_loss_data)
+		reward_plot.plot(reward_data)
 		plt.show()
 
 	def main_loop(self):
@@ -384,10 +387,10 @@ def worker(traffic_signal, record_counter,shared_record, shared_actor, power):
 					# for i in reversed(range(total)):
 					# 	if i == total -1:
 					# 		next_value = final_value
-					# 		next_done = 1.0 - done[-1][0]
+					# 		# next_done = 1.0 - done[-1][0]				
 					# 	else:
 					# 		next_value = r[i + 1][0]
-					# 		next_done = 1.0 - done[-1][0]
+					# 		# next_done = 1.0 - done[-1][0]
 					# 	r[i][0] = r[i][0] + continuous_gamma*next_done*next_value
 
 					shared_record.add_records(s,a,r,s_,done)

@@ -40,7 +40,7 @@ mob_spawner = [NodePath("Spawner"), NodePath("Spawner2"), NodePath("Spawner3"), 
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
 
 [node name="Spawner" parent="." instance=ExtResource("3_2l37y")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0428228, 0.3, 16.5455)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.90323, 0.3, 16.5455)
 spawn_time_sec = 4.0
 spawn_limit = 3
 
@@ -48,7 +48,7 @@ spawn_limit = 3
 transform = Transform3D(27, 0, 0, 0, 1, 0, 0, 0, 3.5, 0, 0.495547, 0)
 
 [node name="Spawner2" parent="." instance=ExtResource("3_2l37y")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -17.5261)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.31289, 0.3, -17.5261)
 spawn_time_sec = 3.0
 spawn_limit = 3
 
@@ -56,7 +56,7 @@ spawn_limit = 3
 transform = Transform3D(27, 0, 0, 0, 1, 0, 0, 0, 3.5, 0, 0.495547, 0)
 
 [node name="Spawner3" parent="." instance=ExtResource("3_2l37y")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.198, 0.3, 0.323344)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.198, 0.3, 5.76746)
 spawn_time_sec = 4.0
 spawn_limit = 3
 
@@ -64,7 +64,7 @@ spawn_limit = 3
 transform = Transform3D(3.5, 0, 0, 0, 1, 0, 0, 0, 22, 0, 0.495547, 0)
 
 [node name="Spawner4" parent="." instance=ExtResource("3_2l37y")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.5056, 0.3, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.5056, 0.3, -7.05684)
 spawn_time_sec = 3.5
 spawn_limit = 3
 

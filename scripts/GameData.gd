@@ -39,4 +39,5 @@ static var ai_need_update = {} #{field_id:frame_to_run}
 # these data reset every ai logic update frame(not game frame nor physics frame)
 static var player_hp_cache = {} # {id:hp}
 static var player_shooted = {} # {id:true/false}
+static var player_pos_cache = {} # {id:vec}
 static var mob_kill_cache = {} # {id:count}

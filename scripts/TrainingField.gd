@@ -37,8 +37,9 @@ func reset():
 		player.queue_free()
 	GameData.actor_info[id].clear()
 	GameData.mob_kill_cache[id]=0
-	GameData.player_hp_cache[id] = GameManager.instance.game_settings.player_health
+	GameData.player_hp_cache[id] = GameManager.instance.game_settings.player_health	
 	init(id)
+	GameData.player_pos_cache[id] = player.position
 	on_reset.emit(self)
 # Called when the node enters the scene tree for the first time.
 func _ready():

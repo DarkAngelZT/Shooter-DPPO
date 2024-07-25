@@ -223,6 +223,7 @@ func on_player_spawn(player):
 	players[player.id] = player
 	GameData.player_hp_cache[player.id] = player.health
 	GameData.player_shooted[player.id] = false
+	GameData.player_pos_cache[player.id] = player.position
 	
 func on_player_dead(player):
 	players.erase(player.id)
@@ -277,25 +278,31 @@ func increase_ep():
 func calculate_reward(field_id, sensor_data)->float:
 	var training_field = training_fields[field_id]
 	if GameData.game_end[field_id]:
-		return -2
+		return -0.5
 	else:
 		var player = training_field.player
 
-		var stay_penalty = -0.05 * (1 if GameData.player_input[player.id].move_state==GameData.Op_Stop else 0)
-		var life_loss_penalty = -0.1 * (GameData.player_hp_cache[player.id] - player.health)
-		var kill_reward = 0.06 * GameData.mob_kill_cache[player.id]
-		var closest_d = sensor_data.player_data.terrain_info.min()
-		var edge_panelty = -0.01*(4-closest_d)
-		var shoot_bonus = 0.03 if GameData.player_shooted[player.id] else 0
+		var move_bonus = 0.1 * (1 if GameData.player_input[player.id].move_state==GameData.Op_Move else 0)
+		var delta_d = player.position.distance_to(GameData.player_pos_cache[player.id])
+		var life_loss_penalty = -0.3 * (GameData.player_hp_cache[player.id] - player.health)
+		#var kill_reward = 0.06 * GameData.mob_kill_cache[player.id]
+		#var closest_d = sensor_data.player_data.terrain_info.min()
+		#var edge_panelty = min(-0.1*(3-closest_d),0)
+		#var shoot_bonus = 0.03 if GameData.player_shooted[player.id] else 0
+		#var move_bonus = delta_d * 0.05
+		#var center_bonus = 0.008 * (10 - Vector2(player.position.x,player.position.z).length())
 		
-		var alive_reward = 0.01 * player.health if (GameData.player_hp_cache[player.id] - player.health) == 0 else 0
+		#var alive_reward = 0.08
 		
-		var reward = stay_penalty + life_loss_penalty + alive_reward
-		
+		#第一轮评估用这个
+		var reward = life_loss_penalty + move_bonus
+		#第二轮评估用这个
+		#var reward = life_loss_penalty + stay_penalty + center_bonus
 		#clean up
 		GameData.mob_kill_cache[player.id] = 0
 		GameData.player_shooted[player.id] = false
 		GameData.player_hp_cache[player.id] = player.health
+		GameData.player_pos_cache[player.id] = player.position
 		return reward
 
 func calculate_reward_lv1(field_id, sensor_data)->float:

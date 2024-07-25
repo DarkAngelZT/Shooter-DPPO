@@ -24,7 +24,7 @@ script = ExtResource("1_ivcu5")
 character_mesh = NodePath("GDbotSkin")
 bullet_prefab = ExtResource("2_hubho")
 shoot_position = NodePath("GDbotSkin/gdbot/Armature/Skeleton3D/BoneAttachment3D/ShootPos")
-shoot_interval_sec = 0.15
+shoot_interval_sec = 0.25
 
 [node name="GDbotSkin" parent="." instance=ExtResource("1_8x5t2")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)

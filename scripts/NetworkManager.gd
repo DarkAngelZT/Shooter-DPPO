@@ -110,8 +110,8 @@ func get_client(id):
 		return null
 
 func _angle_to_vect2(angle):
-	var x = sin(angle)
-	var y = -cos(angle)
+	var x = sin(deg_to_rad(angle))
+	var y = -cos(deg_to_rad(angle))
 	return Vector2(x,y)
 
 func serialize_sensor_data(sensor_data, target_msg):
