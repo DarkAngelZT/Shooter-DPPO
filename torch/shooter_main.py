@@ -32,7 +32,7 @@ reward_data = []
 
 STATE_DIM = 336
 ACTION_DIM = 2
-HIDDEN_LAYER = 600
+HIDDEN_LAYER = 800
 
 A_UPDATE_STEP = 12
 
@@ -58,7 +58,7 @@ eps = 0.2
 batch_size = 128
 auto_save_ep = 80
 
-worker_amount = 6
+worker_amount = 8
 
 def conv_bool(b):
 	return 1 if b else 0
@@ -156,6 +156,7 @@ class TrainMode(object):
 		self.power = util.TrafficLight()
 
 		self.actor.share_memory()
+		self.critic.share_memory()
 
 	def make_sample(self):
 		s,a,r,s_,d = self.record.get_records()
@@ -221,7 +222,7 @@ class TrainMode(object):
 			self.critic.load_state_dict(torch.load(critic_path))
 			print('load net success')
 
-	def chief_logic(self,traffic_signal, record_counter,shared_record, shared_actor, power):
+	def chief_logic(self,traffic_signal, record_counter,shared_record, power):
 		client = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 		client.setblocking(False)
 		client.settimeout(2)
@@ -281,11 +282,11 @@ class TrainMode(object):
 
 	def main_loop(self):
 		print("start training mode")
-		main_p = mp.Process(target=self.chief_logic,args=(self.traffic_signal,self.record_counter,self.record,self.actor,self.power))
+		main_p = mp.Process(target=self.chief_logic,args=(self.traffic_signal,self.record_counter,self.record,self.power))
 		self.process.append(main_p)
 
 		for i in range(worker_amount):
-			p = mp.Process(target=worker,args=(self.traffic_signal,self.record_counter,self.record,self.actor,self.power))
+			p = mp.Process(target=worker,args=(self.traffic_signal,self.record_counter,self.record,self.actor,self.critic,self.power))
 			self.process.append(p)
 
 		for p in self.process:
@@ -295,7 +296,7 @@ class TrainMode(object):
 			p.join()
 
 
-def worker(traffic_signal, record_counter,shared_record, shared_actor, power):
+def worker(traffic_signal, record_counter,shared_record, shared_actor, shared_critic, power):
 	client = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 	client.connect(("127.0.0.1",6666))
 	paused = False
@@ -381,17 +382,17 @@ def worker(traffic_signal, record_counter,shared_record, shared_actor, power):
 				record_counter.increase()
 				count = record_counter.get()
 				if count >= batch_size or game_end:
-					#对reward进行连续动作统计处理
-					# total = len(r)
-					# final_value = r[-1][0]
-					# for i in reversed(range(total)):
-					# 	if i == total -1:
-					# 		next_value = final_value
-					# 		# next_done = 1.0 - done[-1][0]				
-					# 	else:
-					# 		next_value = r[i + 1][0]
-					# 		# next_done = 1.0 - done[-1][0]
-					# 	r[i][0] = r[i][0] + continuous_gamma*next_done*next_value
+					#对reward进行未来价值折扣处理
+					total = len(r)
+					values = shared_critic(torch.FloatTensor(s)).detach().tolist()
+					for i in reversed(range(total)):
+						if i == total -1:
+							next_value = values[-1][0]
+							next_done = 1.0 - done[-1][0]				
+						else:
+							next_value = values[i + 1][0]
+							next_done = 1.0 - done[i+1][0]
+						r[i][0] = r[i][0] + continuous_gamma*next_value*next_done
 
 					shared_record.add_records(s,a,r,s_,done)
 

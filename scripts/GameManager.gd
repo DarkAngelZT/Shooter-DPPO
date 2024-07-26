@@ -278,7 +278,7 @@ func increase_ep():
 func calculate_reward(field_id, sensor_data)->float:
 	var training_field = training_fields[field_id]
 	if GameData.game_end[field_id]:
-		return -0.5
+		return -1
 	else:
 		var player = training_field.player
 
@@ -289,13 +289,13 @@ func calculate_reward(field_id, sensor_data)->float:
 		#var closest_d = sensor_data.player_data.terrain_info.min()
 		#var edge_panelty = min(-0.1*(3-closest_d),0)
 		#var shoot_bonus = 0.03 if GameData.player_shooted[player.id] else 0
-		#var move_bonus = delta_d * 0.05
+		
 		#var center_bonus = 0.008 * (10 - Vector2(player.position.x,player.position.z).length())
 		
-		#var alive_reward = 0.08
+		var not_hit_bonus = 0.1 if life_loss_penalty == 0 else 0
 		
 		#第一轮评估用这个
-		var reward = life_loss_penalty + move_bonus
+		var reward = life_loss_penalty + move_bonus*delta_d + not_hit_bonus
 		#第二轮评估用这个
 		#var reward = life_loss_penalty + stay_penalty + center_bonus
 		#clean up

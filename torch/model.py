@@ -12,8 +12,6 @@ class Actor(nn.Module):
 			nn.ReLU(inplace=True),
 			nn.Linear(hidden_dim,hidden_dim),
 			nn.ReLU(inplace=True),
-			nn.Linear(hidden_dim,hidden_dim),
-			nn.ReLU(inplace=True),
 			nn.Linear(hidden_dim,n_actions),
 		)
 		self.actor_logstd = nn.Parameter(torch.zeros(1, n_actions))
