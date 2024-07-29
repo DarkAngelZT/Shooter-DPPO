@@ -39,45 +39,43 @@ class SensorData:
 		
 		var param_num:
 			get:
-				return 13		
+				return 13
+		
+	class MobData:
+		var amount:int = 0
+		var region_dir_info:int = 0
+		
+		var param_num:
+			get:
+				return 2
+		
+	class BulletData:
+		var amount:int = 0
+		var dir_info:int = 0
+		
+		var param_num:
+			get:
+				return 2
 	
 	var player_data:PlayerData=PlayerData.new()
-	#cell amount = (9*2)^2 = 324
-	var mob_data = {}#[cell_id]->[dir]
 	
-	var mob_bullet_data={} #[cell_id]->[dir]
+	var mob_data = {}#[region_id]->[MobData * section_num]
 	
-	var player_bullet_data={} #[cell_id]->[dir]
+	var mob_bullet_data={} #[region_id]->[BulletData * section_num]
+	
+	var player_bullet_data={} #[region_id]->[BulletData * section_num]
 	
 	func get_nn_param_total()->int:
 		var total = player_data.param_num
-		total += cell_size
+		for r in mob_data:
+			total += mob_data[r][0].param_num * mob_data[r].size()
+				
+		for r in mob_bullet_data:
+			total += mob_bullet_data[r][0].param_num * mob_bullet_data[r].size()
+		
+		for r in player_bullet_data:
+			total += player_bullet_data[r][0].param_num * player_bullet_data[r].size()	
 		return total
-		
-	static func coordinate_to_cell_id(row:int,column:int)->int:
-		return row*18+column
-		
-	func compose_final_cell()->Array[int]:
-		var result :Array[int] = []
-		result.resize(cell_size)
-		result.fill(-1)
-		for i in range(cell_size):
-			var empty = true
-			var mob_dir:int = 0
-			var mob_bullet:int = 0
-			var player_bullet:int = 0
-			if mob_data.has(i):
-				empty = false
-				mob_dir = mob_data[i]
-			if mob_bullet_data.has(i):
-				empty = false
-				mob_bullet = mob_bullet_data[i] << 4
-			if player_bullet_data.has(i):
-				empty = false
-				player_bullet = player_bullet_data[i]<<8
-			if not empty:
-				result[i] = mob_dir | mob_bullet | player_bullet
-		return result
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -108,14 +106,18 @@ func get_angles(target, target_dir,origin):
 	else:
 		aim_dir_vec2 = target_dir
 	var aim_angle = rad_to_deg(dir_vec2.angle_to(aim_dir_vec2))
-	return aim_angle
+	var region_angle = rad_to_deg(dir_vec2.angle_to(Vector2.UP))
+	var max_angle = asin(0.35/dir_vec2.length())
+	return [region_angle,aim_angle,max_angle]
 	
-func get_dir(target, target_dir,origin):
-	var aim_angle = get_angles(target,target_dir,origin)
+func get_region_and_dir(target, target_dir,origin,region_num):
+	var result = get_angles(target,target_dir,origin)
+	var aim_angle = result[1]
+	var region_angle = result[0]
+	var region
 	var dir
-	if target_dir.is_zero_approx():
-		dir = 0
-	elif absf(aim_angle) < 5:
+	var region_gap = 360.0/region_num
+	if absf(aim_angle) < result[2]:
 		dir = Center
 	elif aim_angle<0 and aim_angle > -90:
 		dir = Left
@@ -124,49 +126,64 @@ func get_dir(target, target_dir,origin):
 	else:
 		dir = Behind
 	
-	return dir
+	if region_angle>=0:
+		region = floori(region_angle/region_gap)
+	else:
+		region = floori((360 + region_angle)/region_gap)
+	
+	return [region, dir]
 
 func analyse_bullets(source, dist:Dictionary):
 	dist.clear()
 	var origin :Vector3 = owner.global_position
+	dist[NEAR] = []
+	dist[MED] = []
+	dist[FAR] = []
+	for i in range(NEAR,FAR+1):
+		for r in range(RegionNums[i-1]):
+			dist[i].append(SensorData.BulletData.new())
 			
 	for bullet in source:
-		if bullet.instigator_field_id != owner_field_id:
-			continue
-		var d = bullet.global_position - origin
+		var d = origin.distance_to(bullet.global_position)
 		var result
-		var d_x = d.x+9
-		var d_z = d.z+9
-		var row = floori(d_z)
-		var col = floori(d_x)
-		row = clampi(row,0,17)
-		col = clampi(col,0,17)
-		var index = SensorData.coordinate_to_cell_id(row,col)
-		if not dist.has(index):
-			dist[index] = 0
-		result = get_dir(bullet,bullet.direction,origin)
-		dist[index] |= result
+		#var region = result[0]
+		#var dir = result[1]
+		if d < radius_near:
+			result = get_region_and_dir(bullet,bullet.direction,origin,RegionNums[0])
+			dist[NEAR][result[0]].amount += 1
+			dist[NEAR][result[0]].dir_info |= result[1]
+		elif d < radius_far:
+			result = get_region_and_dir(bullet,bullet.direction,origin,RegionNums[1])
+			dist[MED][result[0]].amount  += 1
+			dist[MED][result[0]].dir_info |= result[1]
+		else:
+			result = get_region_and_dir(bullet,bullet.direction,origin,RegionNums[2])
+			dist[FAR][result[0]].amount  += 1
+			dist[FAR][result[0]].dir_info |= result[1]
 
 func analyse_mob(source:Array,dist:Dictionary):
 	dist.clear()
 	var origin :Vector3 = owner.global_position
+	for i in range(NEAR,FAR+1):
+		dist[i] = []
+		for r in range(RegionNums[i-1]):
+			dist[i].append(SensorData.MobData.new())
 	
 	for mob in source:
-		if mob.field_id != owner_field_id:
-			continue
-		var d = mob.global_position - origin
-		var d_x = d.x+9
-		var d_z = d.z+9
-		var row = floori(d_z)
-		var col = floori(d_x)
-		row = clampi(row,0,17)
-		col = clampi(col,0,17)
-		var index = SensorData.coordinate_to_cell_id(row,col)
+		var d = origin.distance_to(mob.global_position)
+		var area
+		if d < radius_near:
+			area = NEAR
+		elif d< radius_far:
+			area = MED
+		else:
+			area = FAR
 		var dir = GameData.actor_info[mob.field_id][mob.id].move_dir
-		var dir_part = get_dir(mob,dir,origin)
-		if not dist.has(index):
-			dist[index] = 0
-		dist[index] |= dir_part	
+		var result = get_region_and_dir(mob,dir,origin,RegionNums[area-1])
+		var region = result[0]
+		var dir_part = result[1]
+		dist[area][region].amount  += 1
+		dist[area][region].region_dir_info |= dir_part	
 
 func gether_player_info(player_data:SensorData.PlayerData):
 	var player_state := GameData.actor_info[owner_field_id][owner_id] as GameData.ActorState

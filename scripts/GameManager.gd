@@ -202,6 +202,7 @@ func reset_field(field_id):
 		GameData.game_pause[field_id] = false
 		if game_mode == GameMode.Play:
 			game_camera.target = field.player
+			UIManager.instance.set_health(GameManager.instance.game_settings.player_health)
 		
 		on_field_reset.emit(field_id)
 
@@ -282,12 +283,12 @@ func calculate_reward(field_id, sensor_data)->float:
 	else:
 		var player = training_field.player
 
-		var move_bonus = 0.1 * (1 if GameData.player_input[player.id].move_state==GameData.Op_Move else 0)
+		var move_bonus = 0 if GameData.player_input[player.id].move_state==GameData.Op_Move else -0.5
 		var delta_d = player.position.distance_to(GameData.player_pos_cache[player.id])
 		var life_loss_penalty = -0.3 * (GameData.player_hp_cache[player.id] - player.health)
 		#var kill_reward = 0.06 * GameData.mob_kill_cache[player.id]
-		#var closest_d = sensor_data.player_data.terrain_info.min()
-		#var edge_panelty = min(-0.1*(3-closest_d),0)
+		var closest_d = sensor_data.player_data.terrain_info.min()
+		var edge_panelty = min(-0.1*(5-closest_d),0)
 		#var shoot_bonus = 0.03 if GameData.player_shooted[player.id] else 0
 		
 		#var center_bonus = 0.008 * (10 - Vector2(player.position.x,player.position.z).length())
@@ -295,7 +296,7 @@ func calculate_reward(field_id, sensor_data)->float:
 		var not_hit_bonus = 0.1 if life_loss_penalty == 0 else 0
 		
 		#第一轮评估用这个
-		var reward = life_loss_penalty + move_bonus*delta_d + not_hit_bonus
+		var reward = life_loss_penalty + move_bonus + not_hit_bonus
 		#第二轮评估用这个
 		#var reward = life_loss_penalty + stay_penalty + center_bonus
 		#clean up
@@ -348,9 +349,23 @@ func test_func():
 	"aim",p_data.aim_dir,"moving",p_data.is_moving,
 	"shoot_cd",p_data.shoot_cd_left)
 	prints("terrain info", p_data.terrain_info)
-	print("===region data===")
-	var region_info = sensor_data.compose_final_cell()
-	for r in range(18):
-		print(region_info.slice(r*18,(r+1)*18))
+	print("===mob data===")
+	var m = sensor_data.mob_data
+	for r in m:
+		for s in range(m[r].size()):
+			if m[r][s].amount>0:
+				prints("region",r,"section",s,"amount",m[r][s].amount,"dir",m[r][s].region_dir_info)
+	print("===mob bullet info===")
+	var bm = sensor_data.mob_bullet_data
+	for r in bm:
+		for s in range(bm[r].size()):
+			if bm[r][s].amount>0:
+				prints("region",r,"section",s,"amount",bm[r][s].amount,"dir",bm[r][s].dir_info)
+	print("===player bullet info===")
+	var bp = sensor_data.player_bullet_data
+	for r in bp:
+		for s in range(bp[r].size()):
+			if bp[r][s].amount>0:
+				prints("region",r,"section",s,"amount",bp[r][s].amount,"dir",bp[r][s].dir_info)
 				
 	prints("Param total", sensor_data.get_nn_param_total())

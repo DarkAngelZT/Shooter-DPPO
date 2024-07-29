@@ -30,13 +30,13 @@ actor_loss_data = []
 critic_loss_data = []
 reward_data = []
 
-STATE_DIM = 336
+STATE_DIM = 204
 ACTION_DIM = 2
-HIDDEN_LAYER = 800
+HIDDEN_LAYER = 720
 
 A_UPDATE_STEP = 12
 
-buffer_size = 2048
+buffer_size = 1024
 
 S_START = 1
 S_GAME_STATE = 2
@@ -55,10 +55,10 @@ gamma = 0.93
 continuous_gamma = 0.9
 lmbda = 0.9
 eps = 0.2
-batch_size = 128
-auto_save_ep = 80
+batch_size = 64
+auto_save_ep = 60
 
-worker_amount = 8
+worker_amount = 4
 
 def conv_bool(b):
 	return 1 if b else 0
@@ -75,8 +75,10 @@ def process_state(sensor_data):
 	sensor_data.player_state.hp, sensor_data.player_state.move_dir,sensor_data.player_state.shoot_cd_left,
 	conv_bool(sensor_data.player_state.is_moving)]
 	player_terrian_data = [i for i in sensor_data.player_state.terrain_info]
-	region_data = sensor_data.region_info
-	data = np.hstack([player_data,player_terrian_data,region_data])
+	mob_data = [d for m in sensor_data.mob_data for d in (m.amount,m.dir_info)]
+	mob_bullet = [d for m in sensor_data.mob_bullet_data for d in (m.amount,m.dir_info)]
+	player_bullet = [d for m in sensor_data.player_bullet_data for d in (m.amount,m.dir_info)]
+	data = np.hstack([player_data,player_terrian_data,mob_data,mob_bullet,player_bullet])
 	return torch.FloatTensor(data)
 
 class PlayMode(object):

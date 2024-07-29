@@ -8,6 +8,11 @@ message PlayerState{
 	repeated float terrain_info=5;
 }
 
+message RegionInfo {
+	int32 amount=1;
+	int32 dir_info=2;
+}
+
 message Action {
 	float move_dir = 1;
 	bool move_state = 2;
@@ -15,7 +20,9 @@ message Action {
 
 message SensorData{
 	PlayerState player_state = 1;
-	repeated float region_info =2;
+	repeated RegionInfo mob_data =2;
+	repeated RegionInfo mob_bullet_data = 3;
+	repeated RegionInfo player_bullet_data =4;
 }
 
 message ServerMsg {
