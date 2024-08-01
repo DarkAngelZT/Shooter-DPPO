@@ -386,17 +386,20 @@ def worker(traffic_signal, record_counter,shared_record, shared_actor, shared_cr
 				if count >= batch_size or game_end:
 					#对reward进行未来价值折扣处理
 					total = len(r)
-					values = shared_critic(torch.FloatTensor(s)).detach().tolist()
+					# values = shared_critic(torch.FloatTensor(s)).detach().tolist()
 					for i in reversed(range(total)):
 						if i == total -1:
-							next_value = values[-1][0]
+							next_value = r[-1][0]
 							next_done = 1.0 - done[-1][0]				
 						else:
-							next_value = values[i + 1][0]
+							next_value = r[i + 1][0]
 							next_done = 1.0 - done[i+1][0]
 						r[i][0] = r[i][0] + continuous_gamma*next_value*next_done
 
-					shared_record.add_records(s,a,r,s_,done)
+					tmp_r = np.array(r)
+					tmp_r -= np.mean(tmp_r)
+					# tmp_r /= np.std(tmp_r)
+					shared_record.add_records(s,a,tmp_r.tolist(),s_,done)
 
 					if count>=batch_size:
 						traffic_signal.turn_off()
