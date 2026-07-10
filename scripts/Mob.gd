@@ -26,6 +26,9 @@ func _ready():
 	#nav_agent.velocity_computed.connect(on_move_velocity)
 
 func _physics_process(delta):
+	if not _can_tick_actor_state():
+		return
+
 	if is_game_paused():
 		if not behaviour_tree.is_paused():
 			behaviour_tree.pause()
@@ -36,6 +39,16 @@ func _physics_process(delta):
 	
 	if is_move_enable():
 		nav_move()
+
+func deactivate_for_field_reset() -> void:
+	set_physics_process(false)
+	set_process(false)
+	velocity = Vector3.ZERO
+	if behaviour_tree and not behaviour_tree.is_paused():
+		behaviour_tree.pause()
+	if behaviour_tree:
+		behaviour_tree.blackboard.erase_value("target", str(get_instance_id()))
+		behaviour_tree.blackboard.erase_value("target")
 
 func die():
 	if spawner!= null:
@@ -48,6 +61,9 @@ func move_to(target):
 		nav_agent.set_target_position(target)
 
 func nav_move():
+	if not _can_tick_actor_state():
+		return
+
 	if nav_agent.is_navigation_finished():
 		GameData.actor_info[field_id][id].move_dir = Vector2.ZERO
 		adjust_rotation(Vector3.ZERO)
@@ -62,6 +78,9 @@ func nav_move():
 		on_move_velocity(new_velocity)
 	
 func on_move_velocity(v:Vector3):
+	if not _can_tick_actor_state():
+		return
+
 	velocity = v
 	var dir = v.normalized()
 	GameData.actor_info[field_id][id].move_dir = Vector2(dir.x,dir.z)
@@ -69,9 +88,12 @@ func on_move_velocity(v:Vector3):
 	adjust_rotation(v)	
 		
 func adjust_rotation(move_dir:Vector3):
+	if not _can_tick_actor_state():
+		return
+
 	if face_target:
 		var target_player = get_target()
-		if target_player:
+		if is_instance_valid(target_player):
 			var dir = target_player.global_position - global_position
 			basis = Basis.looking_at(Vector3(dir.x,0,dir.z))
 	else:
@@ -95,11 +117,14 @@ func set_target(target):
 		behaviour_tree.blackboard.set_value("target",target)
 	
 func get_target() -> Node3D:
-	return behaviour_tree.blackboard.get_value("target",null,str(get_instance_id()))
+	var target = behaviour_tree.blackboard.get_value("target", null, str(get_instance_id()))
+	if is_instance_valid(target):
+		return target
+	return null
 	
 func is_target_in_range()->bool:
 	var target = get_target()
-	if target:
+	if is_instance_valid(target):
 		var d = global_position.distance_to(target.global_position)
 		return d <= attack_range
 	else:
@@ -120,3 +145,10 @@ func is_shoot_enable()->bool:
 	
 func bind_bullet_event(bullet):
 	bullet.hit.connect(GameManager.instance.on_mob_bullet_hit)
+
+func _can_tick_actor_state() -> bool:
+	if is_queued_for_deletion():
+		return false
+	if not GameData.actor_info.has(field_id):
+		return false
+	return GameData.actor_info[field_id].has(id)

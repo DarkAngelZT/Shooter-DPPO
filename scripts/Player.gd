@@ -36,27 +36,29 @@ func _physics_process(delta):
 		return
 	if GameManager.instance.control_mode == GameManager.ControlMode.AI:
 		auto_shoot()
-	var input = GameData.player_input[id]
-	if is_instance_valid(input):		
-		basis = Basis.looking_at(Vector3(input.aim_direction.x,0,input.aim_direction.y))
-		GameData.actor_info[field_id][id].direction = input.aim_direction
+	if not GameData.player_input.has(id):
+		return
+
+	var input = GameData.player_input[id] as GameData.PlayerInputState
+	basis = Basis.looking_at(Vector3(input.aim_direction.x,0,input.aim_direction.y))
+	GameData.actor_info[field_id][id].direction = input.aim_direction
 		
-		if is_move_enable():
-			var direction = Vector3.ZERO
-			direction.z = input.direction.y
-			direction.x = input.direction.x
-			if input.move_state == GameData.Op_Move:
-				var speed = direction * move_speed
-				velocity = speed
-				character_mesh.walk()
-				move_and_slide()
-				GameData.actor_info[field_id][id].move_dir=Vector2(direction.x,direction.z)
-				#if is_out_of_field():
-					#GameData.game_end[field_id]=true
-			elif input.move_state == GameData.Op_Stop:
-				velocity = Vector3.ZERO
-				GameData.actor_info[field_id][id].move_dir=Vector2.ZERO
-				character_mesh.idle()
+	if is_move_enable():
+		var direction = Vector3.ZERO
+		direction.z = input.direction.y
+		direction.x = input.direction.x
+		if input.move_state == GameData.Op_Move:
+			var speed = direction * move_speed
+			velocity = speed
+			character_mesh.walk()
+			move_and_slide()
+			GameData.actor_info[field_id][id].move_dir=Vector2(direction.x,direction.z)
+			#if is_out_of_field():
+				#GameData.game_end[field_id]=true
+		elif input.move_state == GameData.Op_Stop:
+			velocity = Vector3.ZERO
+			GameData.actor_info[field_id][id].move_dir=Vector2.ZERO
+			character_mesh.idle()
 	
 	if input.shooting:
 		shoot()
@@ -80,7 +82,7 @@ func take_damage(damage):
 	
 func shoot():
 	if can_shoot:
-		GameData.player_shooted[id] = true
+		GameData.record_player_shot(id)
 	super.shoot()
 
 func is_move_enable()->bool:

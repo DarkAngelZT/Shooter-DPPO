@@ -1,17 +1,16 @@
-[gd_scene load_steps=17 format=3 uid="uid://dpk7pwe2sp58r"]
+[gd_scene format=3 uid="uid://dpk7pwe2sp58r"]
 
-[ext_resource type="Script" path="res://scripts/UIManager.gd" id="1_86nrv"]
-[ext_resource type="Script" path="res://scripts/NetworkManager.gd" id="1_r0unh"]
-[ext_resource type="Script" path="res://scripts/GameManager.gd" id="1_xmjsa"]
+[ext_resource type="Script" uid="uid://bjmylj4h5qlcf" path="res://scripts/UIManager.gd" id="1_86nrv"]
+[ext_resource type="Script" uid="uid://i3k0iraky04b" path="res://scripts/GameManager.gd" id="1_xmjsa"]
 [ext_resource type="PackedScene" uid="uid://jxsgncw3xmlp" path="res://assets/nodes/player.tscn" id="2_uuajh"]
 [ext_resource type="PackedScene" uid="uid://bk8qmcyoll7su" path="res://assets/nodes/minion_01.tscn" id="3_ah63e"]
 [ext_resource type="PackedScene" uid="uid://b57j43s2lo4ei" path="res://scene/training_field.tscn" id="4_oykhi"]
 [ext_resource type="PackedScene" uid="uid://ffo7w3oxk7p1" path="res://scene/battle_field.tscn" id="5_bx0pd"]
 [ext_resource type="Resource" uid="uid://6hj7ugufsvop" path="res://config/ActorConfig.tres" id="6_og74n"]
 [ext_resource type="PackedScene" uid="uid://bmea3n3lciyjs" path="res://assets/nodes/blast.tscn" id="7_81spr"]
-[ext_resource type="Script" path="res://scripts/camera/TrainingCamera.gd" id="7_a7bef"]
-[ext_resource type="Script" path="res://scripts/camera/FollowCamera.gd" id="8_dl3fe"]
-[ext_resource type="Script" path="res://scripts/TrainingManager.gd" id="10_nw2ui"]
+[ext_resource type="Script" uid="uid://d1ihtm562jmms" path="res://scripts/camera/TrainingCamera.gd" id="7_a7bef"]
+[ext_resource type="Script" uid="uid://dyivufihmq2n3" path="res://scripts/camera/FollowCamera.gd" id="8_dl3fe"]
+[ext_resource type="Script" uid="uid://mha4f2800rue" path="res://scripts/TrainingManager.gd" id="10_nw2ui"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_hs12s"]
 font_size = 22
@@ -31,19 +30,16 @@ font_size = 21
 outline_size = 2
 outline_color = Color(0, 0, 0, 0.780392)
 
-[node name="SceneRoot" type="Node3D"]
+[node name="SceneRoot" type="Node3D" unique_id=1603650353]
 
-[node name="UIManager" type="Node" parent="." node_paths=PackedStringArray("ep_num", "health", "hp_label", "ep_label")]
+[node name="UIManager" type="Node" parent="." unique_id=615552771 node_paths=PackedStringArray("ep_num", "health", "hp_label", "ep_label")]
 script = ExtResource("1_86nrv")
 ep_num = NodePath("../EpNum")
 health = NodePath("../HPNum")
 hp_label = NodePath("../HPLabel")
 ep_label = NodePath("../EPLabel")
 
-[node name="NetworkManager" type="Node" parent="."]
-script = ExtResource("1_r0unh")
-
-[node name="GameManager" type="Node" parent="." node_paths=PackedStringArray("TraningRoot", "ArenaRoot", "root", "train_camera", "game_camera")]
+[node name="GameManager" type="Node" parent="." unique_id=1794863148 node_paths=PackedStringArray("TraningRoot", "ArenaRoot", "root", "train_camera", "game_camera")]
 process_mode = 3
 editor_description = "场景管理器"
 script = ExtResource("1_xmjsa")
@@ -60,36 +56,36 @@ blast_prefab = ExtResource("7_81spr")
 game_settings = ExtResource("6_og74n")
 train_camera = NodePath("../TrainingCamera")
 game_camera = NodePath("../FollowCamera")
-control_mode = 2
+game_mode = 2
 
-[node name="TrainingManager" type="Node" parent="."]
+[node name="TrainingManager" type="Node" parent="." unique_id=2077658358]
 script = ExtResource("10_nw2ui")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1010305126]
 transform = Transform3D(0.875118, 0.465046, -0.133789, 0, 0.276476, 0.961021, 0.483909, -0.841007, 0.241949, 0, 4.66107, 0)
 
-[node name="TrainingRoot" type="Node3D" parent="."]
+[node name="TrainingRoot" type="Node3D" parent="." unique_id=681932105]
 
-[node name="Arena" type="Node3D" parent="."]
+[node name="Arena" type="Node3D" parent="." unique_id=1567112188]
 
-[node name="TrainingCamera" type="Marker3D" parent="."]
+[node name="TrainingCamera" type="Marker3D" parent="." unique_id=541779445]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 17.689, 0)
 script = ExtResource("7_a7bef")
 zoom_speed = 10.0
 move_speed = 15.0
 
-[node name="Camera3D" type="Camera3D" parent="TrainingCamera"]
+[node name="Camera3D" type="Camera3D" parent="TrainingCamera" unique_id=1455744323]
 transform = Transform3D(1, 0, 0, 0, 0.0697565, 0.997564, 0, -0.997564, 0.0697565, 0, 4.80559, 0)
 
-[node name="FollowCamera" type="Marker3D" parent="."]
+[node name="FollowCamera" type="Marker3D" parent="." unique_id=410752132]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15, 0)
 script = ExtResource("8_dl3fe")
 offset = Vector3(0, 15, 0)
 
-[node name="Camera3D" type="Camera3D" parent="FollowCamera"]
+[node name="Camera3D" type="Camera3D" parent="FollowCamera" unique_id=1537881498]
 transform = Transform3D(1, 0, 0, 0, 0.173648, 0.984808, 0, -0.984808, 0.173648, 0, 0, 1.475)
 
-[node name="EpNum" type="Label" parent="."]
+[node name="EpNum" type="Label" parent="." unique_id=1712761831]
 offset_left = 390.0
 offset_top = 17.0
 offset_right = 470.0
@@ -97,7 +93,7 @@ offset_bottom = 48.0
 text = "123"
 label_settings = SubResource("LabelSettings_hs12s")
 
-[node name="TestButton" type="Button" parent="."]
+[node name="TestButton" type="Button" parent="." unique_id=7483109]
 visible = false
 anchors_preset = -1
 anchor_left = 0.021
@@ -111,7 +107,7 @@ offset_bottom = 0.215996
 text = "Test
 "
 
-[node name="EPLabel" type="Label" parent="."]
+[node name="EPLabel" type="Label" parent="." unique_id=212207367]
 offset_left = 329.0
 offset_top = 18.0
 offset_right = 381.0
@@ -119,7 +115,7 @@ offset_bottom = 51.0
 text = "回合："
 label_settings = SubResource("LabelSettings_8uf8v")
 
-[node name="HPNum" type="Label" parent="."]
+[node name="HPNum" type="Label" parent="." unique_id=1049916774]
 visible = false
 offset_left = 806.0
 offset_top = 13.0
@@ -128,7 +124,7 @@ offset_bottom = 43.0
 text = "10"
 label_settings = SubResource("LabelSettings_pvf85")
 
-[node name="HPLabel" type="Label" parent="."]
+[node name="HPLabel" type="Label" parent="." unique_id=1284748235]
 visible = false
 offset_left = 769.0
 offset_top = 13.0

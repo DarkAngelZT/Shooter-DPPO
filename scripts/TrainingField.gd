@@ -29,17 +29,19 @@ var lv1_shoot_penalty_cache = 1
 
 func reset():
 	for m in monsters.values():
-		m.queue_free()
+		if is_instance_valid(m):
+			m.deactivate_for_field_reset()
+	for m in monsters.values():
+		if is_instance_valid(m):
+			m.queue_free()
 	monsters.clear()
 	for spawner in mob_spawner:
 		spawner.reset()
 	if player:
 		player.queue_free()
 	GameData.actor_info[id].clear()
-	GameData.mob_kill_cache[id]=0
-	GameData.player_hp_cache[id] = GameManager.instance.game_settings.player_health	
 	init(id)
-	GameData.player_pos_cache[id] = player.position
+	GameData.register_player_reward_baseline(id, player.health, player.position)
 	on_reset.emit(self)
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -57,7 +59,7 @@ func init(field_id):
 	player.name = "Player_"+str(player.id)
 	var state = GameData.ActorState.new(field_id,player.id)
 	state.hp = GameManager.instance.game_settings.player_health
-	GameData.actor_info[field_id][player.id]=state
+	GameData.register_actor(state)
 	player.on_player_dead.connect(on_player_die)
 	on_player_spawn.emit(player)
 	
@@ -109,18 +111,18 @@ func on_monster_spawned(mob):
 		mob_id_counter += 1
 		mob.name = "Monster_"+str(mob.id)
 		var state = GameData.ActorState.new(id,mob.id)
-		GameData.actor_info[id][mob.id]=state
+		GameData.register_actor(state)
 		monsters[mob.id] = mob
 		mob.set_target(player)
 
 func on_mob_dead(mob):
 	if is_instance_valid(mob):
 		if GameManager.instance.control_mode == GameManager.ControlMode.AI:
-			GameData.mob_kill_cache[id]+=1
+			GameData.record_mob_kill(id)
 		if GameManager.instance.game_mode == GameManager.GameMode.Train:
 			if TrainingManager.instance.training_level == 1:
 				lv1_monster = null
-		GameData.actor_info[id].erase(mob.id)
+		GameData.unregister_actor(id, mob.id)
 		monsters.erase(mob.id)
 		mob.queue_free()
 

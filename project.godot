@@ -23,8 +23,8 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-BeehaveGlobalMetrics="*res://addons/beehave/metrics/beehave_global_metrics.gd"
-BeehaveGlobalDebugger="*res://addons/beehave/debug/global_debugger.gd"
+BeehaveGlobalMetrics="*uid://f270g5u4fu06"
+BeehaveGlobalDebugger="*uid://06i25boryi22"
 
 [editor_plugins]
 
