@@ -29,7 +29,7 @@ const Collision_Mask_Floor = 32 # blocker
 
 const RegionNums = [8,12,12]
 
-class SensorData:
+"""class SensorData:
 	class PlayerData:
 		var hp:int
 		var move_dir:float
@@ -77,7 +77,7 @@ class SensorData:
 				player_bullet = player_bullet_data[i]<<8
 			if not empty:
 				result[i] = mob_dir | mob_bullet | player_bullet
-		return result
+		return result"""
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -93,13 +93,13 @@ func _ready():
 	var forward = Vector3.FORWARD
 	for i in range(8):
 		terrain_rays.append(forward)
-		forward = forward.rotated(Vector3.UP,45)
+		forward = forward.rotated(Vector3.UP,90)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pass
 
-func get_angles(target, target_dir,origin):
+"""func get_angles(target, target_dir,origin):
 	var dir = origin - target.global_position
 	var dir_vec2 = Vector2(dir.x,dir.z)
 	var aim_dir_vec2
@@ -124,7 +124,7 @@ func get_dir(target, target_dir,origin):
 	else:
 		dir = Behind
 	
-	return dir
+	return dir"""
 
 func analyse_bullets(source, dist:Dictionary):
 	dist.clear()
@@ -150,33 +150,30 @@ func analyse_bullets(source, dist:Dictionary):
 func analyse_mob(source:Array,dist:Dictionary):
 	dist.clear()
 	var origin :Vector3 = owner.global_position
-	
-	for mob in source:
+	var result = []
+	for mob:CharacterBody3D in source:
 		if mob.field_id != owner_field_id:
 			continue
-		var d = mob.global_position - origin
-		var d_x = d.x+9
-		var d_z = d.z+9
-		var row = floori(d_z)
-		var col = floori(d_x)
-		row = clampi(row,0,17)
-		col = clampi(col,0,17)
-		var index = SensorData.coordinate_to_cell_id(row,col)
-		var dir = GameData.actor_info[mob.field_id][mob.id].move_dir
-		var dir_part = get_dir(mob,dir,origin)
-		if not dist.has(index):
-			dist[index] = 0
-		dist[index] |= dir_part	
-
-func gether_player_info(player_data:SensorData.PlayerData):
-	var player_state := GameData.actor_info[owner_field_id][owner_id] as GameData.ActorState
-	var forward = Vector2.UP
-	player_data.terrain_info = []
+		var single_mob: Array[float]
+		var d:Vector3 = mob.global_position - origin
+		var v:Vector3 = mob.velocity
+		single_mob = [d.x, d.z, v.x, v.z, 1,0, 0, 0, 0]
+		
+		result.append(single_mob)
 	
-	player_data.hp = player_state.hp
-	player_data.move_dir = forward.angle_to(player_state.move_dir)
-	player_data.shoot_cd_left = owner.get_shoot_cd_left()
-	player_data.is_moving = not player_state.move_dir.is_zero_approx()
+	return result
+
+func gether_player_info():
+	var player_state := GameData.actor_info[owner_field_id][owner_id] as GameData.ActorState
+	#var forward = Vector2.UP
+	var terrain_info : Array[float] = []
+	
+	var hp = player_state.hp
+	var percent = hp/float(GameManager.instance.game_settings.player_health)
+	var move_x = player_state.move_dir.x
+	var move_y = player_state.move_dir.y
+	#player_data.shoot_cd_left = owner.get_shoot_cd_left()
+	#var is_moving = not player_state.move_dir.is_zero_approx()
 	# collect terrain info	
 	for i in range(terrain_rays.size()):
 		var query = PhysicsRayQueryParameters3D.create(
@@ -184,9 +181,11 @@ func gether_player_info(player_data:SensorData.PlayerData):
 			Collision_Mask_Floor)
 		var result = space.intersect_ray(query)
 		if result:
-			player_data.terrain_info.append(result.position.distance_to(owner.global_position))
+			terrain_info.append(result.position.distance_to(owner.global_position))
 		else:
-			player_data.terrain_info.append(terrain_detect_range)
+			terrain_info.append(terrain_detect_range)
+			
+	return [0,0,move_x,move_y,percent] + terrain_info
 
 func gether_sensor_data():
 	query_param.transform.origin = owner.global_position
@@ -195,7 +194,7 @@ func gether_sensor_data():
 	var bullet_monster = []
 	var bullet_player = []
 	
-	var sensor_data = SensorData.new()
+	var sensor_data : PackedFloat32Array
 	#分类整理
 	for hit_result in result:
 		var obj = hit_result.collider
@@ -217,10 +216,19 @@ func gether_sensor_data():
 						else:
 							bullet_monster.append(obj_owner)
 	#计算分区信息
-	analyse_bullets(bullet_monster,sensor_data.mob_bullet_data)
-	analyse_bullets(bullet_player, sensor_data.player_bullet_data)
+	var bullet_data =analyse_bullets(bullet_monster)
+	#analyse_bullets(bullet_player, sensor_data.player_bullet_data)
 	
-	analyse_mob(monsters,sensor_data.mob_data)
+	var mob_data = analyse_mob(monsters)
 	
-	gether_player_info(sensor_data.player_data)
+	var player_data = gether_player_info()
+	
+	sensor_data = PackedFloat32Array(player_data)
+	
+	for data in mob_data:
+		sensor_data.append_array(PackedFloat32Array(data))
+	
+	for data in bullet_data:
+		sensor_data.append_array(PackedFloat32Array(data))
+
 	return sensor_data
