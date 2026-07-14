@@ -126,29 +126,21 @@ func get_dir(target, target_dir,origin):
 	
 	return dir"""
 
-func analyse_bullets(source, dist:Dictionary):
-	dist.clear()
+func analyse_bullets(source):
 	var origin :Vector3 = owner.global_position
-			
-	for bullet in source:
+	var result =[]
+	for bullet : Bullet in source:
 		if bullet.instigator_field_id != owner_field_id:
 			continue
-		var d = bullet.global_position - origin
-		var result
-		var d_x = d.x+9
-		var d_z = d.z+9
-		var row = floori(d_z)
-		var col = floori(d_x)
-		row = clampi(row,0,17)
-		col = clampi(col,0,17)
-		var index = SensorData.coordinate_to_cell_id(row,col)
-		if not dist.has(index):
-			dist[index] = 0
-		result = get_dir(bullet,bullet.direction,origin)
-		dist[index] |= result
+		var d : Vector3= bullet.global_position - origin
+		var v = bullet.direction * bullet.speed
+		var ttc = 1
+		var single_bullet = [d.x, d.y, v.x, v.y, ttc, 0, 0, 0, 0]
+		result.append(single_bullet)
+	
+	return result
 
-func analyse_mob(source:Array,dist:Dictionary):
-	dist.clear()
+func analyse_mob(source:Array):
 	var origin :Vector3 = owner.global_position
 	var result = []
 	for mob:CharacterBody3D in source:
