@@ -125,17 +125,59 @@ func get_dir(target, target_dir,origin):
 		dir = Behind
 	
 	return dir"""
+	
+func get_bullet_ttc(relative_pos: Vector2, relative_vel: Vector2, player_radius: float) -> float:
+	const INF := 999.0
+	const EPS := 0.000001
+
+	var pos := relative_pos
+	var v := relative_vel
+	var radius := player_radius
+
+	# 已经命中/重叠
+	var distance := pos.dot(pos) - radius * radius
+	if distance <= 0.0:
+		return 0.0
+
+	var a := v.dot(v)
+
+	# 相对速度几乎为 0
+	if a < EPS:
+		return INF
+
+	var b := 2.0 * pos.dot(v)
+
+	# 在命中半径外，并且正在远离玩家
+	if b >= 0.0:
+		return INF
+
+	var discriminant := b * b - 4.0 * a * distance
+
+	# 轨迹不穿过玩家圆
+	if discriminant < 0.0:
+		return INF
+
+	var ttc := (-b - sqrt(discriminant)) / (2.0 * a)
+
+	if ttc >= 0.0:
+		return ttc
+
+	return INF
 
 func analyse_bullets(source):
+	var player_state := GameData.actor_info[owner_field_id][owner_id] as GameData.ActorState
 	var origin :Vector3 = owner.global_position
+	var player_v = player_state.move_dir * owner.move_speed
 	var result =[]
 	for bullet : Bullet in source:
 		if bullet.instigator_field_id != owner_field_id:
 			continue
 		var d : Vector3= bullet.global_position - origin
 		var v = bullet.direction * bullet.speed
-		var ttc = 1
-		var single_bullet = [d.x, d.y, v.x, v.y, ttc, 0, 0, 0, 0]
+		var bullet_v = Vector2(v.x, v.z)
+		var relative_v = bullet_v - player_v
+		var ttc = get_bullet_ttc(Vector2(d.x, d.z), relative_v, 0.5)
+		var single_bullet = [d.x, d.y, v.x, v.y, 1.0/(ttc+0.001), 0, 0, 0, 0]
 		result.append(single_bullet)
 	
 	return result
@@ -149,7 +191,7 @@ func analyse_mob(source:Array):
 		var single_mob: Array[float]
 		var d:Vector3 = mob.global_position - origin
 		var v:Vector3 = mob.velocity
-		single_mob = [d.x, d.z, v.x, v.z, 1,0, 0, 0, 0]
+		single_mob = [d.x, d.z, v.x, v.z, 1, 0, 0, 0, 0]
 		
 		result.append(single_mob)
 	
