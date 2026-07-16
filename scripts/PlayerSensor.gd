@@ -5,6 +5,8 @@ class_name PlayerSensor extends Node
 @export var detect_shape:Shape3D
 @export_flags_3d_physics var collision_mask
 @export var terrain_detect_range:float = 100
+@export_range(0, 64, 1) var mob_max_count:int = 8
+@export_range(0, 64, 1) var mob_bullet_max_count:int = 10
 
 var owner_id:int
 var owner_field_id:int
@@ -24,6 +26,7 @@ const Left = 0x4
 const Behind = 0x8
 
 const cell_size = 324
+const ENTITY_DATA_SIZE = 9
 
 const Collision_Mask_Floor = 32 # blocker
 
@@ -164,6 +167,24 @@ func get_bullet_ttc(relative_pos: Vector2, relative_vel: Vector2, player_radius:
 
 	return INF
 
+func get_closest_objects(source:Array, max_count:int) -> Array:
+	var objects := source.duplicate()
+	objects.sort_custom(func(a, b):
+		return a.global_position.distance_squared_to(owner.global_position) < b.global_position.distance_squared_to(owner.global_position)
+	)
+	objects.resize(mini(objects.size(), max_count))
+	return objects
+
+func pad_entity_data(data:Array, target_count:int) -> PackedFloat32Array:
+	var padded_data := PackedFloat32Array()
+	for i in range(target_count):
+		if i < data.size():
+			padded_data.append_array(PackedFloat32Array(data[i]))
+		else:
+			for _j in range(ENTITY_DATA_SIZE):
+				padded_data.append(0.0)
+	return padded_data
+
 func analyse_bullets(source):
 	var player_state := GameData.actor_info[owner_field_id][owner_id] as GameData.ActorState
 	var origin :Vector3 = owner.global_position
@@ -250,19 +271,16 @@ func gether_sensor_data():
 						else:
 							bullet_monster.append(obj_owner)
 	#计算分区信息
-	var bullet_data =analyse_bullets(bullet_monster)
+	var bullet_data = analyse_bullets(get_closest_objects(bullet_monster, mob_bullet_max_count))
 	#analyse_bullets(bullet_player, sensor_data.player_bullet_data)
 	
-	var mob_data = analyse_mob(monsters)
+	var mob_data = analyse_mob(get_closest_objects(monsters, mob_max_count))
 	
 	var player_data = gether_player_info()
 	
 	sensor_data = PackedFloat32Array(player_data)
 	
-	for data in mob_data:
-		sensor_data.append_array(PackedFloat32Array(data))
-	
-	for data in bullet_data:
-		sensor_data.append_array(PackedFloat32Array(data))
+	sensor_data.append_array(pad_entity_data(mob_data, mob_max_count))
+	sensor_data.append_array(pad_entity_data(bullet_data, mob_bullet_max_count))
 
 	return sensor_data
