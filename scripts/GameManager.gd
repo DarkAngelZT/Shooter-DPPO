@@ -17,7 +17,6 @@ signal on_field_reset
 
 @export var field_amount:int = 1
 @export var training_field_size:float = 32
-@export var samples_per_training_batch:int = 256
 
 @export var TraningRoot:Node3D
 @export var ArenaRoot:Node3D
@@ -40,13 +39,7 @@ var training_fields = {} # {field_id:TrainingField}
 var players = {} # {player_id:Player}
 var monsters = {} # 预留给全局怪物查询。
 
-var ep:int = 1
 var reward_func:Callable
-
-# 训练模式现在直接在 Godot 内部调度，这些字段替代旧的
-# NetworkManager 请求/响应节奏。
-var next_training_sample_time_ms:int = 0
-var pending_training_samples:Array = []
 var manual_reset_key_was_pressed:bool = false
 
 
@@ -68,10 +61,6 @@ func _physics_process(_delta:float) -> void:
 	if control_mode == ControlMode.Manual:
 		_update_manual_debug_shortcuts()
 		_update_manual_player_input()
-	elif control_mode == ControlMode.AI:
-		if Input.is_key_pressed(KEY_P):
-			_request_policy_save()
-		_run_training_collection_loop()
 
 
 # ---------------------------------------------------------------------------
@@ -100,7 +89,10 @@ func _setup_train_mode() -> void:
 
 	UIManager.instance.show_health(false)
 	UIManager.instance.show_ep(true)
-	UIManager.instance.set_ep(ep)
+	var initial_ep = 1
+	if TrainingManager.instance != null:
+		initial_ep = TrainingManager.instance.ep
+	UIManager.instance.set_ep(initial_ep)
 
 
 func _configure_training_level() -> void:
@@ -169,85 +161,6 @@ func _get_manual_aim_direction(player:Player) -> Vector2:
 	var cursor_world_pos = camera.project_position(cursor_pos, 50)
 	var cursor_direction = cursor_world_pos - player.global_position
 	return Vector2(cursor_direction.x, cursor_direction.z).normalized()
-
-
-# ---------------------------------------------------------------------------
-# 训练采样循环
-
-func ai_loop() -> void:
-	# 兼容旧代码路径：有些地方可能还会调用 ai_loop()。
-	_run_training_collection_loop()
-
-
-func _run_training_collection_loop() -> void:
-	# demo 的核心循环：
-	# 采集状态 -> 计算 reward -> 请求动作 -> 样本足够后训练一轮。
-	var now = Time.get_ticks_msec()
-	if now <= next_training_sample_time_ms:
-		return
-
-	next_training_sample_time_ms = now + int(game_settings.ai_update_interval * 1000)
-	for field in training_fields.values():
-		_collect_training_sample(field)
-
-
-func _collect_training_sample(field:TrainingField) -> void:
-	var field_id = field.id
-	if GameData.game_pause[field_id]:
-		return
-
-	var sample
-	if GameData.game_end[field_id]:
-		# 死亡会移除玩家节点，所以 TrainingField 会在发出 on_player_dead 前
-		# 缓存最后一帧 sensor 数据。
-		sample = _collect_terminal_sample(field)
-		_submit_training_sample(sample)
-		reset_field(field_id)
-		return
-
-	var player = field.player
-	if not is_instance_valid(player):
-		return
-
-	var sensor_data = player.get_sensor_data()
-	var reward = _calculate_step_reward(player.field_id, sensor_data)
-	sample = GameData.TrainingSample.new(player.field_id, player.id, sensor_data, reward, false)
-
-	_submit_training_sample(sample)
-	# 之后由 C++ 推理插件填充。它应该把选出的动作写回
-	# GameData.player_input[player.id]。
-	_request_policy_action(sample)
-
-
-func _collect_terminal_sample(field:TrainingField):
-	var sensor_data = field.player_sensor_data_cache
-	var reward = -1.0
-	return GameData.TrainingSample.new(field.id, field.id, sensor_data, reward, true)
-
-
-func _submit_training_sample(sample) -> void:
-	# 在原生训练插件还没接入前，先把 batch 生命周期放在 GameManager，
-	# 这样样本流向更容易追踪。
-	pending_training_samples.append(sample)
-	if pending_training_samples.size() >= samples_per_training_batch:
-		_train_policy_batch()
-
-
-func _request_policy_action(_sample) -> void:
-	# C++ 策略推理插件入口。
-	pass
-
-
-func _train_policy_batch() -> void:
-	# C++ 训练插件入口。插件还不存在时，先保留这里的 batch 生命周期，
-	# 让数据流保持可见。
-	pending_training_samples.clear()
-	increase_ep()
-
-
-func _request_policy_save() -> void:
-	# C++ 策略保存插件入口。
-	pass
 
 
 # ---------------------------------------------------------------------------
@@ -436,8 +349,8 @@ func _calculate_reward_level_2(field_id:int, _sensor_data) -> float:
 # 调试辅助
 
 func increase_ep() -> void:
-	ep += 1
-	UIManager.instance.set_ep(ep)
+	if TrainingManager.instance != null:
+		TrainingManager.instance.increase_ep()
 
 
 func test_func() -> void:
