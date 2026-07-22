@@ -37,19 +37,15 @@ class ActorState:
 
 class TrainingSample:
 	var field_id:int
-	var player_id:int
-	var sensor_data
+	var sensor_data : PackedFloat32Array
 	var reward:float
 	var game_end:bool
-	var created_at_msec:int
 
-	func _init(fid:int, pid:int, data, step_reward:float, ended:bool):
+	func _init(fid:int, data, step_reward:float, ended:bool):
 		field_id = fid
-		player_id = pid
 		sensor_data = data
 		reward = step_reward
 		game_end = ended
-		created_at_msec = Time.get_ticks_msec()
 	
 
 # Per-field runtime state.

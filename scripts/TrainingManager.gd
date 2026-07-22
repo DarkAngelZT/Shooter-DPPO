@@ -8,6 +8,9 @@ var training_level:int = 4
 @export
 var update_interval:float = 0.1
 
+@export
+var checkpoint_file :String = ""
+
 @export_group("training")
 @export
 var mob_collect: int = 8
@@ -31,12 +34,13 @@ var player_move_enabled:bool = true
 
 var next_update_time:float = 0
 var next_training_sample_time_ms:int = 0
-var pending_training_samples:Array = []
+var pending_training_samples:Dictionary = {}
 
 var Agent: AIAgent
 var isAIMode : bool = false
 var isPlayMode : bool = false
 var ep:int = 1
+var frame_collected :int = 0
 
 func _enter_tree():
 	instance = self
@@ -53,6 +57,9 @@ func _ready() -> void:
 		else:
 			Agent.set_mode(AIAgent.AIAgentMode.TRAINING)
 			isPlayMode = false
+		
+		if not checkpoint_file.is_empty():
+			Agent.Load("ai", checkpoint_file)
 
 func _physics_process(_delta: float) -> void:
 	if not isAIMode:
@@ -101,11 +108,38 @@ func ai_loop() -> void:
 				Agent.ProcessSensorData(sensor_data, true)
 	else:
 		_run_training_collection_loop()
+		frame_collected += 1
+		if frame_collected >= frame_total:
+			_train_policy_batch()
 
-func _run_training_collection_loop() -> void:		
+func _run_training_collection_loop() -> void:
+	for field in GameManager.instance.training_fields.values():
+		_collect_training_sample_reward(field)
+		_upload_batch_training_data(pending_training_samples)
+		
 	for field in GameManager.instance.training_fields.values():
 		_collect_training_sample(field)
+	#批量送入agent处理
+	_request_policy_action(pending_training_samples)
 
+func _collect_training_sample_reward(field:TrainingField) -> void:
+	var field_id = field.id
+	if GameData.game_end[field_id]:
+		#更新上一帧的reward
+		pending_training_samples[field_id].reward = -1
+		return
+
+	var player = field.player
+	if not is_instance_valid(player):
+		return
+
+	var sensor_data = player.get_sensor_data()
+	var reward = GameManager.instance._calculate_step_reward(player.field_id, sensor_data)
+	
+	#更新上一帧的reward
+	if not pending_training_samples[field_id].game_end:
+		pending_training_samples[field_id].reward = reward
+	
 func _collect_training_sample(field:TrainingField) -> void:
 	var field_id = field.id
 	if GameData.game_pause[field_id]:
@@ -123,31 +157,43 @@ func _collect_training_sample(field:TrainingField) -> void:
 		return
 
 	var sensor_data = player.get_sensor_data()
-	var reward = GameManager.instance._calculate_step_reward(player.field_id, sensor_data)
-	sample = GameData.TrainingSample.new(player.field_id, player.id, sensor_data, reward, false)
+	sample = GameData.TrainingSample.new(field_id, sensor_data, 0, false)
 
-	_submit_training_sample(sample)
-	_request_policy_action(sample)
+	_submit_training_sample(sample)	
 
 func _collect_terminal_sample(field:TrainingField):
 	var sensor_data = field.player_sensor_data_cache
 	var reward = -1.0
-	return GameData.TrainingSample.new(field.id, field.id, sensor_data, reward, true)
+	return GameData.TrainingSample.new(field.id, sensor_data, reward, true)
 
-func _submit_training_sample(sample) -> void:
-	pending_training_samples.append(sample)
-	if pending_training_samples.size() >= GameManager.instance.samples_per_training_batch:
-		_train_policy_batch()
+func _submit_training_sample(sample : GameData.TrainingSample) -> void:
+	pending_training_samples[sample.field_id] = sample
 
-func _request_policy_action(_sample) -> void:
-	pass
+func _upload_batch_training_data(_batch_sample) -> void:
+	var ids = []
+	var rewards = []
+	var dones = []
+	for field_id in _batch_sample:
+		ids.append(field_id)
+		rewards.append(_batch_sample[field_id].reward)
+		dones.append(1.0 if _batch_sample[field_id].game_end else 0.0)
+	Agent.PushTrainingData(PackedFloat32Array(rewards), PackedInt32Array(ids), PackedFloat32Array(dones))
+
+func _request_policy_action(_batch_sample) -> void:
+	var ids = []
+	var data : Array[PackedFloat32Array] = []
+	for field_id in _batch_sample:
+		ids.append(field_id)
+		data.append(_batch_sample[field_id].sensor_data)
+		
+	var ops : Array[PackedFloat32Array] = Agent.BatchProcessSensorData(data, PackedInt32Array(ids))
 
 func _train_policy_batch() -> void:
 	pending_training_samples.clear()
 	increase_ep()
 
 func _request_policy_save() -> void:
-	pass
+	Agent.Save("ai", "checkpoint_" + str(ep))
 
 func increase_ep() -> void:
 	ep += 1
