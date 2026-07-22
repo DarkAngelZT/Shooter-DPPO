@@ -82,12 +82,7 @@ func ai_loop() -> void:
 			if not GameData.game_end[field_id]:
 				var sensor_data = field.player.get_sensor_data()
 				var operations : PackedFloat32Array = Agent.ProcessSensorData(sensor_data, false)
-				var horizon :float = operations[0]
-				var vertical:float = operations[1]
-				var angle_x:float = operations[2]
-				var angle_y :float = operations[3]
-				var shoot :float = operations[4]
-				
+								
 				var player = field.player
 				if not is_instance_valid(player):
 					return
@@ -95,14 +90,8 @@ func ai_loop() -> void:
 					return
 
 				var input_state = GameData.player_input[player.id] as GameData.PlayerInputState
-				var move_dir :Vector2 = Vector2(horizon, vertical)
-				if move_dir.length() > 0:
-					input_state.start_move(move_dir)
-				else:
-					input_state.stop_move()
-
-				input_state.shooting = shoot > 0
-				input_state.aim_direction = Vector2(angle_x, angle_y).normalized()
+				
+				_decode_action(input_state, operations)
 			else:
 				var sensor_data = field.player.player_sensor_data_cache
 				Agent.ProcessSensorData(sensor_data, true)
@@ -111,6 +100,23 @@ func ai_loop() -> void:
 		frame_collected += 1
 		if frame_collected >= frame_total:
 			_train_policy_batch()
+			
+func _decode_action(input_state : GameData.PlayerInputState, action_data : PackedFloat32Array):
+	var horizon :float = action_data[0]
+	var vertical:float = action_data[1]
+	var angle_x:float = action_data[2]
+	var angle_y :float = action_data[3]
+	var shoot :float = action_data[4]
+	
+	var move_dir :Vector2 = Vector2(horizon, vertical)
+	if move_dir.length() > 0:
+		input_state.start_move(move_dir)
+	else:
+		input_state.stop_move()
+
+	input_state.shooting = shoot > 0
+	input_state.aim_direction = Vector2(angle_x, angle_y).normalized()
+	
 
 func _run_training_collection_loop() -> void:
 	for field in GameManager.instance.training_fields.values():
@@ -187,6 +193,11 @@ func _request_policy_action(_batch_sample) -> void:
 		data.append(_batch_sample[field_id].sensor_data)
 		
 	var ops : Array[PackedFloat32Array] = Agent.BatchProcessSensorData(data, PackedInt32Array(ids))
+	for index in ops.size():
+		var id = ids[index]
+		var action_data = ops[index]
+		var input_state = GameData.player_input[id] as GameData.PlayerInputState
+		_decode_action(input_state, action_data)
 
 func _train_policy_batch() -> void:
 	pending_training_samples.clear()
