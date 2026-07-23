@@ -96,7 +96,9 @@ func _setup_train_mode() -> void:
 
 
 func _configure_training_level() -> void:
-	# 训练等级是简单的课程预设。这里集中开关玩法能力，让 reward 函数
+	reward_func = Callable(self, "_calculate_reward_new")
+	return
+	"""# 训练等级是简单的课程预设。这里集中开关玩法能力，让 reward 函数
 	# 和可用动作保持在同一个清晰位置。
 	var training_level = TrainingManager.instance.training_level
 	if training_level == 1:
@@ -112,7 +114,7 @@ func _configure_training_level() -> void:
 		TrainingManager.instance.player_shoot_enabled = false
 		reward_func = Callable(self, "_calculate_reward_level_2")
 	elif training_level == 4:
-		reward_func = Callable(self, "_calculate_reward_default")
+		reward_func = Callable(self, "_calculate_reward_default")"""
 
 
 func create_game_data(amount:int) -> void:
@@ -317,6 +319,16 @@ func _calculate_reward_default(field_id:int, sensor_data) -> float:
 	GameData.update_player_reward_baseline(player.id, player.health, player.position)
 	return reward
 
+func _calculate_reward_new(field_id : int, sensor_data) ->float:
+	var training_field = training_fields[field_id]
+	var player = training_field.player
+	var life_score = 0.001 if not GameData.game_end[field_id] else 0.0
+	var kill_score = GameData.mob_kill_cache[field_id]
+	var behit_penalty = (GameData.player_hp_cache[player.id] - player.health)/float(game_settings.player_health)
+	GameData.reset_step_reward_stats(player.id)
+	GameData.update_player_reward_baseline(player.id, player.health, player.position)
+	var reward = life_score + kill_score - behit_penalty
+	return reward
 
 func _calculate_reward_level_1(field_id:int, _sensor_data) -> float:
 	var training_field = training_fields[field_id]
