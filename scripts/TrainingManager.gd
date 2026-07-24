@@ -8,6 +8,7 @@ var training_level:int = 4
 @export
 var update_interval:float = 0.1
 
+@export var load_checkpoint : bool = false
 @export
 var checkpoint_file :String = ""
 
@@ -18,6 +19,14 @@ var mob_collect: int = 8
 var bullet_Collect:int = 10
 @export
 var frame_total:int = 6
+@export
+var move_dim : int = 6
+@export
+var shoot_dim : int = 4
+@export
+var action_dim : int = 5
+@export
+var entity_data_dim : int = 9
 
 @export_group("settings")
 @export
@@ -57,8 +66,13 @@ func _ready() -> void:
 		else:
 			Agent.set_mode(AIAgent.AIAgentMode.TRAINING)
 			isPlayMode = false
+			
+		var input_dim = entity_data_dim * (1  +mob_collect + bullet_Collect)
+		Agent.Init(input_dim, move_dim, shoot_dim, entity_data_dim)
+		if Agent.get_mode() == AIAgent.AIAgentMode.TRAINING:
+			Agent.SetBatchInfo(GameManager.instance.field_amount, action_dim, frame_total)
 		
-		if not checkpoint_file.is_empty():
+		if load_checkpoint and not checkpoint_file.is_empty():
 			Agent.Load("ai", checkpoint_file)
 
 func _physics_process(_delta: float) -> void:
