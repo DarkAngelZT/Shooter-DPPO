@@ -94,7 +94,7 @@ func _ready():
 	space = owner.get_world_3d().direct_space_state
 	
 	var forward = Vector3.FORWARD
-	for i in range(8):
+	for i in range(4):
 		terrain_rays.append(forward)
 		forward = forward.rotated(Vector3.UP,90)
 
