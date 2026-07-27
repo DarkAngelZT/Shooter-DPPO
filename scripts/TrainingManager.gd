@@ -107,7 +107,7 @@ func ai_loop() -> void:
 				
 				_decode_action(input_state, operations)
 			else:
-				var sensor_data = field.player.player_sensor_data_cache
+				var sensor_data = field.player_sensor_data_cache
 				Agent.ProcessSensorData(sensor_data, true)
 	else:
 		_run_training_collection_loop()
@@ -157,7 +157,7 @@ func _collect_training_sample_reward(field:TrainingField) -> void:
 	var reward = GameManager.instance._calculate_step_reward(player.field_id, sensor_data)
 	
 	#更新上一帧的reward
-	if not pending_training_samples[field_id].game_end:
+	if not pending_training_samples.is_empty() and not pending_training_samples[field_id].game_end:
 		pending_training_samples[field_id].reward = reward
 	
 func _collect_training_sample(field:TrainingField) -> void:
@@ -206,7 +206,7 @@ func _request_policy_action(_batch_sample) -> void:
 		ids.append(field_id)
 		data.append(_batch_sample[field_id].sensor_data)
 		
-	var ops : Array[PackedFloat32Array] = Agent.BatchProcessSensorData(data, PackedInt32Array(ids))
+	var ops : Array = Agent.BatchProcessSensorData(data, PackedInt32Array(ids))
 	for index in ops.size():
 		var id = ids[index]
 		var action_data = ops[index]

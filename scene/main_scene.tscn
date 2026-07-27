@@ -43,7 +43,6 @@ ep_label = NodePath("../EPLabel")
 process_mode = 3
 editor_description = "场景管理器"
 script = ExtResource("1_xmjsa")
-field_amount = 8
 training_field_size = 45.0
 TraningRoot = NodePath("../TrainingRoot")
 ArenaRoot = NodePath("../Arena")
@@ -57,6 +56,7 @@ game_settings = ExtResource("6_og74n")
 train_camera = NodePath("../TrainingCamera")
 game_camera = NodePath("../FollowCamera")
 game_mode = 2
+control_mode = 2
 
 [node name="TrainingManager" type="Node" parent="." unique_id=2077658358]
 script = ExtResource("10_nw2ui")

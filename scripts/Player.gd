@@ -34,8 +34,8 @@ func _physics_process(delta):
 		
 	if GameData.actor_info[field_id][id].hp<=0:
 		return
-	if GameManager.instance.control_mode == GameManager.ControlMode.AI:
-		auto_shoot()
+	#if GameManager.instance.control_mode == GameManager.ControlMode.AI:
+		#auto_shoot()
 	if not GameData.player_input.has(id):
 		return
 
