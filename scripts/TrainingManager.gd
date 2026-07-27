@@ -27,6 +27,7 @@ var shoot_dim : int = 4
 var action_dim : int = 5
 @export
 var entity_data_dim : int = 9
+@export var train_step : int =9
 
 @export_group("settings")
 @export
@@ -114,6 +115,7 @@ func ai_loop() -> void:
 		frame_collected += 1
 		if frame_collected >= frame_total:
 			_train_policy_batch()
+			frame_collected = 0
 			
 func _decode_action(input_state : GameData.PlayerInputState, action_data : PackedFloat32Array):
 	var horizon :float = action_data[0]
@@ -214,8 +216,12 @@ func _request_policy_action(_batch_sample) -> void:
 		_decode_action(input_state, action_data)
 
 func _train_policy_batch() -> void:
-	pending_training_samples.clear()
+	for field_id in GameManager.instance.training_fields:
+		GameManager.instance.pause_game(field_id)
+	Agent.Train(train_step);
 	increase_ep()
+	for field_id in GameManager.instance.training_fields:
+		GameManager.instance.resume_game(field_id)
 
 func _request_policy_save() -> void:
 	Agent.Save("ai", "checkpoint_" + str(ep))
