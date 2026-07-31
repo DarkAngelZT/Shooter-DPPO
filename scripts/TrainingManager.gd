@@ -68,8 +68,8 @@ func _ready() -> void:
 			Agent.set_mode(AIAgent.AIAgentMode.TRAINING)
 			isPlayMode = false
 			
-		var input_dim = entity_data_dim * (1  +mob_collect + bullet_Collect)
-		Agent.Init(input_dim, move_dim, shoot_dim, entity_data_dim)
+		var entity_num = 1 + mob_collect + bullet_Collect
+		Agent.Init(entity_num,entity_data_dim, move_dim, shoot_dim)
 		if Agent.get_mode() == AIAgent.AIAgentMode.TRAINING:
 			Agent.SetBatchInfo(GameManager.instance.field_amount, action_dim, frame_total)
 		
@@ -124,7 +124,8 @@ func _decode_action(input_state : GameData.PlayerInputState, action_data : Packe
 	var angle_y :float = action_data[3]
 	var shoot :float = action_data[4]
 	
-	var move_dir :Vector2 = Vector2(horizon, vertical)
+	#移动返回的是 0,1,2， 需要转成-1,0,1
+	var move_dir :Vector2 = Vector2(horizon - 1.0, vertical - 1.0)
 	if move_dir.length() > 0:
 		input_state.start_move(move_dir)
 	else:
@@ -224,7 +225,7 @@ func _train_policy_batch() -> void:
 		GameManager.instance.resume_game(field_id)
 
 func _request_policy_save() -> void:
-	Agent.Save("ai", "checkpoint_" + str(ep))
+	Agent.Save("ai", "checkpoint_" + str(ep)+".mnn")
 
 func increase_ep() -> void:
 	ep += 1
