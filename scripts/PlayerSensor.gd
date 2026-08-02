@@ -26,7 +26,7 @@ const Left = 0x4
 const Behind = 0x8
 
 const cell_size = 324
-const ENTITY_DATA_SIZE = 9
+const ENTITY_DATA_SIZE = 10
 
 const Collision_Mask_Floor = 32 # blocker
 
@@ -198,7 +198,7 @@ func analyse_bullets(source):
 		var bullet_v = Vector2(v.x, v.z)
 		var relative_v = bullet_v - player_v
 		var ttc = get_bullet_ttc(Vector2(d.x, d.z), relative_v, 0.5)
-		var single_bullet = [d.x, d.y, v.x, v.y, 1.0/(ttc+0.001), 0, 0, 0, 0]
+		var single_bullet = [d.x, d.y, v.x, v.y, 1.0/(ttc+0.001), 0, 0, 0, 0, 0]
 		result.append(single_bullet)
 	
 	return result
@@ -212,7 +212,7 @@ func analyse_mob(source:Array):
 		var single_mob: Array[float]
 		var d:Vector3 = mob.global_position - origin
 		var v:Vector3 = mob.velocity
-		single_mob = [d.x, d.z, v.x, v.z, 1, 0, 0, 0, 0]
+		single_mob = [d.x, d.z, v.x, v.z, 1, 0, 0, 0, 0, 0]
 		
 		result.append(single_mob)
 	
@@ -240,7 +240,7 @@ func gether_player_info():
 		else:
 			terrain_info.append(terrain_detect_range)
 			
-	return [0,0,move_x,move_y,percent] + terrain_info
+	return [0,0,move_x,move_y,percent,player_state.can_shoot] + terrain_info
 
 func gether_sensor_data():
 	query_param.transform.origin = owner.global_position
