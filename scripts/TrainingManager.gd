@@ -69,7 +69,7 @@ func _ready() -> void:
 			isPlayMode = false
 			
 		var entity_num = 1 + mob_collect + bullet_Collect
-		Agent.Init(entity_num,entity_data_dim, move_dim, shoot_dim)
+		Agent.Init(entity_num,entity_data_dim, move_dim, shoot_dim,16,16,196,256)
 		if Agent.get_mode() == AIAgent.AIAgentMode.TRAINING:
 			Agent.SetBatchInfo(GameManager.instance.field_amount, action_dim, frame_total)
 		
