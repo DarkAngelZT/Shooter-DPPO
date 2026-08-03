@@ -111,11 +111,7 @@ func ai_loop() -> void:
 				var sensor_data = field.player_sensor_data_cache
 				Agent.ProcessSensorData(sensor_data, true)
 	else:
-		_run_training_collection_loop()
-		frame_collected += 1
-		if frame_collected >= frame_total:
-			_train_policy_batch()
-			frame_collected = 0
+		_run_training_collection_loop()		
 			
 func _decode_action(input_state : GameData.PlayerInputState, action_data : PackedFloat32Array):
 	var horizon :float = action_data[0]
@@ -138,8 +134,14 @@ func _decode_action(input_state : GameData.PlayerInputState, action_data : Packe
 func _run_training_collection_loop() -> void:
 	for field in GameManager.instance.training_fields.values():
 		_collect_training_sample_reward(field)
-		_upload_batch_training_data(pending_training_samples)
-		
+	_upload_batch_training_data(pending_training_samples)
+	#有完整的reward之后立即训练
+	#不能在函数结束之后才训练，会有没登记reward的错误数据被拿去训练
+	frame_collected += 1
+	if frame_collected >= frame_total:
+		_train_policy_batch()
+		frame_collected = 0
+	#训练完成后会清空数据，这里是新的一批数据
 	for field in GameManager.instance.training_fields.values():
 		_collect_training_sample(field)
 	#批量送入agent处理

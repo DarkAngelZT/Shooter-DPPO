@@ -324,7 +324,7 @@ func _calculate_reward_new(field_id : int, sensor_data) ->float:
 	var player = training_field.player
 	var life_score = 0.001 if not GameData.game_end[field_id] else 0.0
 	var kill_score = GameData.mob_kill_cache[field_id]
-	var behit_penalty = (GameData.player_hp_cache[player.id] - player.health)/float(game_settings.player_health)
+	var behit_penalty = 1.0 if (GameData.player_hp_cache[player.id] - player.health) > 0 else 0.0
 	GameData.reset_step_reward_stats(player.id)
 	GameData.update_player_reward_baseline(player.id, player.health, player.position)
 	var reward = life_score + kill_score - behit_penalty

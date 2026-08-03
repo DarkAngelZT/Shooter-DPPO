@@ -96,7 +96,7 @@ func _ready():
 	var forward = Vector3.FORWARD
 	for i in range(4):
 		terrain_rays.append(forward)
-		forward = forward.rotated(Vector3.UP,90)
+		forward = forward.rotated(Vector3.UP,PI*0.5)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -198,7 +198,7 @@ func analyse_bullets(source):
 		var bullet_v = Vector2(v.x, v.z)
 		var relative_v = bullet_v - player_v
 		var ttc = get_bullet_ttc(Vector2(d.x, d.z), relative_v, 0.5)
-		var single_bullet = [d.x, d.y, v.x, v.y, 1.0/(ttc+0.001), 0, 0, 0, 0, 0]
+		var single_bullet = [d.x, d.z, relative_v.x, relative_v.y, 1.0/(ttc+1), 0, 0, 0, 0, 0]
 		result.append(single_bullet)
 	
 	return result
@@ -236,9 +236,9 @@ func gether_player_info():
 			Collision_Mask_Floor)
 		var result = space.intersect_ray(query)
 		if result:
-			terrain_info.append(result.position.distance_to(owner.global_position))
+			terrain_info.append(result.position.distance_to(owner.global_position)/terrain_detect_range)
 		else:
-			terrain_info.append(terrain_detect_range)
+			terrain_info.append(1.0)
 			
 	return [0,0,move_x,move_y,percent,player_state.can_shoot] + terrain_info
 

@@ -4,8 +4,8 @@ var _blinking = null : set = _set_blinking
 @onready var _animation_player : AnimationPlayer = $AnimationPlayer
 @onready var _blinking_timer : Timer = $BlinkTimer
 @onready var _closed_eyes_timer : Timer = $ClosedTimer
-@onready var _left_eye : Sprite2D = $LeftEye
-@onready var _right_eye : Sprite2D = $RightEye
+#@onready var _left_eye : Sprite2D = $LeftEye
+#@onready var _right_eye : Sprite2D = $RightEye
 
 var eyes_textures = {
 	"open" : preload("./texture/parts/eye_open.png"),
@@ -46,8 +46,9 @@ func _on_blink_timer_timeout():
 	_blinking_timer.start()
 
 func _set_eyes(eyes_name : String):
-	_left_eye.texture = eyes_textures[eyes_name]
-	_right_eye.texture = eyes_textures[eyes_name]
+	pass
+	#_left_eye.texture = eyes_textures[eyes_name]
+	#_right_eye.texture = eyes_textures[eyes_name]
 	
 func _set_face(face_name):
 	if current_face == face_name: return
