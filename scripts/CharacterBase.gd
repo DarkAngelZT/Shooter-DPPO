@@ -71,6 +71,8 @@ func take_damage(damage):
 	if is_dead:
 		return
 	health = maxi(health - damage, 0)
+	if not GameData.actor_info[field_id].has(id):
+		return
 	GameData.actor_info[field_id][id].hp=health
 	if health<=0:
 		is_dead = true
