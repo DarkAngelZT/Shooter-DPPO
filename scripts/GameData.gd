@@ -37,7 +37,7 @@ class ActorState:
 
 class TrainingSample:
 	var field_id:int
-	var sensor_data : PackedFloat32Array
+	var sensor_data : Array
 	var reward:float
 	var game_end:bool
 

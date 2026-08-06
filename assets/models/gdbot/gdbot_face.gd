@@ -1,65 +1,38 @@
 extends Node2D
 
-var _blinking = null : set = _set_blinking
-@onready var _animation_player : AnimationPlayer = $AnimationPlayer
-@onready var _blinking_timer : Timer = $BlinkTimer
-@onready var _closed_eyes_timer : Timer = $ClosedTimer
-#@onready var _left_eye : Sprite2D = $LeftEye
-#@onready var _right_eye : Sprite2D = $RightEye
+# 替代模型已删除动画播放器、眨眼计时器、闭眼计时器和眼睛节点，停用对应声明。
+# var _blinking = null : set = _set_blinking
+# @onready var _animation_player : AnimationPlayer = $AnimationPlayer
+# @onready var _blinking_timer : Timer = $BlinkTimer
+# @onready var _closed_eyes_timer : Timer = $ClosedTimer
+# @onready var _left_eye : Sprite2D = $LeftEye
+# @onready var _right_eye : Sprite2D = $RightEye
 
-var eyes_textures = {
-	"open" : preload("./texture/parts/eye_open.png"),
-	"closed" : preload("./texture/parts/eye_close.png")
-}
+# 眼睛节点已删除，不再加载或切换眼睛贴图。
+# var eyes_textures = {
+# 	"open" : preload("./texture/parts/eye_open.png"),
+# 	"closed" : preload("./texture/parts/eye_close.png")
+# }
 
-var current_face = null : set = _set_face
+# 面部动画组件已删除，保留空接口以兼容模型脚本的调用。
+var current_face = null
 
 func _ready():
-	#_blinking_timer.connect("timeout", _on_blink_timer_timeout)
-	#_set_blinking(true)
-	#current_face = "default"
+	# 面部组件已停用，无需初始化。
 	pass
-	
-func _set_blinking(value : bool):
-	_blinking = value
-	if _blinking:
-		_blinking_timer.start()
-	else:
-		_blinking_timer.stop()
-		
-func _on_blink_timer_timeout():
-	# Play secondary action rather than blink
-	if randf_range(0.0, 1.0) > 0.9:
-		_animation_player.play("look_around")
-		await _animation_player.animation_finished
-	else:
-		# Close eyes
-		_set_eyes("closed")
-		_closed_eyes_timer.start(randf_range(0.1, 0.25))
-		await _closed_eyes_timer.timeout
-	# Return to current eyes
-	_set_eyes("open")
-	if randf_range(0.0, 1.0) > 0.8:
-		_blinking_timer.wait_time = randf_range(0.1, 0.15)
-	else:
-		_blinking_timer.wait_time = randf_range(1.0, 4.0)
-	_blinking_timer.start()
 
-func _set_eyes(eyes_name : String):
+func _set_blinking(_value : bool):
+	# 眨眼计时器已删除，停用眨眼控制。
 	pass
-	#_left_eye.texture = eyes_textures[eyes_name]
-	#_right_eye.texture = eyes_textures[eyes_name]
-	
-func _set_face(face_name):
-	if current_face == face_name: return
-	current_face = face_name
-	_animation_player.play("RESET")
-	_animation_player.seek(0.0, true)
-	if face_name == "default":
-		_set_blinking(true)
-		return
-	_set_blinking(false)
-	if !_animation_player.has_animation(face_name):
-		push_error("Can't set GDBot's face to: '" + face_name + "'")
-		return
-	_animation_player.play(face_name)
+
+func _on_blink_timer_timeout():
+	# 眨眼、闭眼计时器和动画播放器已删除，停用超时回调。
+	pass
+
+func _set_eyes(_eyes_name : String):
+	# 眼睛节点已删除，停用贴图切换。
+	pass
+
+func _set_face(_face_name):
+	# 面部动画播放器已删除，保留空接口避免调用方报错。
+	pass

@@ -26,7 +26,11 @@ var shoot_dim : int = 4
 @export
 var action_dim : int = 5
 @export
-var entity_data_dim : int = 9
+var player_dim : int = 10
+@export
+var mob_dim : int = 5
+@export
+var bullet_dim : int = 5
 @export var train_step : int =9
 
 @export_group("settings")
@@ -68,8 +72,7 @@ func _ready() -> void:
 			Agent.set_mode(AIAgent.AIAgentMode.TRAINING)
 			isPlayMode = false
 			
-		var entity_num = 1 + mob_collect + bullet_Collect
-		Agent.Init(entity_num,entity_data_dim, move_dim, shoot_dim,16,16,196,256)
+		initialize_agent(Agent, mob_collect, bullet_Collect, player_dim, mob_dim, bullet_dim, move_dim, shoot_dim)
 		if Agent.get_mode() == AIAgent.AIAgentMode.TRAINING:
 			Agent.SetBatchInfo(GameManager.instance.field_amount, action_dim, frame_total)
 		
@@ -96,7 +99,7 @@ func ai_loop() -> void:
 			var field_id = field.id
 			if not GameData.game_end[field_id]:
 				var sensor_data = field.player.get_sensor_data()
-				var operations : PackedFloat32Array = Agent.ProcessSensorData(sensor_data, false)
+				var operations : PackedFloat32Array = process_sensor_data(Agent, sensor_data, false)
 								
 				var player = field.player
 				if not is_instance_valid(player):
@@ -109,7 +112,7 @@ func ai_loop() -> void:
 				_decode_action(input_state, operations)
 			else:
 				var sensor_data = field.player_sensor_data_cache
-				Agent.ProcessSensorData(sensor_data, true)
+				process_sensor_data(Agent, sensor_data, true)
 	else:
 		_run_training_collection_loop()		
 			
@@ -205,18 +208,37 @@ func _upload_batch_training_data(_batch_sample) -> void:
 	Agent.PushTrainingData(PackedFloat32Array(rewards), PackedInt32Array(ids), PackedFloat32Array(dones))
 
 func _request_policy_action(_batch_sample) -> void:
-	var ids = []
-	var data : Array[PackedFloat32Array] = []
-	for field_id in _batch_sample:
-		ids.append(field_id)
-		data.append(_batch_sample[field_id].sensor_data)
-		
-	var ops : Array = Agent.BatchProcessSensorData(data, PackedInt32Array(ids))
+	var batch_result = batch_process_sensor_data(Agent, _batch_sample)
+	var ids: PackedInt32Array = batch_result[0]
+	var ops: Array = batch_result[1]
 	for index in ops.size():
 		var id = ids[index]
 		var action_data = ops[index]
 		var input_state = GameData.player_input[id] as GameData.PlayerInputState
 		_decode_action(input_state, action_data)
+
+static func process_sensor_data(agent, sensor_data:Array, is_game_end:bool = false):
+	return agent.ProcessSensorData(sensor_data[0], sensor_data[1], sensor_data[2], is_game_end)
+
+static func batch_process_sensor_data(agent, batch_samples:Dictionary) -> Array:
+	var ids := PackedInt32Array()
+	var players: Array[PackedFloat32Array] = []
+	var mobs: Array[PackedFloat32Array] = []
+	var bullets: Array[PackedFloat32Array] = []
+	for field_id in batch_samples:
+		var sensor_data:Array = batch_samples[field_id].sensor_data
+		ids.append(field_id)
+		players.append(sensor_data[0])
+		mobs.append(sensor_data[1])
+		bullets.append(sensor_data[2])
+	var operations:Array = agent.BatchProcessSensorData(players, mobs, bullets, ids)
+	return [ids, operations]
+
+static func initialize_agent(agent, monster_count:int, bullet_count:int,
+		in_player_dim:int, in_mob_dim:int, in_bullet_dim:int,
+		in_move_dim:int, in_shoot_dim:int) -> void:
+	agent.Init(monster_count, bullet_count, in_player_dim, in_mob_dim, in_bullet_dim,
+		in_move_dim, in_shoot_dim, 16, 16, 196, 256)
 
 func _train_policy_batch() -> void:
 	for field_id in GameManager.instance.training_fields:

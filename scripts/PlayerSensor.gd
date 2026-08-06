@@ -26,7 +26,9 @@ const Left = 0x4
 const Behind = 0x8
 
 const cell_size = 324
-const ENTITY_DATA_SIZE = 10
+const PLAYER_DATA_SIZE = 10
+const MOB_DATA_SIZE = 5
+const BULLET_DATA_SIZE = 5
 
 const Collision_Mask_Floor = 32 # blocker
 
@@ -175,15 +177,22 @@ func get_closest_objects(source:Array, max_count:int) -> Array:
 	objects.resize(mini(objects.size(), max_count))
 	return objects
 
-func pad_entity_data(data:Array, target_count:int) -> PackedFloat32Array:
+func pad_entity_data(data:Array, target_count:int, feature_dim:int) -> PackedFloat32Array:
 	var padded_data := PackedFloat32Array()
 	for i in range(target_count):
 		if i < data.size():
 			padded_data.append_array(PackedFloat32Array(data[i]))
 		else:
-			for _j in range(ENTITY_DATA_SIZE):
+			for _j in range(feature_dim):
 				padded_data.append(0.0)
 	return padded_data
+
+func compose_sensor_data(player_data, mob_data:Array, bullet_data:Array,
+		mob_count:int = mob_max_count, bullet_count:int = mob_bullet_max_count) -> Array:
+	var player_array := PackedFloat32Array(player_data)
+	var mob_array := pad_entity_data(mob_data, mob_count, MOB_DATA_SIZE)
+	var bullet_array := pad_entity_data(bullet_data, bullet_count, BULLET_DATA_SIZE)
+	return [player_array, mob_array, bullet_array]
 
 func analyse_bullets(source):
 	var player_state := GameData.actor_info[owner_field_id][owner_id] as GameData.ActorState
@@ -198,7 +207,7 @@ func analyse_bullets(source):
 		var bullet_v = Vector2(v.x, v.z)
 		var relative_v = bullet_v - player_v
 		var ttc = get_bullet_ttc(Vector2(d.x, d.z), relative_v, 0.5)
-		var single_bullet = [d.x, d.z, relative_v.x, relative_v.y, 1.0/(ttc+1), 0, 0, 0, 0, 0]
+		var single_bullet = [d.x, d.z, relative_v.x, relative_v.y, 1.0/(ttc+1)]
 		result.append(single_bullet)
 	
 	return result
@@ -212,7 +221,7 @@ func analyse_mob(source:Array):
 		var single_mob: Array[float]
 		var d:Vector3 = mob.global_position - origin
 		var v:Vector3 = mob.velocity
-		single_mob = [d.x, d.z, v.x, v.z, 1, 0, 0, 0, 0, 0]
+		single_mob = [d.x, d.z, v.x, v.z, 1]
 		
 		result.append(single_mob)
 	
@@ -249,7 +258,6 @@ func gether_sensor_data():
 	var bullet_monster = []
 	var bullet_player = []
 	
-	var sensor_data : PackedFloat32Array
 	#分类整理
 	for hit_result in result:
 		var obj = hit_result.collider
@@ -277,10 +285,4 @@ func gether_sensor_data():
 	var mob_data = analyse_mob(get_closest_objects(monsters, mob_max_count))
 	
 	var player_data = gether_player_info()
-	
-	sensor_data = PackedFloat32Array(player_data)
-	
-	sensor_data.append_array(pad_entity_data(mob_data, mob_max_count))
-	sensor_data.append_array(pad_entity_data(bullet_data, mob_bullet_max_count))
-
-	return sensor_data
+	return compose_sensor_data(player_data, mob_data, bullet_data)
