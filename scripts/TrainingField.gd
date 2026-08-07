@@ -56,6 +56,9 @@ func init(field_id):
 	
 	player.field_id = field_id
 	player.id = field_id
+	player.get_node("PlayerSensor").owner_id = field_id
+	player.get_node("PlayerSensor").owner_field_id = field_id
+	
 	player.name = "Player_"+str(player.id)
 	var state = GameData.ActorState.new(field_id,player.id)
 	state.hp = GameManager.instance.game_settings.player_health

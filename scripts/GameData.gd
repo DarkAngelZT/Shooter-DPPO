@@ -53,6 +53,8 @@ static var game_end = {} #{field_id:true/false}
 static var player_input = {} #{field_id:PlayerInputState}
 static var actor_info = {} #{field_id:{actor_id:ActorState}}
 static var game_pause = {} #{field_id:true/false}
+# 保存每个玩家最近一次传感器采集时的怪物顺序。
+static var player_targets = {} #{field_id:Array}
 
 # Kept for compatibility with the old socket loop. The new in-process training
 # loop samples on a timer instead of waiting for NetworkManager callbacks.
@@ -70,6 +72,7 @@ static func reset_runtime() -> void:
 	player_input.clear()
 	actor_info.clear()
 	game_pause.clear()
+	player_targets.clear()
 	ai_need_update.clear()
 	player_hp_cache.clear()
 	player_shooted.clear()
@@ -81,8 +84,19 @@ static func register_field(field_id:int, paused:bool) -> void:
 	game_end[field_id] = false
 	game_pause[field_id] = paused
 	actor_info[field_id] = {}
+	player_targets[field_id] = {}
 	ai_need_update[field_id] = 0
 	mob_kill_cache[field_id] = 0
+
+static func set_player_targets(field_id:int, targets:Array) -> void:
+	if not player_targets.has(field_id):
+		player_targets[field_id] = []
+	player_targets[field_id]= targets
+
+static func get_player_targets(field_id:int) -> Array:
+	if not player_targets.has(field_id):
+		return []
+	return player_targets[field_id]
 
 static func register_actor(actor_state:ActorState) -> void:
 	if not actor_info.has(actor_state.field_id):

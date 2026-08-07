@@ -20,11 +20,9 @@ var bullet_Collect:int = 10
 @export
 var frame_total:int = 6
 @export
-var move_dim : int = 6
+var move_dim : int = 4
 @export
-var shoot_dim : int = 4
-@export
-var action_dim : int = 5
+var action_dim : int = 4
 @export
 var player_dim : int = 10
 @export
@@ -72,7 +70,7 @@ func _ready() -> void:
 			Agent.set_mode(AIAgent.AIAgentMode.TRAINING)
 			isPlayMode = false
 			
-		initialize_agent(Agent, mob_collect, bullet_Collect, player_dim, mob_dim, bullet_dim, move_dim, shoot_dim)
+		initialize_agent(Agent, mob_collect, bullet_Collect, player_dim, mob_dim, bullet_dim, move_dim)
 		if Agent.get_mode() == AIAgent.AIAgentMode.TRAINING:
 			Agent.SetBatchInfo(GameManager.instance.field_amount, action_dim, frame_total)
 		
@@ -98,7 +96,7 @@ func ai_loop() -> void:
 			var field = GameManager.instance.training_fields[0]
 			var field_id = field.id
 			if not GameData.game_end[field_id]:
-				var sensor_data = field.player.get_sensor_data()
+				var sensor_data:Array = field.player.get_sensor_data()
 				var operations : PackedFloat32Array = process_sensor_data(Agent, sensor_data, false)
 								
 				var player = field.player
@@ -109,30 +107,28 @@ func ai_loop() -> void:
 
 				var input_state = GameData.player_input[player.id] as GameData.PlayerInputState
 				
-				_decode_action(input_state, operations)
+				var target_index := _decode_action(input_state, operations)
+				var targets := GameData.get_player_targets(field_id)
+				if target_index >= 0 and target_index < targets.size() \
+						and is_instance_valid(targets[target_index]):
+					player.aim_at(targets[target_index])
 			else:
-				var sensor_data = field.player_sensor_data_cache
+				var sensor_data:Array = field.player_sensor_data_cache
 				process_sensor_data(Agent, sensor_data, true)
 	else:
 		_run_training_collection_loop()		
 			
-func _decode_action(input_state : GameData.PlayerInputState, action_data : PackedFloat32Array):
-	var horizon :float = action_data[0]
-	var vertical:float = action_data[1]
-	var angle_x:float = action_data[2]
-	var angle_y :float = action_data[3]
-	var shoot :float = action_data[4]
-	
-	#移动返回的是 0,1,2， 需要转成-1,0,1
-	var move_dir :Vector2 = Vector2(horizon - 1.0, vertical - 1.0)
-	if move_dir.length() > 0:
-		input_state.start_move(move_dir)
-	else:
+static func _decode_action(input_state:GameData.PlayerInputState,
+		action_data:PackedFloat32Array) -> int:
+	if action_data.size() < 4:
+		return -1
+	var move_direction := Vector2(action_data[0], action_data[1])
+	if move_direction.is_zero_approx():
 		input_state.stop_move()
-
-	input_state.shooting = shoot > 0
-	input_state.aim_direction = Vector2(angle_x, angle_y).normalized()
-	
+	else:
+		input_state.start_move(move_direction)
+	input_state.shooting = action_data[3] > 0.0
+	return int(action_data[2])
 
 func _run_training_collection_loop() -> void:
 	for field in GameManager.instance.training_fields.values():
@@ -161,7 +157,7 @@ func _collect_training_sample_reward(field:TrainingField) -> void:
 	if not is_instance_valid(player):
 		return
 
-	var sensor_data = player.get_sensor_data()
+	var sensor_data:Array = player.get_sensor_data()
 	var reward = GameManager.instance._calculate_step_reward(player.field_id, sensor_data)
 	
 	#更新上一帧的reward
@@ -184,13 +180,13 @@ func _collect_training_sample(field:TrainingField) -> void:
 	if not is_instance_valid(player):
 		return
 
-	var sensor_data = player.get_sensor_data()
+	var sensor_data:Array = player.get_sensor_data()
 	sample = GameData.TrainingSample.new(field_id, sensor_data, 0, false)
 
 	_submit_training_sample(sample)	
 
 func _collect_terminal_sample(field:TrainingField):
-	var sensor_data = field.player_sensor_data_cache
+	var sensor_data:Array = field.player_sensor_data_cache
 	var reward = -1.0
 	return GameData.TrainingSample.new(field.id, sensor_data, reward, true)
 
@@ -211,11 +207,20 @@ func _request_policy_action(_batch_sample) -> void:
 	var batch_result = batch_process_sensor_data(Agent, _batch_sample)
 	var ids: PackedInt32Array = batch_result[0]
 	var ops: Array = batch_result[1]
-	for index in ops.size():
-		var id = ids[index]
-		var action_data = ops[index]
+	for index in mini(ids.size(), ops.size()):
+		var id := ids[index]
+		if not GameData.player_input.has(id) or not GameManager.instance.training_fields.has(id):
+			continue
 		var input_state = GameData.player_input[id] as GameData.PlayerInputState
-		_decode_action(input_state, action_data)
+		var target_index := _decode_action(input_state, ops[index])
+		var field = GameManager.instance.training_fields[id]
+		var player = field.player
+		if not is_instance_valid(player):
+			continue
+		var targets := GameData.get_player_targets(id)
+		if target_index >= 0 and target_index < targets.size() \
+				and is_instance_valid(targets[target_index]):
+			player.aim_at(targets[target_index])
 
 static func process_sensor_data(agent, sensor_data:Array, is_game_end:bool = false):
 	return agent.ProcessSensorData(sensor_data[0], sensor_data[1], sensor_data[2], is_game_end)
@@ -234,11 +239,11 @@ static func batch_process_sensor_data(agent, batch_samples:Dictionary) -> Array:
 	var operations:Array = agent.BatchProcessSensorData(players, mobs, bullets, ids)
 	return [ids, operations]
 
-static func initialize_agent(agent, monster_count:int, bullet_count:int,
+static func initialize_agent(agent : AIAgent, monster_count:int, bullet_count:int,
 		in_player_dim:int, in_mob_dim:int, in_bullet_dim:int,
-		in_move_dim:int, in_shoot_dim:int) -> void:
+		in_move_dim:int) -> void:
 	agent.Init(monster_count, bullet_count, in_player_dim, in_mob_dim, in_bullet_dim,
-		in_move_dim, in_shoot_dim, 16, 16, 196, 256)
+		in_move_dim, monster_count + 1, 16, 16, 196, 256)
 
 func _train_policy_batch() -> void:
 	for field_id in GameManager.instance.training_fields:

@@ -282,7 +282,10 @@ func gether_sensor_data():
 	var bullet_data = analyse_bullets(get_closest_objects(bullet_monster, mob_bullet_max_count))
 	#analyse_bullets(bullet_player, sensor_data.player_bullet_data)
 	
-	var mob_data = analyse_mob(get_closest_objects(monsters, mob_max_count))
+	var monster_targets = get_closest_objects(monsters, mob_max_count)
+	var mob_data = analyse_mob(monster_targets)
 	
 	var player_data = gether_player_info()
-	return compose_sensor_data(player_data, mob_data, bullet_data)
+	var sensor_data := compose_sensor_data(player_data, mob_data, bullet_data)
+	GameData.set_player_targets(owner_field_id, monster_targets)
+	return sensor_data

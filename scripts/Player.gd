@@ -74,6 +74,14 @@ func get_bullet_speed()->float:
 	
 func get_sensor_data():
 	return $PlayerSensor.gether_sensor_data()
+
+func aim_at(target) -> void:
+	if not is_instance_valid(target) or not GameData.player_input.has(id):
+		return
+	var offset:Vector3 = target.position - position
+	var aim_direction := Vector2(offset.x, offset.z)
+	if not aim_direction.is_zero_approx():
+		GameData.player_input[id].aim_direction = aim_direction.normalized()
 	
 func take_damage(damage):
 	super.take_damage(damage)
