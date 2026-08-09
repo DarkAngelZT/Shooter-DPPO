@@ -2573,7 +2573,7 @@ shoot_interval_sec = 0.25
 [node name="GDbotSkin" parent="." unique_id=1963129334 instance=ExtResource("1_8x5t2")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
 
-[node name="Skeleton3D" parent="GDbotSkin/gdbot/Armature" index="0" unique_id=1330954172]
+[node name="Skeleton3D" parent="GDbotSkin/gdbot/Armature" index="0" unique_id=1101163932]
 bones/2/rotation = Quaternion(3.090862e-08, 0.70710677, 0.70710677, 3.090862e-08)
 bones/4/rotation = Quaternion(-0.11591106, -2.5765575e-08, 5.290407e-08, 0.9932596)
 bones/5/rotation = Quaternion(0.19884337, 5.300579e-08, -5.3857125e-08, 0.9800313)
@@ -2613,7 +2613,7 @@ transform = Transform3D(1.06171e-07, -1, -1.49012e-08, -2.79397e-09, -1.49012e-0
 [node name="ShootPos" type="Node3D" parent="GDbotSkin/gdbot/Armature/Skeleton3D/BoneAttachment3D" index="1" unique_id=1740674665]
 transform = Transform3D(1.06636e-07, -0.999999, 2.6077e-08, -2.79397e-09, -1.49012e-07, 0.34, -1, -2.5169e-07, -1.86265e-09, -0.195549, 0.486718, -0.0486179)
 
-[node name="AnimationPlayer" parent="GDbotSkin/gdbot" index="1" unique_id=1429756914]
+[node name="AnimationPlayer" parent="GDbotSkin/gdbot" index="1" unique_id=2076015509]
 libraries/ = SubResource("AnimationLibrary_n4s66")
 libraries/custom_lib = ExtResource("4_mn4l5")
 
@@ -2627,6 +2627,8 @@ radius_far = 6.0
 radius_near = 3.0
 detect_shape = SubResource("SphereShape3D_hu1p6")
 collision_mask = 12
+radius_player = 0.35
+terrain_detect_range = 12.0
 mob_bullet_max_count = 12
 
 [editable path="GDbotSkin"]

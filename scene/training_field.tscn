@@ -1,6 +1,6 @@
-[gd_scene load_steps=11 format=3 uid="uid://b57j43s2lo4ei"]
+[gd_scene format=3 uid="uid://b57j43s2lo4ei"]
 
-[ext_resource type="Script" path="res://scripts/TrainingField.gd" id="1_btx8r"]
+[ext_resource type="Script" uid="uid://ivfc24ryjh7o" path="res://scripts/TrainingField.gd" id="1_btx8r"]
 [ext_resource type="PackedScene" uid="uid://xwlx0mo2yvbp" path="res://assets/nodes/Spawner.tscn" id="3_2l37y"]
 [ext_resource type="Texture2D" uid="uid://c6y53noilbya3" path="res://assets/textures/lab_floor.png" id="3_llgvb"]
 
@@ -31,15 +31,15 @@ size = Vector3(42, 2, 2)
 [sub_resource type="BoxShape3D" id="BoxShape3D_5uwx7"]
 size = Vector3(30, 2, 1)
 
-[node name="TrainingField" type="Node3D" node_paths=PackedStringArray("player_spawn", "mob_spawner")]
+[node name="TrainingField" type="Node3D" unique_id=905118711 node_paths=PackedStringArray("player_spawn", "mob_spawner")]
 script = ExtResource("1_btx8r")
 player_spawn = NodePath("PlayerSpawn")
 mob_spawner = [NodePath("Spawner"), NodePath("Spawner2"), NodePath("Spawner3"), NodePath("Spawner4")]
 
-[node name="PlayerSpawn" type="Marker3D" parent="."]
+[node name="PlayerSpawn" type="Marker3D" parent="." unique_id=174822124]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
 
-[node name="Spawner" parent="." instance=ExtResource("3_2l37y")]
+[node name="Spawner" parent="." unique_id=675531191 instance=ExtResource("3_2l37y")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.90323, 0.3, 16.5455)
 spawn_time_sec = 4.0
 spawn_limit = 3
@@ -47,7 +47,7 @@ spawn_limit = 3
 [node name="MeshInstance3D" parent="Spawner" index="0"]
 transform = Transform3D(27, 0, 0, 0, 1, 0, 0, 0, 3.5, 0, 0.495547, 0)
 
-[node name="Spawner2" parent="." instance=ExtResource("3_2l37y")]
+[node name="Spawner2" parent="." unique_id=358148996 instance=ExtResource("3_2l37y")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.31289, 0.3, -17.5261)
 spawn_time_sec = 3.0
 spawn_limit = 3
@@ -55,7 +55,7 @@ spawn_limit = 3
 [node name="MeshInstance3D" parent="Spawner2" index="0"]
 transform = Transform3D(27, 0, 0, 0, 1, 0, 0, 0, 3.5, 0, 0.495547, 0)
 
-[node name="Spawner3" parent="." instance=ExtResource("3_2l37y")]
+[node name="Spawner3" parent="." unique_id=1760215783 instance=ExtResource("3_2l37y")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.198, 0.3, 5.76746)
 spawn_time_sec = 4.0
 spawn_limit = 3
@@ -63,7 +63,7 @@ spawn_limit = 3
 [node name="MeshInstance3D" parent="Spawner3" index="0"]
 transform = Transform3D(3.5, 0, 0, 0, 1, 0, 0, 0, 22, 0, 0.495547, 0)
 
-[node name="Spawner4" parent="." instance=ExtResource("3_2l37y")]
+[node name="Spawner4" parent="." unique_id=134407489 instance=ExtResource("3_2l37y")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.5056, 0.3, -7.05684)
 spawn_time_sec = 3.5
 spawn_limit = 3
@@ -71,96 +71,96 @@ spawn_limit = 3
 [node name="MeshInstance3D" parent="Spawner4" index="0"]
 transform = Transform3D(3.5, 0, 0, 0, 1, 0, 0, 0, 22, 0, 0.495547, 0)
 
-[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=883760002]
 navigation_mesh = SubResource("NavigationMesh_yvbjh")
 navigation_layers = 3
 
-[node name="LevelMap" type="Node3D" parent="." groups=["LevelMesh"]]
+[node name="LevelMap" type="Node3D" parent="." unique_id=2113116105 groups=["LevelMesh"]]
 
-[node name="Floor" type="StaticBody3D" parent="LevelMap"]
+[node name="Floor" type="StaticBody3D" parent="LevelMap" unique_id=2074662264]
 disable_mode = 1
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelMap/Floor"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelMap/Floor" unique_id=856900631]
 shape = SubResource("BoxShape3D_6fmic")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="LevelMap/Floor"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="LevelMap/Floor" unique_id=916845102]
 transform = Transform3D(40, 0, 0, 0, 0.5, 0, 0, 0, 40, 0, 0, 0)
 material_override = SubResource("StandardMaterial3D_ux68f")
 mesh = SubResource("BoxMesh_ad0uq")
 
-[node name="Wall" type="StaticBody3D" parent="LevelMap"]
+[node name="Wall" type="StaticBody3D" parent="LevelMap" unique_id=1545821638]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.798338, 19.3876)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelMap/Wall"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelMap/Wall" unique_id=697883685]
 shape = SubResource("BoxShape3D_usrdh")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="LevelMap/Wall"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="LevelMap/Wall" unique_id=766433091]
 transform = Transform3D(42, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_v537c")
 
-[node name="Wall2" type="StaticBody3D" parent="LevelMap"]
+[node name="Wall2" type="StaticBody3D" parent="LevelMap" unique_id=1257762318]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.798338, -20.1148)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelMap/Wall2"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelMap/Wall2" unique_id=934105101]
 shape = SubResource("BoxShape3D_usrdh")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="LevelMap/Wall2"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="LevelMap/Wall2" unique_id=2146451765]
 transform = Transform3D(42, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_v537c")
 
-[node name="Wall3" type="StaticBody3D" parent="LevelMap"]
+[node name="Wall3" type="StaticBody3D" parent="LevelMap" unique_id=2132542092]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 19.8533, 0.798338, 0.0835881)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelMap/Wall3"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelMap/Wall3" unique_id=1048920256]
 shape = SubResource("BoxShape3D_usrdh")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="LevelMap/Wall3"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="LevelMap/Wall3" unique_id=509817959]
 transform = Transform3D(42, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_v537c")
 
-[node name="Wall4" type="StaticBody3D" parent="LevelMap"]
+[node name="Wall4" type="StaticBody3D" parent="LevelMap" unique_id=1217458032]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -20.0741, 0.798338, 0.0835881)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelMap/Wall4"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelMap/Wall4" unique_id=1033396713]
 shape = SubResource("BoxShape3D_usrdh")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="LevelMap/Wall4"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="LevelMap/Wall4" unique_id=1857900397]
 transform = Transform3D(42, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_v537c")
 
-[node name="PlayerBlock" type="StaticBody3D" parent="LevelMap"]
+[node name="PlayerBlock" type="StaticBody3D" parent="LevelMap" unique_id=1286307253]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10.4516)
 collision_layer = 32
 collision_mask = 2
 
-[node name="PlayerBlocker" type="CollisionShape3D" parent="LevelMap/PlayerBlock"]
+[node name="PlayerBlocker" type="CollisionShape3D" parent="LevelMap/PlayerBlock" unique_id=2071888443]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.208, 0)
 shape = SubResource("BoxShape3D_5uwx7")
 
-[node name="PlayerBlock2" type="StaticBody3D" parent="LevelMap"]
+[node name="PlayerBlock2" type="StaticBody3D" parent="LevelMap" unique_id=1636846479]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8.47225)
 collision_layer = 32
 collision_mask = 2
 
-[node name="PlayerBlocker" type="CollisionShape3D" parent="LevelMap/PlayerBlock2"]
+[node name="PlayerBlocker" type="CollisionShape3D" parent="LevelMap/PlayerBlock2" unique_id=121979358]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.208, 0)
 shape = SubResource("BoxShape3D_5uwx7")
 
-[node name="PlayerBlock3" type="StaticBody3D" parent="LevelMap"]
+[node name="PlayerBlock3" type="StaticBody3D" parent="LevelMap" unique_id=2137769363]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -10.203, 0, 0.401258)
 collision_layer = 32
 collision_mask = 2
 
-[node name="PlayerBlocker" type="CollisionShape3D" parent="LevelMap/PlayerBlock3"]
+[node name="PlayerBlocker" type="CollisionShape3D" parent="LevelMap/PlayerBlock3" unique_id=1025327498]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.208, 0)
 shape = SubResource("BoxShape3D_5uwx7")
 
-[node name="PlayerBlock4" type="StaticBody3D" parent="LevelMap"]
+[node name="PlayerBlock4" type="StaticBody3D" parent="LevelMap" unique_id=1940378626]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 9.32373, 0, 0.401258)
 collision_layer = 32
 collision_mask = 2
 
-[node name="PlayerBlocker" type="CollisionShape3D" parent="LevelMap/PlayerBlock4"]
+[node name="PlayerBlocker" type="CollisionShape3D" parent="LevelMap/PlayerBlock4" unique_id=1359350538]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.208, 0)
 shape = SubResource("BoxShape3D_5uwx7")
 

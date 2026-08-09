@@ -4,6 +4,7 @@ class_name PlayerSensor extends Node
 @export var radius_near:float
 @export var detect_shape:Shape3D
 @export_flags_3d_physics var collision_mask
+@export var radius_player:float
 @export var terrain_detect_range:float = 100
 @export_range(0, 64, 1) var mob_max_count:int = 8
 @export_range(0, 64, 1) var mob_bullet_max_count:int = 10
@@ -234,20 +235,32 @@ func gether_player_info():
 	
 	var hp = player_state.hp
 	var percent = hp/float(GameManager.instance.game_settings.player_health)
-	var move_x = player_state.move_dir.x
-	var move_y = player_state.move_dir.y
+	var move_x = player_state.move_dir.x * owner.move_speed
+	var move_y = player_state.move_dir.y * owner.move_speed
 	#player_data.shoot_cd_left = owner.get_shoot_cd_left()
 	#var is_moving = not player_state.move_dir.is_zero_approx()
 	# collect terrain info	
+	var invalid_op := 0
 	for i in range(terrain_rays.size()):
 		var query = PhysicsRayQueryParameters3D.create(
 			owner.global_position,owner.global_position+terrain_rays[i]*terrain_detect_range,
 			Collision_Mask_Floor)
 		var result = space.intersect_ray(query)
 		if result:
-			terrain_info.append(result.position.distance_to(owner.global_position)/terrain_detect_range)
+			terrain_info.append((result.position.distance_to(owner.global_position) - radius_player )/terrain_detect_range)
+			if terrain_info[i] <=0.001:
+				if i == 0 and move_x < 0:
+					invalid_op +=1
+				if i == 0 and move_y < 0:
+					invalid_op +=1
+				if i == 2 and move_y > 0:
+					invalid_op +=1
+				if i == 3 and move_x > 0:
+					invalid_op +=1
 		else:
-			terrain_info.append(1.0)
+			terrain_info.append(1.0)	
+			
+	GameData.invalid_op[owner_field_id] = invalid_op
 			
 	return [0,0,move_x,move_y,percent,player_state.can_shoot] + terrain_info
 
@@ -279,11 +292,23 @@ func gether_sensor_data():
 						else:
 							bullet_monster.append(obj_owner)
 	#计算分区信息
-	var bullet_data = analyse_bullets(get_closest_objects(bullet_monster, mob_bullet_max_count))
+	var bullets = get_closest_objects(bullet_monster, mob_bullet_max_count)
+	var bullet_data = analyse_bullets(bullets)
 	#analyse_bullets(bullet_player, sensor_data.player_bullet_data)
 	
 	var monster_targets = get_closest_objects(monsters, mob_max_count)
 	var mob_data = analyse_mob(monster_targets)
+	
+	var bullet_threat:float = 0
+	var monster_threat:float = 0
+	for b in bullets:
+		bullet_threat += 1.0 - b.global_position.distance_to(owner.global_position) / 12.0
+	bullet_threat = bullet_threat / bullets.size() if bullets.size() > 0 else 0.0
+	for m in monster_targets:
+		monster_threat += 1.0 - m.global_position.distance_to(owner.global_position) / 12.0
+	monster_threat = monster_threat / bullets.size() if bullets.size() > 0 else 0.0
+	
+	GameData.has_threat[owner_field_id] = 0.005 * (0.8 * bullet_threat + 0.4 * monster_threat)
 	
 	var player_data = gether_player_info()
 	var sensor_data := compose_sensor_data(player_data, mob_data, bullet_data)

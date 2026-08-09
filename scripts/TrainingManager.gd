@@ -150,7 +150,7 @@ func _collect_training_sample_reward(field:TrainingField) -> void:
 	var field_id = field.id
 	if GameData.game_end[field_id]:
 		#更新上一帧的reward
-		pending_training_samples[field_id].reward = -1
+		pending_training_samples[field_id].reward = -5
 		return
 
 	var player = field.player
@@ -250,6 +250,24 @@ func _train_policy_batch() -> void:
 		GameManager.instance.pause_game(field_id)
 	Agent.Train(train_step);
 	increase_ep()
+	#自动保存	
+	if ep > 600:
+		get_tree().quit()
+	if ep > 300:
+		if ep % 100 == 0:
+			_request_policy_save()
+	elif ep >=200:
+		if ep % 30 == 0:
+			_request_policy_save()
+	elif ep >= 100:
+		if ep % 25 ==0:
+			_request_policy_save()
+	elif ep >= 50:
+		if ep%10 ==0:
+			_request_policy_save()
+	elif ep >=20:
+		if ep % 20 == 0:
+			_request_policy_save()
 	for field_id in GameManager.instance.training_fields:
 		GameManager.instance.resume_game(field_id)
 
