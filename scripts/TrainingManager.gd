@@ -22,7 +22,7 @@ var frame_total:int = 6
 @export
 var move_dim : int = 6
 @export
-var action_dim : int = 4
+var action_dim : int = 3
 @export
 var player_dim : int = 10
 @export
@@ -120,7 +120,7 @@ func ai_loop() -> void:
 			
 static func _decode_action(input_state:GameData.PlayerInputState,
 		action_data:PackedFloat32Array) -> int:
-	if action_data.size() < 4:
+	if action_data.size() < 3:
 		return -1
 	# C++ 返回移动类别索引，这里映射为游戏使用的 -1、0、1。
 	var move_direction := Vector2(action_data[0] - 1.0, action_data[1] - 1.0)
@@ -128,7 +128,10 @@ static func _decode_action(input_state:GameData.PlayerInputState,
 		input_state.stop_move()
 	else:
 		input_state.start_move(move_direction)
-	input_state.shooting = action_data[3] > 0.0
+	# 暂时停用shoot possibility，避免沿用上一帧的射击状态。
+	input_state.shooting = false
+	# 旧的射击动作解码逻辑保留如下：
+	# input_state.shooting = action_data[3] > 0.0
 	return int(action_data[2])
 
 func _run_training_collection_loop() -> void:
@@ -243,8 +246,11 @@ static func batch_process_sensor_data(agent, batch_samples:Dictionary) -> Array:
 static func initialize_agent(agent : AIAgent, monster_count:int, bullet_count:int,
 		in_player_dim:int, in_mob_dim:int, in_bullet_dim:int,
 		in_move_dim:int) -> void:
+	# 暂时停用shoot possibility，旧的M+1输出契约保留如下：
+	# agent.Init(monster_count, bullet_count, in_player_dim, in_mob_dim, in_bullet_dim,
+	# 	in_move_dim, monster_count + 1, 16, 16, 196, 256)
 	agent.Init(monster_count, bullet_count, in_player_dim, in_mob_dim, in_bullet_dim,
-		in_move_dim, monster_count + 1, 16, 16, 196, 256)
+		in_move_dim, monster_count, 16, 16, 196, 256)
 
 func _train_policy_batch() -> void:
 	for field_id in GameManager.instance.training_fields:
