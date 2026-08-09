@@ -20,7 +20,7 @@ var bullet_Collect:int = 10
 @export
 var frame_total:int = 6
 @export
-var move_dim : int = 4
+var move_dim : int = 6
 @export
 var action_dim : int = 4
 @export
@@ -122,7 +122,8 @@ static func _decode_action(input_state:GameData.PlayerInputState,
 		action_data:PackedFloat32Array) -> int:
 	if action_data.size() < 4:
 		return -1
-	var move_direction := Vector2(action_data[0], action_data[1])
+	# C++ 返回移动类别索引，这里映射为游戏使用的 -1、0、1。
+	var move_direction := Vector2(action_data[0] - 1.0, action_data[1] - 1.0)
 	if move_direction.is_zero_approx():
 		input_state.stop_move()
 	else:
