@@ -308,7 +308,13 @@ func gether_sensor_data():
 		monster_threat += 1.0 - m.global_position.distance_to(owner.global_position) / 12.0
 	monster_threat = monster_threat / bullets.size() if bullets.size() > 0 else 0.0
 	
-	GameData.has_threat[owner_field_id] = 0.005 * (0.8 * bullet_threat + 0.4 * monster_threat)
+	var ttc_total = 0
+	for b in bullet_data:
+		if b[-1] > 0.001:
+			ttc_total += b[-1]
+	
+	#GameData.has_threat[owner_field_id] = 0.005 * (0.8 * bullet_threat + 0.4 * monster_threat)
+	GameData.has_threat[owner_field_id] = ttc_total * 0.01
 	
 	var player_data = gether_player_info()
 	var sensor_data := compose_sensor_data(player_data, mob_data, bullet_data)

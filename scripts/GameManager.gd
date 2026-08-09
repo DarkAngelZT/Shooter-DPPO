@@ -321,18 +321,18 @@ func _calculate_reward_default(field_id:int, sensor_data) -> float:
 
 func _calculate_reward_new(field_id : int, sensor_data) ->float:
 	var training_field = training_fields[field_id]
-	var player = training_field.player
-	var life_score = 0.001 if not GameData.game_end[field_id] else 0.0	
+	var player = training_field.player	
 	var invalid_op_penalty = 0.05
 	var kill_score = 0.001 if GameData.mob_kill_cache[field_id] > 0 else 0.0
 	var threat = GameData.has_threat[field_id]
 	#if not GameData.has_threat[field_id]:
 		#life_score = 0.0
 		#kill_score = 0.0
-	var behit_penalty = 1.0 if (GameData.player_hp_cache[player.id] - player.health) > 0 else 0.0
+	var behit_penalty = 1 if (GameData.player_hp_cache[player.id] - player.health) > 0.0 else 0.0
+	var life_score = 0.001 if not GameData.game_end[field_id] and behit_penalty == 0.0 else 0.0	
 	GameData.reset_step_reward_stats(player.id)
 	GameData.update_player_reward_baseline(player.id, player.health, player.position)
-	var reward = life_score + behit_penalty - invalid_op_penalty * GameData.invalid_op[field_id] - threat
+	var reward = life_score - behit_penalty - invalid_op_penalty * GameData.invalid_op[field_id]
 	return reward
 
 func _calculate_reward_level_1(field_id:int, _sensor_data) -> float:

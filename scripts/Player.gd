@@ -34,10 +34,12 @@ func _physics_process(delta):
 		
 	if GameData.actor_info[field_id][id].hp<=0:
 		return
-	#if GameManager.instance.control_mode == GameManager.ControlMode.AI:
-		#auto_shoot()
+	
 	if not GameData.player_input.has(id):
 		return
+	
+	if GameManager.instance.control_mode == GameManager.ControlMode.AI:
+		auto_shoot2()
 
 	var input = GameData.player_input[id] as GameData.PlayerInputState
 	basis = Basis.looking_at(Vector3(input.aim_direction.x,0,input.aim_direction.y))
@@ -132,5 +134,8 @@ func auto_shoot():
 	else:
 		GameData.player_input[id].shooting = false
 
+func auto_shoot2():	
+	GameData.player_input[id].shooting = true
+	
 func bind_bullet_event(bullet):
 	bullet.hit.connect(GameManager.instance.on_player_bullet_hit)

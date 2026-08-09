@@ -128,9 +128,6 @@ static func _decode_action(input_state:GameData.PlayerInputState,
 		input_state.stop_move()
 	else:
 		input_state.start_move(move_direction)
-	# 暂时停用shoot possibility，避免沿用上一帧的射击状态。
-	input_state.shooting = false
-	# 旧的射击动作解码逻辑保留如下：
 	# input_state.shooting = action_data[3] > 0.0
 	return int(action_data[2])
 
@@ -258,11 +255,8 @@ func _train_policy_batch() -> void:
 	Agent.Train(train_step);
 	increase_ep()
 	#自动保存	
-	if ep > 600:
-		get_tree().quit()
 	if ep > 300:
-		if ep % 100 == 0:
-			_request_policy_save()
+		get_tree().quit()
 	elif ep >=200:
 		if ep % 30 == 0:
 			_request_policy_save()
