@@ -247,7 +247,7 @@ static func initialize_agent(agent : AIAgent, monster_count:int, bullet_count:in
 	# agent.Init(monster_count, bullet_count, in_player_dim, in_mob_dim, in_bullet_dim,
 	# 	in_move_dim, monster_count + 1, 16, 16, 196, 256)
 	agent.Init(monster_count, bullet_count, in_player_dim, in_mob_dim, in_bullet_dim,
-		in_move_dim, monster_count, 16, 16, 196, 256)
+		in_move_dim, monster_count, 16, 16, 196, 512)
 
 func _train_policy_batch() -> void:
 	for field_id in GameManager.instance.training_fields:
@@ -255,11 +255,8 @@ func _train_policy_batch() -> void:
 	Agent.Train(train_step);
 	increase_ep()
 	#自动保存	
-	if ep > 300:
+	if ep >=200:
 		get_tree().quit()
-	elif ep >=200:
-		if ep % 30 == 0:
-			_request_policy_save()
 	elif ep >= 100:
 		if ep % 25 ==0:
 			_request_policy_save()
