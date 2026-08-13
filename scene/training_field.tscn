@@ -23,6 +23,9 @@ uv1_scale = Vector3(30, 30, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_ad0uq"]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_64056"]
+normal_enabled = true
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_usrdh"]
 size = Vector3(42, 2, 2)
 
@@ -87,6 +90,7 @@ shape = SubResource("BoxShape3D_6fmic")
 transform = Transform3D(40, 0, 0, 0, 0.5, 0, 0, 0, 40, 0, 0, 0)
 material_override = SubResource("StandardMaterial3D_ux68f")
 mesh = SubResource("BoxMesh_ad0uq")
+surface_material_override/0 = SubResource("StandardMaterial3D_64056")
 
 [node name="Wall" type="StaticBody3D" parent="LevelMap" unique_id=1545821638]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.798338, 19.3876)

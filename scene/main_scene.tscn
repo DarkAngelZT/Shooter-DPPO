@@ -12,6 +12,12 @@
 [ext_resource type="Script" uid="uid://dyivufihmq2n3" path="res://scripts/camera/FollowCamera.gd" id="8_dl3fe"]
 [ext_resource type="Script" uid="uid://mha4f2800rue" path="res://scripts/TrainingManager.gd" id="10_nw2ui"]
 
+[sub_resource type="Sky" id="Sky_wo7d5"]
+
+[sub_resource type="Environment" id="Environment_knqk1"]
+sky = SubResource("Sky_wo7d5")
+ambient_light_color = Color(0.9623708, 0.8589886, 1, 1)
+
 [sub_resource type="LabelSettings" id="LabelSettings_hs12s"]
 font_size = 22
 outline_size = 2
@@ -56,18 +62,24 @@ blast_prefab = ExtResource("7_81spr")
 game_settings = ExtResource("6_og74n")
 train_camera = NodePath("../TrainingCamera")
 game_camera = NodePath("../FollowCamera")
+game_mode = 2
 control_mode = 2
 
 [node name="TrainingManager" type="Node" parent="." unique_id=2077658358]
 script = ExtResource("10_nw2ui")
-checkpoint_file = "checkpoint_40.mnn"
+load_checkpoint = true
+checkpoint_file = "n2_512_90.mnn"
 bullet_Collect = 12
 frame_total = 100
-move_dim = 6
 train_step = 3
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1010305126]
-transform = Transform3D(0.875118, 0.465046, -0.133789, 0, 0.276476, 0.961021, 0.483909, -0.841007, 0.241949, 0, 4.66107, 0)
+transform = Transform3D(-0.8489715, -0.4773568, 0.2266658, 0, 0.42893505, 0.9033354, -0.5284381, 0.76690584, -0.36415386, 0, 5.441, 0)
+light_color = Color(0.9999998, 0.9280961, 0.7489358, 1)
+light_energy = 1.737
+shadow_enabled = true
+shadow_opacity = 0.78
+directional_shadow_mode = 1
 
 [node name="TrainingRoot" type="Node3D" parent="." unique_id=681932105]
 
@@ -83,12 +95,13 @@ move_speed = 15.0
 transform = Transform3D(1, 0, 0, 0, 0.0697565, 0.997564, 0, -0.997564, 0.0697565, 0, 4.80559, 0)
 
 [node name="FollowCamera" type="Marker3D" parent="." unique_id=410752132]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 14.5, 0)
 script = ExtResource("8_dl3fe")
 offset = Vector3(0, 15, 0)
 
 [node name="Camera3D" type="Camera3D" parent="FollowCamera" unique_id=1537881498]
-transform = Transform3D(1, 0, 0, 0, 0.173648, 0.984808, 0, -0.984808, 0.173648, 0, 0, 1.475)
+transform = Transform3D(1, 0, 0, 0, 0.25881913, 0.96592605, 0, -0.96592605, 0.25881913, 0, 0, 2.335)
+environment = SubResource("Environment_knqk1")
 
 [node name="EpNum" type="Label" parent="." unique_id=1712761831]
 offset_left = 390.0

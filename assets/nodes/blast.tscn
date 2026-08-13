@@ -1,13 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://bmea3n3lciyjs"]
+[gd_scene format=3 uid="uid://bmea3n3lciyjs"]
 
-[ext_resource type="SpriteFrames" uid="uid://b83et4scke1t6" path="res://sprites/blast_frames.tres" id="1_48jmw"]
+[ext_resource type="SpriteFrames" uid="uid://fe0ha4eijo7c" path="res://sprites/blast_frames2.tres" id="1_5oax3"]
 
-[node name="Blast" type="AnimatedSprite3D"]
-transform = Transform3D(5, 0, 0, 0, -2.18557e-07, -1, 0, 5, -4.37114e-08, 0, 0, 0)
-alpha_cut = 1
-sprite_frames = ExtResource("1_48jmw")
+[node name="Blast" type="AnimatedSprite3D" unique_id=1288036829]
+transform = Transform3D(2.5, 0, 0, 0, -1.09278474e-07, -1, 0, 2.5, -4.371139e-08, 0, 0, 0)
+cast_shadow = 0
+sprite_frames = ExtResource("1_5oax3")
 autoplay = "default"
-frame = 4
+frame = 5
 frame_progress = 1.0
 
 [connection signal="animation_finished" from="." to="." method="queue_free"]

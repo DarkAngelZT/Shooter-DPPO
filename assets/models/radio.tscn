@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://drejauvx6m4d0"]
+
+[ext_resource type="PackedScene" uid="uid://ysefpkitnllv" path="res://assets/models/radio.glb" id="1_dcumi"]
+[ext_resource type="Texture2D" uid="uid://cjvcr7xymk4rx" path="res://assets/models/radio_texture_pbr_20250901.png" id="2_owcnq"]
+[ext_resource type="Texture2D" uid="uid://cbxcd8rrleypk" path="res://assets/models/radio_texture_pbr_20250901_metallic-texture_pbr_20250901_roughness.png" id="3_t0xik"]
+[ext_resource type="Texture2D" uid="uid://ds043xhmcx50d" path="res://assets/models/radio_texture_pbr_20250901_normal.png" id="4_b2po5"]
+[ext_resource type="Texture2D" uid="uid://bgtondoae8uhb" path="res://assets/models/radar_texture_pbr_20250901_metallic-texture_pbr_20250901_roughness.png" id="5_q6w88"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gpeei"]
+albedo_texture = ExtResource("2_owcnq")
+metallic = 0.18
+metallic_specular = 0.28
+metallic_texture = ExtResource("3_t0xik")
+roughness_texture = ExtResource("5_q6w88")
+normal_enabled = true
+normal_texture = ExtResource("4_b2po5")
+
+[node name="convert" unique_id=1732284268 instance=ExtResource("1_dcumi")]
+
+[node name="Cube_001" parent="." index="0" unique_id=830542431]
+surface_material_override/0 = SubResource("StandardMaterial3D_gpeei")

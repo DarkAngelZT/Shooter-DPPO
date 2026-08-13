@@ -71,7 +71,11 @@ func nav_move():
 	var next_pos:Vector3 = nav_agent.get_next_path_position()	
 	var gp = global_position
 	gp.y = next_pos.y
+	if next_pos.distance_squared_to(gp) < 0.5:
+		adjust_rotation(Vector3.ZERO)
+		return
 	var new_velocity:Vector3 = gp.direction_to(next_pos)*move_speed
+	
 	if nav_agent.avoidance_enabled:
 		nav_agent.set_velocity(new_velocity)
 	else:
