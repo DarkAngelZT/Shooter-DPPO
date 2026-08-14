@@ -7,9 +7,9 @@
 [ext_resource type="Texture2D" uid="uid://cgi0lefyh38qb" path="res://assets/textures/arena_pbr_normal.png" id="5_tu734"]
 [ext_resource type="Texture2D" uid="uid://ctc1ebpobx361" path="res://assets/textures/arena_pbr_roughness.png" id="6_5cpx2"]
 [ext_resource type="PackedScene" uid="uid://bb7qkasnj2311" path="res://assets/models/boarder-straight.glb" id="6_tu734"]
-[ext_resource type="Texture2D" uid="uid://hvh3ym7pqyab" path="res://assets/textures/rocky_ground.png" id="8_xhchw"]
-[ext_resource type="Texture2D" uid="uid://7bpoxemm1q1n" path="res://assets/textures/rocky_ground_normal.png" id="9_agci2"]
-[ext_resource type="Texture2D" uid="uid://dng43lc2sispl" path="res://assets/textures/rocky_ground_roughness.png" id="10_0xyt8"]
+[ext_resource type="Texture2D" uid="uid://cavqqy6mu1iuf" path="res://assets/textures/purple_lunar_ground_realistic_albedo_seamless_2048.png" id="8_7rnjn"]
+[ext_resource type="Texture2D" uid="uid://dofo150226s36" path="res://assets/textures/purple_lunar_ground_realistic_normal_opengl_2048.png" id="9_vls30"]
+[ext_resource type="Texture2D" uid="uid://ewrlilqjjsqe" path="res://assets/textures/purple_lunar_ground_realistic_roughness_2048.png" id="10_ovhm4"]
 [ext_resource type="PackedScene" uid="uid://dl005qrtjtxcp" path="res://assets/models/radar.glb" id="11_agci2"]
 [ext_resource type="PackedScene" uid="uid://claeufvr4isvq" path="res://assets/models/box1.glb" id="12_knqk1"]
 [ext_resource type="PackedScene" uid="uid://ihiy30yft2gu" path="res://assets/models/box2.glb" id="13_wo7d5"]
@@ -49,26 +49,24 @@ size = Vector3(62, 2.005, 2)
 size = Vector2(25, 100)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5cpx2"]
-albedo_texture = ExtResource("8_xhchw")
-roughness = 0.28
-roughness_texture = ExtResource("10_0xyt8")
+albedo_texture = ExtResource("8_7rnjn")
+roughness_texture = ExtResource("10_ovhm4")
 roughness_texture_channel = 4
 normal_enabled = true
-normal_scale = 0.23
-normal_texture = ExtResource("9_agci2")
+normal_scale = 2.4
+normal_texture = ExtResource("9_vls30")
 uv1_scale = Vector3(1.035, 4.845, 1)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_wo7d5"]
 size = Vector2(56, 25)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_knqk1"]
-albedo_texture = ExtResource("8_xhchw")
-roughness = 0.28
-roughness_texture = ExtResource("10_0xyt8")
+albedo_texture = ExtResource("8_7rnjn")
+roughness_texture = ExtResource("10_ovhm4")
 roughness_texture_channel = 4
 normal_enabled = true
-normal_scale = 0.23
-normal_texture = ExtResource("9_agci2")
+normal_scale = 2.4
+normal_texture = ExtResource("9_vls30")
 uv1_scale = Vector3(2.765, 1.105, 1)
 uv1_offset = Vector3(-4.255, 0.13, 0)
 
@@ -253,7 +251,7 @@ transform = Transform3D(0.635, 0, 0, 0, 0.635, 0, 0, 0, 0.635, -6.6591983, -0.10
 transform = Transform3D(1, 0, 0, 0, 0.815, 0, 0, 0, 1, 35.323967, 0.016238213, -31.780132)
 
 [node name="convert5" parent="LevelMap" unique_id=49156841 instance=ExtResource("12_knqk1")]
-transform = Transform3D(0.5004444, 0.24163026, -0.98790747, -0.034613878, 0.7219035, 0.47483754, 0.6861904, -0.1398076, 0.7444416, 37.140236, -0.37912846, 20.863327)
+transform = Transform3D(0.7035025, 0, 0.74364907, 0, 0.7739999, 0, -0.47705787, 0, 1.0966362, 37.140236, -0.042918444, 20.863327)
 
 [node name="convert4" parent="LevelMap" unique_id=1573057698 instance=ExtResource("13_wo7d5")]
 transform = Transform3D(0.5732125, 0.2513848, 0, -0.20863228, 0.69067407, 0, 0, 0, 1, 33.19637, 0, -30.23528)

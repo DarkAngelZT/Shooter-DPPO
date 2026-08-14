@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://hvh3ym7pqyab"
-path.s3tc="res://.godot/imported/rocky_ground.png-90d8dcb6b374985dfb2e3db2b799b5db.s3tc.ctex"
+uid="uid://cavqqy6mu1iuf"
+path.s3tc="res://.godot/imported/purple_lunar_ground_realistic_albedo_seamless_2048.png-36fe416bc36c8c764115303e3ad3f1ec.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/textures/rocky_ground.png"
-dest_files=["res://.godot/imported/rocky_ground.png-90d8dcb6b374985dfb2e3db2b799b5db.s3tc.ctex"]
+source_file="res://assets/textures/purple_lunar_ground_realistic_albedo_seamless_2048.png"
+dest_files=["res://.godot/imported/purple_lunar_ground_realistic_albedo_seamless_2048.png-36fe416bc36c8c764115303e3ad3f1ec.s3tc.ctex"]
 
 [params]
 
