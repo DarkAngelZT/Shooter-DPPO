@@ -14,6 +14,9 @@ var attack_range:float
 @onready
 var behaviour_tree:BeehaveTree = $BehaviourTree
 
+@export
+var character_mesh:Node3D
+
 var face_target:bool = false
 
 var target_pos:Vector3
@@ -67,11 +70,13 @@ func nav_move():
 	if nav_agent.is_navigation_finished():
 		GameData.actor_info[field_id][id].move_dir = Vector2.ZERO
 		adjust_rotation(Vector3.ZERO)
+		character_mesh.idle()
 		return
 	var next_pos:Vector3 = nav_agent.get_next_path_position()	
 	var gp = global_position
 	gp.y = next_pos.y
 	if next_pos.distance_squared_to(gp) < 0.5:
+		character_mesh.idle()
 		adjust_rotation(Vector3.ZERO)
 		return
 	var new_velocity:Vector3 = gp.direction_to(next_pos)*move_speed
@@ -80,6 +85,8 @@ func nav_move():
 		nav_agent.set_velocity(new_velocity)
 	else:
 		on_move_velocity(new_velocity)
+		
+	character_mesh.walk()
 	
 func on_move_velocity(v:Vector3):
 	if not _can_tick_actor_state():

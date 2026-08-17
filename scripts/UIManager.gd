@@ -14,6 +14,9 @@ var hp_label:Label
 @export
 var ep_label:Label
 
+@export
+var hp_bar: TextureProgressBar
+
 func _enter_tree():
 	instance = self
 # Called when the node enters the scene tree for the first time.
@@ -25,6 +28,7 @@ func set_ep(ep:int):
 	
 func set_health(hp:int):
 	health.text = String.num(hp,0)
+	hp_bar.set_value(hp)
 	
 func show_health(visible:bool):
 	health.visible = visible

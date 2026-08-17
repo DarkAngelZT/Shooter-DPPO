@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://miasgf5xkeje" path="res://scripts/Mob.gd" id="1_6pc4g"]
 [ext_resource type="PackedScene" uid="uid://c0cxbuuij7fv6" path="res://assets/nodes/bullet_mob.tscn" id="2_kx61h"]
-[ext_resource type="PackedScene" uid="uid://ce4frbjwirc7a" path="res://assets/models/enemy.glb" id="3_fhd8w"]
+[ext_resource type="PackedScene" uid="uid://d0fwb67xmr03a" path="res://assets/models/enemy.tscn" id="3_fhd8w"]
 [ext_resource type="PackedScene" uid="uid://dv4xjk6onv2vv" path="res://assets/behaviour_trees/bt_minon.tscn" id="5_bh4oe"]
 [ext_resource type="Script" uid="uid://8ljw81875k8r" path="res://addons/beehave/blackboard.gd" id="5_jgn37"]
 
@@ -10,17 +10,18 @@
 radius = 0.55
 height = 1.6
 
-[node name="CharacterBase" type="CharacterBody3D" unique_id=465228997 node_paths=PackedStringArray("shoot_position")]
+[node name="CharacterBase" type="CharacterBody3D" unique_id=465228997 node_paths=PackedStringArray("character_mesh", "shoot_position")]
 disable_mode = 2
 collision_layer = 4
 collision_mask = 3
 script = ExtResource("1_6pc4g")
+character_mesh = NodePath("enemy")
 bullet_prefab = ExtResource("2_kx61h")
 shoot_position = NodePath("ShootPos")
 shoot_interval_sec = 1.2
 
-[node name="enemy2" parent="." unique_id=652401087 instance=ExtResource("3_fhd8w")]
-transform = Transform3D(-1.66, 0, 1.451218e-07, 0, 1.66, 0, -1.451218e-07, 0, -1.66, 0, 0, 0)
+[node name="enemy" parent="." unique_id=151457452 instance=ExtResource("3_fhd8w")]
+transform = Transform3D(-1.66, 0, -1.451218e-07, 0, 1.66, 0, 1.451218e-07, 0, -1.66, 0, -0.16479832, -0.4866584)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1565112495]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)

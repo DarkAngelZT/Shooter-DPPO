@@ -11,12 +11,14 @@
 [ext_resource type="Script" uid="uid://d1ihtm562jmms" path="res://scripts/camera/TrainingCamera.gd" id="7_a7bef"]
 [ext_resource type="Script" uid="uid://dyivufihmq2n3" path="res://scripts/camera/FollowCamera.gd" id="8_dl3fe"]
 [ext_resource type="Script" uid="uid://mha4f2800rue" path="res://scripts/TrainingManager.gd" id="10_nw2ui"]
+[ext_resource type="Texture2D" uid="uid://xr4pp7vk6pst" path="res://assets/textures/hp_bg.atlastex" id="12_7l8gs"]
+[ext_resource type="Texture2D" uid="uid://c0tuwbog68kgs" path="res://assets/textures/hp_bar.atlastex" id="13_6e7jr"]
 
 [sub_resource type="Sky" id="Sky_wo7d5"]
 
 [sub_resource type="Environment" id="Environment_knqk1"]
 sky = SubResource("Sky_wo7d5")
-ambient_light_color = Color(0.9623708, 0.8589886, 1, 1)
+ambient_light_color = Color(0.9770444, 0.9179448, 0.9999997, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_hs12s"]
 font_size = 22
@@ -28,22 +30,30 @@ font_size = 21
 outline_size = 2
 outline_color = Color(0, 0, 0, 0.682353)
 
-[sub_resource type="LabelSettings" id="LabelSettings_pvf85"]
-font_size = 21
+[sub_resource type="SystemFont" id="SystemFont_cj0ow"]
+
+[sub_resource type="SystemFont" id="SystemFont_6s1rr"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_b7inv"]
-font_size = 21
-outline_size = 2
+font = SubResource("SystemFont_6s1rr")
+font_size = 40
+outline_size = 10
 outline_color = Color(0, 0, 0, 0.780392)
+
+[sub_resource type="LabelSettings" id="LabelSettings_pvf85"]
+font_size = 33
+outline_size = 9
+outline_color = Color(0, 0, 0, 1)
 
 [node name="SceneRoot" type="Node3D" unique_id=1603650353]
 
-[node name="UIManager" type="Node" parent="." unique_id=615552771 node_paths=PackedStringArray("ep_num", "health", "hp_label", "ep_label")]
+[node name="UIManager" type="Node" parent="." unique_id=615552771 node_paths=PackedStringArray("ep_num", "health", "hp_label", "ep_label", "hp_bar")]
 script = ExtResource("1_86nrv")
 ep_num = NodePath("../EpNum")
 health = NodePath("../HPNum")
 hp_label = NodePath("../HPLabel")
 ep_label = NodePath("../EPLabel")
+hp_bar = NodePath("../HP_Bar")
 
 [node name="GameManager" type="Node" parent="." unique_id=1794863148 node_paths=PackedStringArray("TraningRoot", "ArenaRoot", "root", "train_camera", "game_camera")]
 process_mode = 3
@@ -75,7 +85,6 @@ train_step = 3
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1010305126]
 transform = Transform3D(-0.8489715, -0.4773568, 0.2266658, 0, 0.42893505, 0.9033354, -0.5284381, 0.76690584, -0.36415386, 0, 5.441, 0)
-light_color = Color(0.9999998, 0.9280961, 0.7489358, 1)
 light_energy = 1.737
 shadow_enabled = true
 shadow_opacity = 0.78
@@ -133,22 +142,43 @@ offset_bottom = 51.0
 text = "回合："
 label_settings = SubResource("LabelSettings_8uf8v")
 
+[node name="HPLabel" type="Label" parent="." unique_id=1284748235]
+offset_left = 24.0
+offset_top = 15.0
+offset_right = 83.0
+offset_bottom = 70.0
+theme_override_fonts/font = SubResource("SystemFont_cj0ow")
+theme_override_font_sizes/font_size = 100
+text = "HP"
+label_settings = SubResource("LabelSettings_b7inv")
+
+[node name="HP_Bar" type="TextureProgressBar" parent="." unique_id=1140421621]
+offset_left = 14.0
+offset_top = 77.0
+offset_right = 468.0
+offset_bottom = 163.0
+scale = Vector2(0.99, 0.65)
+max_value = 10.0
+value = 10.0
+texture_under = ExtResource("12_7l8gs")
+texture_progress = ExtResource("13_6e7jr")
+texture_progress_offset = Vector2(11.71, 8.78)
+
 [node name="HPNum" type="Label" parent="." unique_id=1049916774]
-visible = false
-offset_left = 806.0
-offset_top = 13.0
-offset_right = 846.0
-offset_bottom = 43.0
+offset_left = 175.0
+offset_top = 82.0
+offset_right = 216.0
+offset_bottom = 128.0
 text = "10"
 label_settings = SubResource("LabelSettings_pvf85")
+horizontal_alignment = 2
 
-[node name="HPLabel" type="Label" parent="." unique_id=1284748235]
-visible = false
-offset_left = 769.0
-offset_top = 13.0
-offset_right = 809.0
-offset_bottom = 43.0
-text = "HP:"
-label_settings = SubResource("LabelSettings_b7inv")
+[node name="HPNumBase" type="Label" parent="." unique_id=2108824172]
+offset_left = 223.0
+offset_top = 83.0
+offset_right = 274.0
+offset_bottom = 129.0
+text = "/10"
+label_settings = SubResource("LabelSettings_pvf85")
 
 [connection signal="button_down" from="TestButton" to="GameManager" method="test_func"]

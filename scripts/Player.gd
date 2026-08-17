@@ -3,8 +3,8 @@ extends CharacterBase
 
 signal on_player_dead
 
-#@export
-#var character_mesh:Node3D
+@export
+var character_mesh:Node3D
 
 @export
 var damage:int
@@ -52,7 +52,7 @@ func _physics_process(delta):
 		if input.move_state == GameData.Op_Move:
 			var speed = direction * move_speed
 			velocity = speed
-			#character_mesh.walk()
+			character_mesh.walk()
 			move_and_slide()
 			GameData.actor_info[field_id][id].move_dir=Vector2(direction.x,direction.z)
 			#if is_out_of_field():
@@ -60,7 +60,7 @@ func _physics_process(delta):
 		elif input.move_state == GameData.Op_Stop:
 			velocity = Vector3.ZERO
 			GameData.actor_info[field_id][id].move_dir=Vector2.ZERO
-			#character_mesh.idle()
+			character_mesh.idle()
 	
 	if input.shooting:
 		shoot()

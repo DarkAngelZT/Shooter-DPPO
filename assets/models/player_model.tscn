@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://gp77xe870jgg"]
+
+[ext_resource type="PackedScene" uid="uid://ccvl4wnrgmtu8" path="res://assets/models/player.glb" id="1_rhs4j"]
+[ext_resource type="Script" uid="uid://cee444120ymfu" path="res://scripts/player_model.gd" id="2_r7ycl"]
+
+[node name="player" unique_id=1877893238 node_paths=PackedStringArray("anim") instance=ExtResource("1_rhs4j")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.09875527, 0)
+script = ExtResource("2_r7ycl")
+anim = NodePath("AnimationPlayer")
+
+[node name="Skeleton3D" parent="骨架" parent_id_path=PackedInt32Array(1116118630) index="0" unique_id=1619299896]
+bones/8/rotation = Quaternion(0.58847785, 0.014818494, 0.80788445, -0.02823004)
+bones/9/rotation = Quaternion(0.0027346932, -0.5259588, 0.000215194, 0.8505057)
+bones/10/rotation = Quaternion(0.7377389, -0.06981548, -0.67118376, 0.019480329)
+bones/11/rotation = Quaternion(-0.0010892522, -0.5388645, -0.001767371, 0.84238994)
+
+[node name="AnimationPlayer" parent="." index="1" unique_id=995807176]
+speed_scale = 4.0

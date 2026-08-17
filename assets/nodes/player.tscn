@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bratewsc27yxn" path="res://scripts/Player.gd" id="1_ivcu5"]
 [ext_resource type="PackedScene" uid="uid://cjys1bvgi76no" path="res://assets/nodes/bullet_player.tscn" id="2_hubho"]
-[ext_resource type="PackedScene" uid="uid://ccvl4wnrgmtu8" path="res://assets/models/player.glb" id="3_tb2t1"]
+[ext_resource type="PackedScene" uid="uid://gp77xe870jgg" path="res://assets/models/player_model.tscn" id="3_tb2t1"]
 [ext_resource type="Script" uid="uid://bep8584babrna" path="res://scripts/PlayerSensor.gd" id="4_ds6in"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_l0agu"]
@@ -12,7 +12,8 @@ height = 1.556
 [sub_resource type="SphereShape3D" id="SphereShape3D_hu1p6"]
 radius = 12.0
 
-[node name="CharacterBody3D" type="CharacterBody3D" unique_id=691167534 node_paths=PackedStringArray("shoot_position")]
+[node name="CharacterBody3D" type="CharacterBody3D" unique_id=691167534 node_paths=PackedStringArray("character_mesh", "shoot_position")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.14803231, 0)
 disable_mode = 2
 collision_layer = 2
 collision_mask = 39
@@ -21,19 +22,20 @@ floor_max_angle = 0.0
 platform_floor_layers = 4294967041
 platform_wall_layers = 1
 script = ExtResource("1_ivcu5")
+character_mesh = NodePath("player")
 bullet_prefab = ExtResource("2_hubho")
 shoot_position = NodePath("ShootPos")
 shoot_interval_sec = 0.25
 
-[node name="player2" parent="." unique_id=665849140 instance=ExtResource("3_tb2t1")]
-transform = Transform3D(-1.495, 0, 2.2573873e-07, 0, 1.495, 0, -2.2573873e-07, 0, -1.495, 0, 0, -0.036349654)
+[node name="player" parent="." unique_id=1877893238 instance=ExtResource("3_tb2t1")]
+transform = Transform3D(-1.49, 0, -1.3025993e-07, 0, 1.49, 0, 1.3025993e-07, 0, -1.49, 0, 0, -0.3349635)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=661705240]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.77750325, 0)
 shape = SubResource("CapsuleShape3D_l0agu")
 
 [node name="ShootPos" type="Node3D" parent="." unique_id=1740674665]
-transform = Transform3D(-0.93654937, -0.13446058, -0.0032956575, -0.1341971, 0.92340344, 0.053341843, -0.012835126, 0.15666197, -0.31723857, 0.23228252, 0.8317933, -0.9713238)
+transform = Transform3D(-0.93654937, -0.13446058, -0.0032956575, -0.1341971, 0.92340344, 0.053341843, -0.012835126, 0.15666197, -0.31723857, 0.23228252, 0.8317933, -0.8321725)
 
 [node name="PlayerSensor" type="Node" parent="." unique_id=1863995441]
 script = ExtResource("4_ds6in")
